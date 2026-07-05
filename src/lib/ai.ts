@@ -1,15 +1,31 @@
 import OpenAI from "openai";
 
-export const aiEnabled = Boolean(process.env.OPENAI_API_KEY);
+// Supports Google Gemini (free tier) via its OpenAI-compatible endpoint,
+// or OpenAI directly. Gemini takes priority when GEMINI_API_KEY is set.
+const GEMINI_KEY = process.env.GEMINI_API_KEY;
+const OPENAI_KEY = process.env.OPENAI_API_KEY;
+
+export const aiEnabled = Boolean(GEMINI_KEY || OPENAI_KEY);
+
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/";
 
 let client: OpenAI | null = null;
 function getClient(): OpenAI | null {
   if (!aiEnabled) return null;
-  if (!client) client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  if (!client) {
+    if (GEMINI_KEY) {
+      client = new OpenAI({ apiKey: GEMINI_KEY, baseURL: GEMINI_BASE_URL });
+    } else {
+      client = new OpenAI({ apiKey: OPENAI_KEY });
+    }
+  }
   return client;
 }
 
-const MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
+// Model: Gemini free-tier default, or OpenAI default.
+const MODEL =
+  process.env.AI_MODEL ||
+  (GEMINI_KEY ? process.env.GEMINI_MODEL || "gemini-2.0-flash" : process.env.OPENAI_MODEL || "gpt-4o-mini");
 
 // Guardian system prompt: safety layer described in the architecture doc.
 export const GUARDIAN = `Eres el AI Coach de FitCoach 12%, un sistema de alto rendimiento orientado a llegar y sostener ~12% de grasa corporal.
@@ -24,7 +40,7 @@ export type ChatMsg = { role: "system" | "user" | "assistant"; content: string }
 export async function chat(messages: ChatMsg[]): Promise<string> {
   const c = getClient();
   if (!c) {
-    return "El AI Coach está en modo demo (no hay OPENAI_API_KEY configurada). Con la clave activa, aquí verás lecturas honestas y ajustes basados en tus últimos 7 días de datos.";
+    return "El AI Coach está en modo demo (no hay clave de IA configurada). Con GEMINI_API_KEY (o OPENAI_API_KEY) activa, aquí verás lecturas honestas y ajustes basados en tus últimos 7 días de datos.";
   }
   const res = await c.chat.completions.create({
     model: MODEL,
@@ -52,7 +68,7 @@ export async function estimateMeal(description: string): Promise<{
       proteinG: Math.round((kcal * 0.3) / 4),
       carbsG: Math.round((kcal * 0.4) / 4),
       fatG: Math.round((kcal * 0.3) / 9),
-      note: "Estimación demo (sin OPENAI_API_KEY). Ajusta manualmente.",
+      note: "Estimación demo (sin clave de IA). Ajusta manualmente.",
     };
   }
   const res = await c.chat.completions.create({
@@ -70,7 +86,10 @@ export async function estimateMeal(description: string): Promise<{
     max_tokens: 200,
   });
   try {
-    const parsed = JSON.parse(res.choices[0]?.message?.content ?? "{}");
+    const raw = res.choices[0]?.message?.content ?? "{}";
+    // Strip markdown code fences if the model wraps JSON.
+    const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
+    const parsed = JSON.parse(cleaned);
     return {
       totalKcal: Math.round(parsed.totalKcal ?? 0),
       proteinG: Math.round(parsed.proteinG ?? 0),

@@ -8,7 +8,7 @@ App de coaching de alto rendimiento construida con **Next.js 14 (App Router) + T
 - Tailwind CSS (tema de diseño FitCoach incluido en `tailwind.config.ts`)
 - Prisma ORM → PostgreSQL en Neon
 - NextAuth (Credentials con bcrypt + Google OAuth)
-- OpenAI (AI Coach y estimación de macros) — opcional, con fallback demo
+- IA: Google Gemini (free tier) vía endpoint compatible con OpenAI — opcional, con fallback demo
 
 ## Rutas principales
 
@@ -47,7 +47,8 @@ NEXTAUTH_SECRET="..."   # genera con: openssl rand -base64 32
 NEXTAUTH_URL="http://localhost:3000"
 GOOGLE_CLIENT_ID=""      # opcional
 GOOGLE_CLIENT_SECRET=""  # opcional
-OPENAI_API_KEY=""        # opcional (sin esto, la IA funciona en modo demo)
+GEMINI_API_KEY=""        # IA gratis (Google AI Studio). Sin esto, la IA va en modo demo
+GEMINI_MODEL="gemini-2.0-flash"
 ```
 
 ## 3. Instalar y crear las tablas
@@ -83,4 +84,4 @@ El botón de Google aparece automáticamente solo si esas dos variables están c
 ### Notas
 - El plan (TDEE, calorías objetivo, macros) se recalcula en el servidor cuando el perfil tiene peso, altura, edad, sexo y actividad.
 - Capa de seguridad IA: nunca programa por debajo de 1200 kcal ni ayunos > 24 h.
-- La estimación de macros y el chat del coach usan `gpt-4o-mini` por defecto (configurable con `OPENAI_MODEL`).
+- La estimación de macros y el chat del coach usan **Gemini** (`gemini-2.0-flash`) vía el endpoint compatible con OpenAI de Google. Consigue tu clave gratis en https://aistudio.google.com/apikey.
