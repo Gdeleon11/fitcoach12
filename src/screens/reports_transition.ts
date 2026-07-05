@@ -1,0 +1,364 @@
+// Ported verbatim from Stitch mockup: fitcoach_12_reporte_mensual_l_gica_de_transici_n_ajustada
+export const html = `<style>
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(32, 31, 31, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid #2C2C2C;
+        }
+        .technical-border {
+            border: 1px solid #2C2C2C;
+        }
+        .active-tab-glow {
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0e0e0e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3b494b;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dbe9;
+        }
+    </style>
+
+<!-- SideNavBar (Authority: JSON) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container dark:bg-surface-container-low border-r border-outline-variant flex flex-col py-8 gap-4 z-50">
+<div class="px-6 mb-4">
+<h1 class="font-headline-md text-headline-md text-primary">Elite Performance</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Phase: Hypertrophy</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<!-- Progress is Active -->
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container font-bold border-l-4 border-primary transition-all duration-200 rounded active:scale-95 shadow-[0_0_10px_rgba(0,240,255,0.2)]" href="#">
+<span class="material-symbols-outlined">photo_library</span>
+<span class="font-label-caps text-label-caps">Progress</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Tracking</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="font-label-caps text-label-caps">Nutrition</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="font-label-caps text-label-caps">Training</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-caps text-label-caps">AI Coach</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-4 bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-lg hover:brightness-110 active:scale-95 transition-all">
+                Start Session
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopAppBar (Authority: JSON) -->
+<header class="w-full sticky top-0 z-40 bg-background dark:bg-background border-b border-outline-variant">
+<div class="flex justify-between items-center px-12 py-4 max-w-container-max mx-auto">
+<div class="font-display-lg text-display-lg text-primary-container tracking-tighter">FitCoach 12%</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">monitor_weight</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">local_fire_department</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-12 max-w-container-max mx-auto w-full flex flex-col gap-8">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Reporte Mensual de Composición Corporal // Mes 3</h2>
+<p class="font-label-caps text-label-caps text-on-surface-variant tracking-widest mt-2 uppercase">Periodo: 01 OCT - 31 OCT 2023 | ID: FC-0912-X</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2 border border-outline-variant font-label-caps text-label-caps text-on-surface hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Exportar PDF
+                    </button>
+<button class="px-6 py-2 bg-primary-container text-on-primary-container font-label-caps text-label-caps hover:brightness-110 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">share</span>
+                        Compartir
+                    </button>
+</div>
+</div>
+<!-- Dashboard Bento Grid -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Main Stats: Body Composition (Large) -->
+<div class="col-span-12 lg:col-span-7 glass-card p-8 flex flex-col">
+<div class="flex justify-between items-start mb-8">
+<h3 class="font-label-caps text-label-caps text-primary uppercase">Métricas de Composición</h3>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+<span class="text-[10px] font-label-caps uppercase text-on-surface-variant">Masa Magra</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-on-tertiary-container"></div>
+<span class="text-[10px] font-label-caps uppercase text-on-surface-variant">Grasa Corporal</span>
+</div>
+</div>
+</div>
+<div class="flex-1 grid grid-cols-2 gap-8 items-center">
+<div class="relative flex items-center justify-center">
+<!-- Visual Ring Representation -->
+<svg class="w-48 h-48 transform -rotate-90">
+<circle class="text-surface-container-highest" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-primary-container transition-all duration-1000" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552" stroke-dashoffset="110" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-data-point text-[40px] text-primary">12.2%</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">Body Fat %</span>
+</div>
+</div>
+<div class="space-y-6">
+<div class="p-4 bg-surface-dim border-l-2 border-primary-container">
+<p class="font-label-caps text-label-caps text-on-surface-variant">Masa Muscular Estimada</p>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-data-point text-display-lg text-primary">74.8</span>
+<span class="font-label-caps text-on-surface-variant">KG</span>
+<span class="text-[#abd600] font-label-caps text-[12px] flex items-center ml-auto">+0.4kg ▲</span>
+</div>
+</div>
+<div class="p-4 bg-surface-dim border-l-2 border-on-tertiary-container">
+<p class="font-label-caps text-label-caps text-on-surface-variant">Masa Grasa</p>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-data-point text-display-lg text-on-surface">10.4</span>
+<span class="font-label-caps text-on-surface-variant">KG</span>
+<span class="text-[#abd600] font-label-caps text-[12px] flex items-center ml-auto">-1.2% ▼</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Stats: Weight & Waist -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-6">
+<div class="glass-card p-6 flex items-center justify-between">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">PESO PROMEDIO (MENSUAL)</p>
+<div class="flex items-baseline gap-2">
+<span class="font-data-point text-headline-md text-on-surface">85.2</span>
+<span class="font-label-caps text-on-surface-variant">KG</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[#abd600] font-data-point text-headline-md">-0.8</span>
+<p class="font-label-caps text-[10px] text-on-surface-variant">DELTA NETO</p>
+</div>
+</div>
+<div class="glass-card p-6 flex items-center justify-between">
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">CINTURA (MEDIANA)</p>
+<div class="flex items-baseline gap-2">
+<span class="font-data-point text-headline-md text-on-surface">81.5</span>
+<span class="font-label-caps text-on-surface-variant">CM</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[#abd600] font-data-point text-headline-md">-1.2</span>
+<p class="font-label-caps text-[10px] text-on-surface-variant">DELTA NETO</p>
+</div>
+</div>
+<div class="glass-card p-6 flex flex-col gap-4">
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Balance Energético</p>
+<div class="flex justify-between items-end">
+<div class="w-full bg-surface-container-highest h-2 relative overflow-hidden">
+<div class="absolute inset-0 bg-primary-container w-[85%] transition-all duration-1000"></div>
+</div>
+</div>
+<div class="flex justify-between font-label-caps text-[10px]">
+<div class="flex flex-col">
+<span class="text-on-surface">84,000 KCAL</span>
+<span class="text-on-surface-variant">QUEMADAS</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-primary-container">72,500 KCAL</span>
+<span class="text-on-surface-variant">CONSUMIDAS</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Strategic Insight Panel -->
+<div class="col-span-12 glass-card overflow-hidden grid grid-cols-1 md:grid-cols-12">
+<div class="md:col-span-4 bg-primary-container p-8 flex flex-col justify-center gap-2">
+<span class="material-symbols-outlined text-on-primary-container text-4xl" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<h3 class="font-headline-md text-headline-md text-on-primary-container leading-tight">AI Monthly Audit</h3>
+<p class="font-label-caps text-label-caps text-on-primary-container opacity-80 uppercase">Análisis Predictivo V.4</p>
+</div>
+<div class="md:col-span-8 p-8 flex flex-col justify-center">
+<p class="font-body-regular text-body-regular text-on-surface mb-4 leading-relaxed">
+<strong class="text-primary-container">Hypertrophy Phase Successful:</strong> Your physiological response to the current volume loading has resulted in a <span class="text-[#abd600] font-bold">+0.4kg</span> increase in predicted Lean Mass while simultaneously reducing body fat by <span class="text-[#abd600] font-bold">1.2%</span>. The data indicates high metabolic flexibility and optimal recovery markers during the AM workouts.
+                        </p>
+<div class="flex gap-6">
+<div class="flex items-center gap-2 text-[#abd600]">
+<span class="material-symbols-outlined">check_circle</span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider">Recuperación: Óptima</span>
+</div>
+<div class="flex items-center gap-2 text-primary-container">
+<span class="material-symbols-outlined">trending_up</span>
+<span class="font-label-caps text-[11px] uppercase tracking-wider">Adherencia: 94%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Evolution Section -->
+<div class="col-span-12 lg:col-span-8 glass-card p-8 flex flex-col gap-6">
+<h3 class="font-label-caps text-label-caps text-primary uppercase">Evolución Visual // Fotometría AI</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="relative group cursor-crosshair">
+<div class="aspect-[3/4] bg-surface-container-highest overflow-hidden">
+<img class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 transition-all duration-500" data-alt="A cinematic, high-contrast studio fitness portrait from the beginning of a month, showing a male physique in low-key lighting with deep shadows. The aesthetic is professional, sharp, and technical, emphasizing muscle definition through side-lighting. Deep dark background with a subtle blue rim light that matches the performance lab branding." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt9hbj93xqYAOAITag-45mgm2b7LU87giz9-ZMMAznke31kFoJIUEDTKScpr2MuO7mhazI8B2QiLx5Yh1-lrPoKwhxIzLWbK_66oaxO3fnebBCFrT1Zv7qCwzq-_5uW68SRovMIWaDb4dWxuoSO1yqa8cskdQuq_Ml6IBv1TkUPMqS2L2zYY4pSzmCuey0QJ5H99eZb8-I9Fr1thpvVyQRuJ_NX3Ae7yHNNnG9aRk2SYg-sBhX7HKF"/>
+</div>
+<div class="absolute top-4 left-4 bg-background/80 px-3 py-1 font-label-caps text-[10px] text-on-surface border border-outline-variant">DIA 01</div>
+<div class="absolute bottom-4 left-4 flex flex-col gap-1">
+<div class="bg-primary-container/20 border border-primary-container/40 backdrop-blur px-2 py-1 text-[10px] font-label-caps text-primary">SCAN: BASELINE</div>
+</div>
+</div>
+<div class="relative group cursor-crosshair">
+<div class="aspect-[3/4] bg-surface-container-highest overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-all duration-500" data-alt="A cinematic, high-contrast studio fitness portrait from the end of the month, showing the same male physique with noticeable improvement in muscle definition and reduced subcutaneous fat. Identical low-key lighting and professional composition as the previous image to ensure comparison accuracy. Strong highlights on deltoids and abdominals, premium dark aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQRSQB3zncGBNpwsWnNT9tSMXjFVrD_ntrqxQnJTDDFfd97nVfOi3Bon5cQzPSrm3rSWp5FrYRPjzTqmhGYlV4t-WpzH2WwTpQD6YM2xVSRZdf4NqLRcbacfI01vIESewWQbpChwKzfy50K4iMUhzt-_Zu-GuowVneMHJSA68bIkc5yFkd7OvSqJix639K1aUO6AGBp9ozIpjykr3C86gr6us-Tr1JDL6m_MeMJLrZpNvj59cV1rds"/>
+</div>
+<div class="absolute top-4 left-4 bg-primary-container px-3 py-1 font-label-caps text-[10px] text-on-primary-container">DIA 31</div>
+<!-- AI Detected Markers -->
+<div class="absolute top-[40%] right-[20%] w-4 h-4 border-2 border-[#abd600] rounded-full animate-pulse shadow-[0_0_10px_rgba(171,214,0,0.5)]"></div>
+<div class="absolute top-[40%] right-[25%] bg-background/90 text-[#abd600] font-label-caps text-[8px] px-2 py-1 border border-[#abd600]">INCREASED SERRATUS DEF</div>
+<div class="absolute bottom-20 left-[30%] w-4 h-4 border-2 border-[#abd600] rounded-full animate-pulse"></div>
+<div class="absolute bottom-20 left-[35%] bg-background/90 text-[#abd600] font-label-caps text-[8px] px-2 py-1 border border-[#abd600]">V-TAPER REFINEMENT</div>
+</div>
+</div>
+</div>
+<!-- Girth Tracking Table -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<div class="glass-card p-6 flex-1 flex flex-col">
+<h3 class="font-label-caps text-label-caps text-primary uppercase mb-6">Tracking de Perímetros</h3>
+<div class="space-y-4">
+<!-- Chest -->
+<div class="flex items-center justify-between py-3 border-b border-outline-variant">
+<div class="flex flex-col">
+<span class="font-label-caps text-on-surface-variant uppercase text-[10px]">Pecho</span>
+<span class="font-data-point text-on-surface">114.2 cm</span>
+</div>
+<div class="text-right">
+<span class="text-primary-container font-data-point">+1.2</span>
+<span class="material-symbols-outlined text-primary-container text-sm">arrow_upward</span>
+</div>
+</div>
+<!-- Arms -->
+<div class="flex items-center justify-between py-3 border-b border-outline-variant">
+<div class="flex flex-col">
+<span class="font-label-caps text-on-surface-variant uppercase text-[10px]">Brazos</span>
+<span class="font-data-point text-on-surface">42.8 cm</span>
+</div>
+<div class="text-right">
+<span class="text-primary-container font-data-point">+0.3</span>
+<span class="material-symbols-outlined text-primary-container text-sm">arrow_upward</span>
+</div>
+</div>
+<!-- Waist -->
+<div class="flex items-center justify-between py-3 border-b border-outline-variant">
+<div class="flex flex-col">
+<span class="font-label-caps text-on-surface-variant uppercase text-[10px]">Cintura</span>
+<span class="font-data-point text-on-surface">81.5 cm</span>
+</div>
+<div class="text-right">
+<span class="text-[#abd600] font-data-point">-1.2</span>
+<span class="material-symbols-outlined text-[#abd600] text-sm">arrow_downward</span>
+</div>
+</div>
+<!-- Legs -->
+<div class="flex items-center justify-between py-3 border-b border-outline-variant">
+<div class="flex flex-col">
+<span class="font-label-caps text-on-surface-variant uppercase text-[10px]">Piernas</span>
+<span class="font-data-point text-on-surface">66.4 cm</span>
+</div>
+<div class="text-right">
+<span class="text-primary-container font-data-point">+0.8</span>
+<span class="material-symbols-outlined text-primary-container text-sm">arrow_upward</span>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-8">
+<div class="p-4 bg-secondary-container rounded flex items-center gap-4 group cursor-pointer hover:brightness-110 transition-all">
+<div class="bg-on-secondary-container w-10 h-10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-container">trending_down</span>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-on-secondary-container opacity-80">ESTRATEGIA RECOMENDADA</p>
+<h4 class="font-label-caps text-label-caps text-on-secondary-container font-bold">Transition to Mini-Cut</h4>
+</div>
+<span class="material-symbols-outlined text-on-secondary-container ml-auto group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Phase Strategy Recommendation -->
+<div class="col-span-12 glass-card p-1 relative overflow-hidden group">
+<!-- Subtle background light effect -->
+<div class="absolute -inset-10 bg-gradient-to-r from-primary-container/10 via-transparent to-primary-container/5 blur-3xl opacity-30 pointer-events-none"></div>
+<div class="relative bg-surface-dim p-10 flex flex-col md:flex-row items-center gap-10">
+<div class="flex-1 space-y-4">
+<div class="inline-block px-3 py-1 bg-primary-container/10 border border-primary-container/30 font-label-caps text-[10px] text-primary">PROXIMA FASE: MES 4 // REQUERIMIENTO CALCULADO</div>
+<h2 class="font-display-lg text-headline-md md:text-display-lg text-on-surface">Estrategia de Transición: <span class="text-primary-container">Fase de Re-sensibilización y Mini-Cut</span></h2>
+<p class="font-body-regular text-body-regular text-on-surface-variant max-w-2xl leading-relaxed">Tras 12 semanas de superávit calórico, los marcadores de sensibilidad a la insulina y la inflamación sistémica sugieren una pausa estratégica. El algoritmo recomienda un bloque de 3 semanas para restaurar la eficiencia metabólica antes de continuar con la fase de volumen.</p>
+<div class="flex flex-wrap gap-4 pt-4">
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-highest border border-outline-variant">
+<span class="material-symbols-outlined text-sm">restaurant</span>
+<span class="font-label-caps text-[11px] text-on-surface">-350 Kcal Deficit</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-highest border border-outline-variant">
+<span class="material-symbols-outlined text-sm">speed</span>
+<span class="font-label-caps text-[11px] text-on-surface">+20m LISS Cardio</span>
+</div>
+<div class="flex items-center gap-2 px-4 py-2 bg-surface-container-highest border border-outline-variant"><span class="material-symbols-outlined text-sm">directions_walk</span><span class="font-label-caps text-[11px] text-on-surface">Caminata en Ayunas (NEAT focus)</span></div>
+</div>
+</div>
+<div class="w-full md:w-auto"><div class="mb-2 text-center md:text-right"><span class="font-label-caps text-[10px] text-primary-container bg-primary-container/10 px-2 py-1 border border-primary-container/30">AI REASONING: Basado en +1.2cm de cintura vs baseline de mes 1.</span></div>
+<button class="w-full md:w-64 py-6 bg-primary-container text-on-primary-container font-label-caps text-label-caps font-bold hover:brightness-110 active:scale-95 transition-all shadow-[0_0_30px_rgba(0,240,255,0.15)] flex flex-col items-center justify-center gap-2">
+                                ACEPTAR NUEVO PLAN
+                                <span class="material-symbols-outlined">rocket_launch</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Meta -->
+<footer class="mt-12 py-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4 text-on-surface-variant font-label-caps text-[10px]">
+<div class="flex gap-8">
+<span>GEN: 2023.10.31_2359</span>
+<span>MD5: 8F2D1A9C4E0B3F6E</span>
+<span>FITCOACH CORE V.12.4</span>
+</div>
+<div>PRECISIÓN DEL REPORTE: 99.8% BASADO EN BIO-IMPEDANCIA Y FOTOMETRÍA</div>
+</footer>
+</div>
+</main>`;

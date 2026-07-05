@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitCoach 12% - Daily Training Log</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        /* Custom scrollbar for technical look */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #3b494b; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00dbe9; }
+
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid #3b494b;
+        }
+        
+        .input-glow:focus {
+            outline: none;
+            border-color: #00f0ff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#930005",
+                        "outline": "#849495",
+                        "on-secondary-fixed": "#161e00",
+                        "on-surface-variant": "#b9cacb",
+                        "error-container": "#93000a",
+                        "surface-container": "#201f1f",
+                        "secondary-container": "#c3f400",
+                        "on-secondary-container": "#556d00",
+                        "surface-container-highest": "#353534",
+                        "on-background": "#e5e2e1",
+                        "on-surface": "#e5e2e1",
+                        "surface-container-high": "#2a2a2a",
+                        "inverse-on-surface": "#313030",
+                        "surface-container-low": "#1c1b1b",
+                        "on-tertiary-container": "#c1000a",
+                        "tertiary-fixed-dim": "#ffb4aa",
+                        "secondary-fixed": "#c3f400",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-variant": "#353534",
+                        "surface-tint": "#00dbe9",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-primary-fixed": "#002022",
+                        "surface-bright": "#393939",
+                        "on-primary": "#00363a",
+                        "surface": "#131313",
+                        "on-tertiary": "#690003",
+                        "on-primary-fixed-variant": "#004f54",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#410001",
+                        "secondary-fixed-dim": "#abd600",
+                        "inverse-primary": "#006970",
+                        "tertiary-fixed": "#ffdad5",
+                        "tertiary-container": "#ffcec7",
+                        "on-error-container": "#ffdad6",
+                        "background": "#131313",
+                        "tertiary": "#fff3f1",
+                        "primary-fixed-dim": "#00dbe9",
+                        "primary-fixed": "#7df4ff",
+                        "surface-dim": "#131313",
+                        "primary-container": "#00f0ff",
+                        "on-secondary": "#283500",
+                        "outline-variant": "#3b494b",
+                        "on-primary-container": "#006970",
+                        "on-secondary-fixed-variant": "#3c4d00",
+                        "secondary": "#ffffff",
+                        "primary": "#dbfcff",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "unit": "4px",
+                        "margin-desktop": "48px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-regular": ["Inter"],
+                        "data-point": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-regular": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "data-point": ["20px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-regular selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Anchor -->
+<header class="w-full sticky top-0 z-50 bg-background border-b border-outline-variant">
+<div class="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<span class="font-display-lg text-display-lg text-primary-container tracking-tighter">FitCoach 12%</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-primary border-b-2 border-primary font-label-caps text-label-caps py-1" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-caps text-label-caps py-1" href="#">Tracking</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-caps text-label-caps py-1" href="#">AI Coach</a>
+</nav>
+<div class="flex items-center gap-4 text-primary">
+<span class="material-symbols-outlined cursor-pointer active:opacity-80">monitor_weight</span>
+<span class="material-symbols-outlined cursor-pointer active:opacity-80">local_fire_department</span>
+<span class="material-symbols-outlined cursor-pointer active:opacity-80">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-gutter md:px-margin-desktop py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Main Workout Content -->
+<section class="lg:col-span-8 space-y-8"><div class="bg-primary-container/10 border border-primary-container p-4 rounded-lg flex items-center justify-between mb-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">psychology</span>
+<div>
+<span class="font-label-caps text-[10px] text-primary-container block uppercase">AI Readiness Score</span>
+<span class="font-headline-md text-[18px] text-primary-container">88% - SNC Optimal</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-[10px] text-on-surface-variant block uppercase">Ajuste Sugerido</span>
+<span class="font-data-point text-[14px] text-secondary-fixed">+10% Volumen</span>
+</div>
+</div>
+<!-- Header Section -->
+<div class="bg-surface-container-low p-6 border border-outline-variant rounded-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+<div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase mb-2 block">Sesión Actual</span>
+<h1 class="font-headline-md text-headline-md text-primary tracking-tight">Empuje A - Hipertrofia</h1>
+</div>
+<div class="flex gap-3">
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="font-label-caps text-label-caps text-on-surface">ALTA INTENSIDAD</span>
+</div>
+<div class="flex items-center gap-2 bg-surface-container px-3 py-1.5 border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="font-label-caps text-label-caps text-on-surface">OBJETIVO: 13,200KG</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-6 border-t border-outline-variant pt-4">
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant">DURACIÓN</span>
+<span class="font-data-point text-data-point text-primary" id="session-timer">00:42:15</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps text-on-surface-variant">EXC. COMPLETOS</span>
+<span class="font-data-point text-data-point text-primary">02 / 06</span>
+</div>
+</div>
+</div>
+<!-- Exercise List -->
+<div class="space-y-6">
+<!-- Exercise 1 -->
+<article class="bg-surface-container border border-outline-variant rounded-lg overflow-hidden">
+<div class="p-4 bg-surface-container-high border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 flex items-center justify-center bg-primary-container text-on-primary-container font-bold rounded">1</span>
+<h2 class="font-headline-md text-[18px] text-primary">Press Militar con Barra (Standing)</h2>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-[10px] text-on-surface-variant block uppercase">Mejor Previo</span>
+<span class="font-data-point text-[14px] text-secondary-fixed">85kg x 6 Reps</span>
+</div>
+</div>
+<div class="p-4 overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant">
+<th class="pb-3 font-label-caps text-label-caps text-on-surface-variant">SERIE</th>
+<th class="pb-3 font-label-caps text-label-caps text-on-surface-variant">ANTERIOR</th>
+<th class="pb-3 font-label-caps text-label-caps text-on-surface-variant">PESO (KG)</th>
+<th class="pb-3 font-label-caps text-label-caps text-on-surface-variant">REPS</th>
+<th class="pb-3 font-label-caps text-label-caps text-on-surface-variant">RIR</th>
+<th class="pb-3 font-label-caps text-label-caps text-on-surface-variant text-center w-10">OK</th>
+</tr>
+</thead>
+<tbody class="font-data-point text-sm">
+<tr class="border-b border-outline-variant/30 hover:bg-surface-container-highest transition-colors">
+<td class="py-4 text-on-surface">01</td>
+<td class="py-4 text-on-surface-variant">80kg x 8</td>
+<td class="py-2"><input class="w-20 bg-background border-outline-variant text-primary font-data-point text-center input-glow rounded" placeholder="80" type="number"/></td>
+<td class="py-2"><input class="w-16 bg-background border-outline-variant text-primary font-data-point text-center input-glow rounded" placeholder="8" type="number"/></td>
+<td class="py-2"><input class="w-16 bg-background border-outline-variant text-primary font-data-point text-center input-glow rounded" placeholder="2" type="number"/></td>
+<td class="py-2 text-center">
+<button class="w-8 h-8 bg-surface-container-highest border border-outline-variant flex items-center justify-center text-primary-container hover:bg-primary-container hover:text-on-primary-container transition-all">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/30 hover:bg-surface-container-highest transition-colors">
+<td class="py-4 text-on-surface">02</td>
+<td class="py-4 text-on-surface-variant">80kg x 7</td>
+<td class="py-2"><input class="w-20 bg-background border-outline-variant text-primary font-data-point text-center input-glow rounded" placeholder="--" type="number"/></td>
+<td class="py-2"><input class="w-16 bg-background border-outline-variant text-primary font-data-point text-center input-glow rounded" placeholder="--" type="number"/></td>
+<td class="py-2"><input class="w-16 bg-background border-outline-variant text-primary font-data-point text-center input-glow rounded" placeholder="--" type="number"/></td>
+<td class="py-2 text-center">
+<button class="w-8 h-8 bg-surface-container-highest border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container transition-all">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+<button class="mt-4 w-full py-2 border-2 border-dashed border-outline-variant text-on-surface-variant font-label-caps text-label-caps hover:border-primary hover:text-primary transition-all">
+                            + AÑADIR SERIE
+                        </button>
+</div>
+<div class="p-4 bg-surface-container-low">
+<div class="flex items-center gap-2 mb-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">edit_note</span>
+<span class="font-label-caps text-[10px] uppercase">Notas de Técnica</span>
+</div>
+<div class="mb-3 p-2 bg-primary-container/5 border-l-2 border-primary-container">
+<p class="text-[12px] text-primary-container font-medium italic">
+        AI Suggestion: Readiness allows for +10% volume. Extra set added to main lift.
+    </p>
+</div><textarea class="w-full bg-background border-outline-variant text-on-surface text-sm rounded h-20 p-3 input-glow resize-none" placeholder="Codos ligeramente hacia adentro, mantener core bloqueado..."></textarea>
+</div>
+</article>
+<!-- Exercise 2 (Condensed for demo) -->
+<article class="bg-surface-container border border-outline-variant rounded-lg overflow-hidden opacity-80">
+<div class="p-4 bg-surface-container-high border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 flex items-center justify-center bg-surface-container-highest text-on-surface-variant font-bold rounded">2</span>
+<h2 class="font-headline-md text-[18px] text-on-surface">Press Inclinado con Mancuernas</h2>
+</div>
+<div class="text-right">
+<span class="font-label-caps text-[10px] text-on-surface-variant block uppercase">Mejor Previo</span>
+<span class="font-data-point text-[14px] text-on-surface">36kg x 10 Reps</span>
+</div>
+</div>
+<div class="p-8 flex justify-center text-on-surface-variant font-label-caps">
+                        TAP PARA EXPANDIR Y LOGUEAR
+                    </div>
+</article>
+</div>
+</section>
+<!-- Sidebar Performance Tracker -->
+<aside class="lg:col-span-4 space-y-6">
+<!-- Volume Tracker -->
+<div class="bg-surface-container p-6 border border-outline-variant rounded-lg">
+<h3 class="font-label-caps text-label-caps text-primary mb-4 flex items-center justify-between">
+                    VOLUME TRACKER
+                    <span class="material-symbols-outlined text-[18px]">analytics</span>
+</h3>
+<div class="relative pt-1">
+<div class="flex mb-2 items-center justify-between">
+<div>
+<span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-on-primary-container bg-primary-container">
+                                En Progreso
+                            </span>
+</div>
+<div class="text-right">
+<span class="text-xs font-semibold inline-block text-primary">
+                                48% (5,760kg)
+                            </span>
+</div>
+</div>
+<div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-surface-container-highest">
+<div class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-container" style="width:48%"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-label-caps text-[10px]">
+<span>0 KG</span>
+<span>TARGET: 13,200 KG</span>
+</div>
+</div>
+</div>
+<!-- Rest Timer Card -->
+<div class="bg-surface-container p-6 border border-outline-variant rounded-lg text-center">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-4">REST TIMER</h3>
+<div class="font-data-point text-4xl text-primary mb-4 tabular-nums">01:30</div>
+<div class="grid grid-cols-3 gap-2">
+<button class="py-2 bg-surface-container-high border border-outline-variant text-xs hover:border-primary transition-colors">+30s</button>
+<button class="py-2 bg-surface-container-high border border-outline-variant text-xs hover:border-primary transition-colors">RESET</button>
+<button class="py-2 bg-primary-container text-on-primary-container text-xs font-bold">START</button>
+</div>
+</div>
+<!-- Recovery & Session Stats -->
+<div class="bg-surface-container p-6 border border-outline-variant rounded-lg space-y-6">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant border-b border-outline-variant pb-2">POST-SESSION ANALYSIS</h3>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-caps text-[10px] text-on-surface-variant uppercase">RPE ESTIMADO (1-10)</label>
+<span class="font-data-point text-primary text-sm">8.5</span>
+</div>
+<input class="w-full accent-primary-container bg-surface-container-highest rounded-lg cursor-pointer" max="10" min="1" step="0.5" type="range"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-caps text-[10px] text-on-surface-variant uppercase">FATIGA CENTRAL</label>
+<span class="font-data-point text-primary text-sm">7</span>
+</div>
+<input class="w-full accent-primary-container bg-surface-container-highest rounded-lg cursor-pointer" max="10" min="1" type="range"/>
+</div>
+<div>
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-caps text-[10px] text-on-surface-variant uppercase">NIVEL DE ENERGÍA</label>
+<span class="font-data-point text-primary text-sm">4</span>
+</div>
+<input class="w-full accent-primary-container bg-surface-container-highest rounded-lg cursor-pointer" max="10" min="1" type="range"/>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps py-4 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined">sync</span>
+                        FINALIZAR Y SINCRONIZAR SESIÓN
+                    </button>
+</div>
+</div>
+<!-- Visual Motivation -->
+<div class="relative group h-48 rounded-lg overflow-hidden border border-outline-variant">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="A gritty, high-contrast monochrome photograph of a professional athlete's chalk-covered hands gripping a heavy barbell in a dimly lit, industrial-style gym. Cyan laser lines subtly scan across the barbell, emphasizing a high-tech data-driven performance aesthetic. The lighting is dramatic, with sharp shadows and a focused atmosphere of extreme effort and concentration." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCEm9OlgB_kej6l5sXaO7GI4v9iHCAKuJ4_8fBDei6XyU587gQS6k0O9MDH1CDLtnxAg2-bxbjpk8BuR5qiQIXHL7qwdOeifKnMWLUVJrtJxSHsCUwUdlqMuV_etEoqy79CuHggnAwSPBo_4y58fTH2i3M11rWmh1bV9tI4rrUR1QfR5G-v-lTKrmAdWxVCHvmUoiCiJaIlX-yYhU3kp1eqRTJBqAvWBs40RWnpOOlg33MLegPaGtFf')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
+<div class="absolute bottom-4 left-4">
+<span class="font-label-caps text-[10px] text-primary block">PRÓXIMO HITO</span>
+<span class="font-headline-md text-sm text-white">Récord histórico a 150kg</span>
+</div>
+</div>
+</aside>
+</main>
+<!-- Bottom Navigation for Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full glass-panel border-t border-outline-variant flex justify-around py-3 px-2 z-50">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[9px] font-label-caps">HOME</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+<span class="text-[9px] font-label-caps">TRAIN</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[9px] font-label-caps">DATA</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="text-[9px] font-label-caps">AI</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[9px] font-label-caps">MORE</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions for inputs
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('change', (e) => {
+                if(e.target.value) {
+                    e.target.classList.add('text-primary-container');
+                    e.target.classList.add('border-primary-container');
+                }
+            });
+        });
+
+        // Simple Session Timer Simulation
+        let seconds = 2535; // Starting at 42:15
+        const timerElement = document.getElementById('session-timer');
+        
+        setInterval(() => {
+            seconds++;
+            let h = Math.floor(seconds / 3600);
+            let m = Math.floor((seconds % 3600) / 60);
+            let s = seconds % 60;
+            timerElement.textContent = 
+                `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }, 1000);
+    </script>
+</body></html>

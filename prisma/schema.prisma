@@ -1,0 +1,237 @@
+// FitCoach 12% — Prisma schema
+// Database: PostgreSQL (Neon). Uses pooled DATABASE_URL at runtime and DIRECT_URL for migrations.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------- Auth (NextAuth + credentials) ----------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String? // null for pure OAuth users
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  profile          UserProfile?
+  checkIns         DailyCheckIn[]
+  nutritionLogs    NutritionLog[]
+  workouts         Workout[]
+  progressPhotos   ProgressPhoto[]
+  recommendations  AIRecommendation[]
+  healthDataBuffer HealthDataBuffer[]
+  chatMessages     ChatMessage[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------- Domain ----------
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model UserProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  name            String?
+  age             Int?
+  heightCm        Float?
+  weightKg        Float?
+  gender          Gender?
+  activityLevel   String? // sedentary | light | moderate | active | athlete
+  goalBodyFat     Float? // target % body fat (e.g. 12)
+  foodWindowStart String? // "07:00"
+  foodWindowEnd   String? // "17:00"
+  tdee            Int? // computed maintenance calories
+  targetKcal      Int? // computed target calories
+  proteinG        Int?
+  carbsG          Int?
+  fatG            Int?
+  onboardingDone  Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DailyCheckIn {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime @default(now())
+  weightKg  Float?
+  waistCm   Float?
+  sleepH    Float?
+  energy    Int? // 1-5
+  hunger    Int?
+  fatigue   Int?
+  digestion Int?
+  stress    Int?
+  steps     Int?
+  notes     String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model NutritionLog {
+  id          String   @id @default(cuid())
+  userId      String
+  date        DateTime @default(now())
+  mealName    String?
+  description String?
+  totalKcal   Int?
+  proteinG    Int?
+  carbsG      Int?
+  fatG        Int?
+  waterLiters Float?
+  aiEstimated Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+enum WorkoutType {
+  STRENGTH
+  CARDIO
+  SPORT
+  MOBILITY
+}
+
+model Workout {
+  id        String      @id @default(cuid())
+  userId    String
+  date      DateTime    @default(now())
+  name      String?
+  type      WorkoutType @default(STRENGTH)
+  durationM Int?
+  intensity String?
+  rpe       Float?
+  volumeKg  Float?
+  notes     String?
+  createdAt DateTime    @default(now())
+
+  sets WorkoutSet[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+}
+
+model WorkoutSet {
+  id           String  @id @default(cuid())
+  workoutId    String
+  exerciseName String
+  setOrder     Int     @default(0)
+  reps         Int?
+  weightKg     Float?
+  rir          Int?
+
+  workout Workout @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+}
+
+enum PhotoAngle {
+  FRONT
+  SIDE
+  BACK
+}
+
+model ProgressPhoto {
+  id         String     @id @default(cuid())
+  userId     String
+  date       DateTime   @default(now())
+  url        String
+  angle      PhotoAngle @default(FRONT)
+  aiAnalysis Json?
+  createdAt  DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AIRecommendation {
+  id         String   @id @default(cuid())
+  userId     String
+  date       DateTime @default(now())
+  type       String // CalorieAdj | TrainingAdj | Supplement | General
+  reasoning  String
+  actionStep String?
+  payload    Json?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model HealthDataBuffer {
+  id           String   @id @default(cuid())
+  userId       String
+  source       String // Manual | File | Wearable
+  rawContent   String   @db.Text
+  parsedStatus String   @default("pending")
+  parsed       Json?
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String // user | assistant | system
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}

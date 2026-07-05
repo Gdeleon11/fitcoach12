@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitCoach 12% - Análisis Visual de Progreso</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid #2C2C2C;
+        }
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: #00f0ff;
+            position: absolute;
+            z-index: 10;
+            top: 0;
+            left: 0;
+            animation: scan 4s linear infinite;
+            opacity: 0.5;
+            box-shadow: 0 0 15px #00f0ff;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0A0A0A; }
+        ::-webkit-scrollbar-thumb { background: #2C2C2C; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary": "#fff3f1",
+                        "surface-variant": "#353534",
+                        "surface": "#131313",
+                        "surface-container-high": "#2a2a2a",
+                        "on-secondary-fixed-variant": "#3c4d00",
+                        "on-primary": "#00363a",
+                        "on-tertiary-fixed-variant": "#930005",
+                        "background": "#131313",
+                        "surface-bright": "#393939",
+                        "on-tertiary-container": "#c1000a",
+                        "surface-container": "#201f1f",
+                        "secondary-fixed": "#c3f400",
+                        "primary-fixed": "#7df4ff",
+                        "primary-container": "#00f0ff",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#ffdad5",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-background": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#556d00",
+                        "secondary": "#ffffff",
+                        "on-secondary": "#283500",
+                        "on-primary-fixed": "#002022",
+                        "secondary-container": "#c3f400",
+                        "on-surface-variant": "#b9cacb",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-primary-container": "#006970",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary-fixed-dim": "#ffb4aa",
+                        "secondary-fixed-dim": "#abd600",
+                        "on-tertiary": "#690003",
+                        "surface-container-low": "#1c1b1b",
+                        "inverse-surface": "#e5e2e1",
+                        "on-tertiary-fixed": "#410001",
+                        "inverse-on-surface": "#313030",
+                        "tertiary-container": "#ffcec7",
+                        "surface-dim": "#131313",
+                        "on-secondary-fixed": "#161e00",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "inverse-primary": "#006970",
+                        "surface-tint": "#00dbe9",
+                        "outline": "#849495",
+                        "primary": "#dbfcff",
+                        "on-surface": "#e5e2e1",
+                        "surface-container-highest": "#353534",
+                        "outline-variant": "#3b494b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "data-point": ["JetBrains Mono"],
+                        "label-caps": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-regular": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "data-point": ["20px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-regular": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-regular overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Sidebar Navigation -->
+<nav class="h-screen w-64 fixed left-0 top-0 bg-surface-container dark:bg-surface-container-low border-r border-outline-variant flex flex-col py-8 gap-4 z-40 hidden md:flex">
+<div class="px-6 mb-8">
+<h1 class="font-headline-md text-headline-md text-primary">Elite Performance</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Fase: Hipertrofia</p>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Tracking</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 bg-primary-container text-on-primary-container font-bold border-l-4 border-primary" href="#">
+<span class="material-symbols-outlined">photo_library</span>
+<span class="font-label-caps text-label-caps">Progress</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="font-label-caps text-label-caps">Training</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-caps text-label-caps">AI Coach</span>
+</a>
+</div>
+<div class="mt-auto px-6">
+<button class="w-full bg-primary-container text-on-primary-container py-3 font-label-caps text-label-caps rounded cursor-pointer active:scale-95 transition-transform">
+                Iniciar Sesión
+            </button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="md:ml-64 min-h-screen">
+<!-- Header -->
+<header class="w-full sticky top-0 z-50 bg-background dark:bg-background border-b border-outline-variant">
+<div class="flex justify-between items-center px-6 md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="font-display-lg text-[24px] md:text-display-lg text-primary-container tracking-tighter">FitCoach 12%</div>
+<div class="flex items-center gap-6">
+<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">monitor_weight</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">local_fire_department</span>
+<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">account_circle</span>
+</div>
+</div>
+</header>
+<div class="px-6 py-8 md:px-margin-desktop max-w-container-max mx-auto">
+<!-- Page Title & CTA -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-background mb-2">Análisis Visual de Progreso</h2>
+<p class="text-on-surface-variant font-label-caps text-label-caps">AUDITORÍA DE COMPOSICIÓN CORPORAL POR IA</p>
+</div>
+<button class="group flex items-center gap-3 bg-transparent border border-primary-container text-primary-container px-6 py-3 font-label-caps text-label-caps hover:bg-primary-container hover:text-on-primary-container transition-all">
+<span class="material-symbols-outlined">add_a_photo</span>
+                    Subir Fotos
+                    <span class="text-[10px] opacity-60">(GHOST OVERLAY ACTIVO)</span>
+</button>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Photo Comparison -->
+<div class="lg:col-span-8 flex flex-col gap-gutter">
+<div class="bg-surface-container-low border border-outline-variant p-1 relative overflow-hidden group">
+<div class="flex items-center justify-between p-4 border-b border-outline-variant">
+<div class="flex gap-4">
+<button class="font-label-caps text-label-caps px-4 py-1 bg-primary-container text-on-primary-container">FRENTE</button>
+<button class="font-label-caps text-label-caps px-4 py-1 text-on-surface-variant hover:text-primary transition-colors">PERFIL</button>
+<button class="font-label-caps text-label-caps px-4 py-1 text-on-surface-variant hover:text-primary transition-colors">ESPALDA</button>
+</div>
+<div class="text-on-surface-variant font-label-caps text-label-caps">COMPARE: 01 ENE vs HOY</div>
+</div>
+<div class="grid grid-cols-2 gap-1 relative h-[600px]">
+<!-- Before Photo -->
+<div class="relative overflow-hidden">
+<div class="absolute top-4 left-4 z-20 bg-black/60 px-3 py-1 font-label-caps text-label-caps">01 ENERO</div>
+<div class="w-full h-full bg-cover bg-center" data-alt="A professional medical-grade fitness photograph of a fit male torso from the front. The lighting is harsh and clinical, showing muscle shadows and early definition. The background is a minimalist gym setting with dark technical tones. High contrast, sharp detail." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAVFyd7czbiekLiTgB64HyRUlGVrVrZmwEV5bb4qxqqIQvyIgFtBfwlU6ciaj6HAhZDl443-VgswYuajxRqiYYsnyBUzZKVEIOJ-F4yglmnT_iMc9ju1XOmj4Xm9MdyZX98SE1k84Wt-riE5UxQGhAjrO73Ye7ZSixxffnLE0sTDQl6QGb327HsRgNtl99zXv1VYLD2TDB1SGV-e5eF5R39st6t-Uas2KPk2qR2VZkknHVTvzSJtUi_')"></div>
+</div>
+<!-- Current Photo + AI Analysis Overlay -->
+<div class="relative overflow-hidden group">
+<div class="absolute top-4 right-4 z-20 bg-primary-container text-on-primary-container px-3 py-1 font-label-caps text-label-caps">HOY (IA SCAN)</div>
+<div class="scanline"></div>
+<div class="w-full h-full bg-cover bg-center" data-alt="A professional medical-grade fitness photograph of a fit male torso from the front, showing significant progress in muscle definition, specifically in the abdominal and shoulder area. The lighting is clinical and side-lit to emphasize the serratus and oblique muscles. Minimalist dark background." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDaJzwHutn7R1A619ivMtAoG_doC8SdH-wlksNO_tmVzZRTxd7VLG1CJ1F0swXiSe90x3yyQSCiiIFlb7BWmG_7VdGtrOgJRFFc-2ymI3P7WsZoru33Xo22dXi1VcZfKfOp0aEgDGy2cec0JiZwOumu7cFxTNm75Akw6cZS4r8lAw7JSQyGWsyKL66YQxnlRTB4h976rGllrYB-UY9adIyem3bDu8v8ozyxXflev0C9js0JG-MBOMHn')"></div>
+<!-- AI Hotspots -->
+<div class="absolute top-1/4 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+<!-- Chest Indicator -->
+<div class="absolute -top-10 -left-20 group-hover:scale-110 transition-transform">
+<div class="flex items-center">
+<div class="w-3 h-3 rounded-full bg-secondary-container shadow-[0_0_10px_#c3f400]"></div>
+<div class="w-16 h-[1px] bg-secondary-container"></div>
+<div class="bg-black/80 border border-secondary-container p-2">
+<div class="font-label-caps text-[10px] text-secondary-container">DEFINICIÓN MUSCULAR</div>
+<div class="text-[12px] font-bold">+4.2% Peak</div>
+</div>
+</div>
+</div>
+<!-- Abs Indicator -->
+<div class="absolute top-40 -right-24">
+<div class="flex items-center flex-row-reverse">
+<div class="w-3 h-3 rounded-full bg-primary-container shadow-[0_0_10px_#00f0ff]"></div>
+<div class="w-16 h-[1px] bg-primary-container"></div>
+<div class="bg-black/80 border border-primary-container p-2">
+<div class="font-label-caps text-[10px] text-primary-container">GRASA REAL</div>
+<div class="text-[12px] font-bold">Sub-Cutánea: 8mm</div>
+</div>
+</div>
+</div>
+<!-- Waist Indicator -->
+<div class="absolute top-64 -left-32">
+<div class="flex items-center">
+<div class="w-3 h-3 rounded-full bg-error shadow-[0_0_10px_#ffb4ab]"></div>
+<div class="w-24 h-[1px] bg-error"></div>
+<div class="bg-black/80 border border-error p-2">
+<div class="font-label-caps text-[10px] text-error">RETENCIÓN AGUA</div>
+<div class="text-[12px] font-bold">Inflamación Leve</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Analysis & KPIs -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<!-- AI Progress Insight -->
+<div class="bg-surface-container-high border border-outline-variant p-6 relative">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<h3 class="font-label-caps text-label-caps text-primary-container">FitCoach AI: LECTURA HONESTA</h3>
+</div>
+<p class="text-on-surface font-body-regular text-[14px] leading-relaxed italic border-l-2 border-primary-container pl-4">
+                            "La pérdida de grasa es evidente en los flancos, pero la retención de agua por el entrenamiento de pierna de ayer oculta el detalle abdominal. Mantener déficit. La vascularidad en deltoides indica un estado metabólico óptimo."
+                        </p>
+</div>
+<!-- Body Comp KPIs -->
+<div class="grid grid-cols-1 gap-4">
+<!-- BF Gauge -->
+<div class="bg-surface-container border border-outline-variant p-5">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-label-caps text-on-surface-variant">ESTIMACIÓN GRASA</span>
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-data-point text-[32px] text-secondary-container">16.2%</span>
+<span class="font-label-caps text-[10px] text-on-surface-variant">(-1.3%)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 mt-4 relative">
+<div class="absolute left-0 top-0 h-full bg-secondary-container" style="width: 62%"></div>
+<div class="absolute left-[12%] top-[-4px] h-3 w-[2px] bg-white"></div>
+</div>
+<div class="flex justify-between mt-2 font-label-caps text-[9px] text-on-surface-variant">
+<span>25% OBJETIVO</span>
+<span>12% ELITE</span>
+</div>
+</div>
+<!-- Waist Measurement -->
+<div class="bg-surface-container border border-outline-variant p-5">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-label-caps text-on-surface-variant">PERÍMETRO CINTURA</span>
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-data-point text-[32px] text-on-background">82.0</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">cm</span>
+<span class="font-label-caps text-[10px] text-error ml-auto">▼ 2.0</span>
+</div>
+</div>
+<!-- Lean Mass Index -->
+<div class="bg-surface-container border border-outline-variant p-5">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-caps text-label-caps text-on-surface-variant">ÍNDICE MASA MAGRA</span>
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="font-data-point text-[32px] text-on-background">22.4</span>
+<span class="font-label-caps text-[10px] text-primary-container">▲ 0.5 ESTABLE</span>
+</div>
+</div>
+</div>
+<!-- Tech Legend -->
+<div class="mt-auto p-4 border-t border-outline-variant">
+<h4 class="font-label-caps text-[10px] text-on-surface-variant mb-4">ESTADOS DE ANÁLISIS IA</h4>
+<div class="flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="font-label-caps text-[10px] text-on-surface-variant">ÓPTIMO (RANGO 12%)</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-amber-500"></div>
+<span class="font-label-caps text-[10px] text-on-surface-variant">PRECAUCIÓN / MESETA</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="font-label-caps text-[10px] text-on-surface-variant">ACCIÓN REQUERIDA</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Metrics Table (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mt-12">
+<div class="bg-surface-container-low border border-outline-variant p-6">
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-2">VASCULARIDAD</span>
+<div class="flex items-end gap-2">
+<div class="flex gap-1 h-8 items-end">
+<div class="w-1 bg-primary-container h-2"></div>
+<div class="w-1 bg-primary-container h-4"></div>
+<div class="w-1 bg-primary-container h-6"></div>
+<div class="w-1 bg-primary-container h-8"></div>
+<div class="w-1 bg-outline-variant h-8"></div>
+</div>
+<span class="font-data-point text-headline-md">LVL 4</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-6">
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-2">SIMETRÍA X-FRAME</span>
+<div class="flex items-center gap-4">
+<div class="relative w-12 h-12 border border-outline-variant rounded-full flex items-center justify-center">
+<div class="absolute w-8 h-8 border border-primary-container/30 rounded-full animate-ping"></div>
+<span class="material-symbols-outlined text-primary-container text-sm">architecture</span>
+</div>
+<span class="font-data-point text-headline-md">94%</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-6">
+<span class="font-label-caps text-[10px] text-on-surface-variant block mb-2">CALIDAD DE PIEL</span>
+<div class="flex items-baseline gap-2">
+<span class="font-data-point text-headline-md">THIN</span>
+<span class="font-label-caps text-[10px] text-secondary-container">MÁXIMA</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Nav Bar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container border-t border-outline-variant grid grid-cols-5 py-3 z-50">
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[9px] font-label-caps">HOME</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[9px] font-label-caps">TRACK</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">photo_library</span>
+<span class="text-[9px] font-label-caps">PROGRESO</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="text-[9px] font-label-caps">DIETA</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[9px] font-label-caps">PERFIL</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction for scanning effect
+        document.addEventListener('mousemove', (e) => {
+            const hotSpots = document.querySelectorAll('.group-hover\\:scale-110');
+            hotSpots.forEach(spot => {
+                const rect = spot.getBoundingClientRect();
+                const dx = e.clientX - (rect.left + rect.width / 2);
+                const dy = e.clientY - (rect.top + rect.height / 2);
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 100) {
+                    spot.style.transform = `scale(${1.1 - (dist/1000)}) translate(${dx/20}px, ${dy/20}px)`;
+                } else {
+                    spot.style.transform = 'scale(1) translate(0,0)';
+                }
+            });
+        });
+    </script>
+</body></html>

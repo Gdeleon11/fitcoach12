@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>FitCoach 12% - Registro de Nutrición e IA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(32, 31, 31, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid #3b494b;
+        }
+        .scan-line {
+            height: 2px;
+            background: #00f0ff;
+            box-shadow: 0 0 15px #00f0ff;
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #353534; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #849495; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdad5",
+                        "primary-fixed": "#7df4ff",
+                        "background": "#131313",
+                        "surface-variant": "#353534",
+                        "on-tertiary-fixed-variant": "#930005",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#556d00",
+                        "surface": "#131313",
+                        "secondary-fixed-dim": "#abd600",
+                        "on-tertiary": "#690003",
+                        "inverse-primary": "#006970",
+                        "tertiary": "#fff3f1",
+                        "on-primary-fixed-variant": "#004f54",
+                        "surface-container-low": "#1c1b1b",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#161e00",
+                        "on-primary": "#00363a",
+                        "surface-dim": "#131313",
+                        "surface-tint": "#00dbe9",
+                        "primary-fixed-dim": "#00dbe9",
+                        "on-surface-variant": "#b9cacb",
+                        "surface-container-highest": "#353534",
+                        "on-tertiary-container": "#c1000a",
+                        "on-secondary-fixed-variant": "#3c4d00",
+                        "error-container": "#93000a",
+                        "tertiary-container": "#ffcec7",
+                        "outline-variant": "#3b494b",
+                        "tertiary-fixed-dim": "#ffb4aa",
+                        "surface-container": "#201f1f",
+                        "on-background": "#e5e2e1",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-fixed": "#002022",
+                        "secondary-fixed": "#c3f400",
+                        "on-error": "#690005",
+                        "surface-container-high": "#2a2a2a",
+                        "on-tertiary-fixed": "#410001",
+                        "on-primary-container": "#006970",
+                        "primary": "#dbfcff",
+                        "inverse-on-surface": "#313030",
+                        "outline": "#849495",
+                        "secondary-container": "#c3f400",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-container": "#00f0ff",
+                        "on-secondary": "#283500",
+                        "surface-bright": "#393939",
+                        "secondary": "#ffffff",
+                        "inverse-surface": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "data-point": ["JetBrains Mono"],
+                        "body-regular": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "data-point": ["20px", {"lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-regular": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "display-lg-mobile": ["36px", {"lineHeight": "42px", "letterSpacing": "-0.02em", "fontWeight": "800"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-regular min-h-screen overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-background dark:bg-background border-b border-outline-variant">
+<div class="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="font-display-lg text-display-lg text-primary-container tracking-tighter">FitCoach 12%</div>
+<div class="flex gap-6 items-center">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer active:opacity-80 hover:text-primary transition-colors">monitor_weight</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer active:opacity-80 hover:text-primary transition-colors">local_fire_department</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer active:opacity-80 hover:text-primary transition-colors">account_circle</span>
+</div>
+</div>
+</header>
+<div class="flex max-w-container-max mx-auto">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 sticky top-[72px] hidden md:flex flex-col py-8 gap-4 bg-surface-container dark:bg-surface-container-low border-r border-outline-variant">
+<div class="px-6 mb-6">
+<h2 class="font-headline-md text-headline-md text-primary">Elite Performance</h2>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Phase: Hypertrophy</p>
+</div>
+<nav class="flex flex-col gap-1">
+<div class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Tracking</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-3 bg-primary-container text-on-primary-container font-bold border-l-4 border-primary transition-all duration-200 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<span class="font-label-caps text-label-caps">Nutrition</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="font-label-caps text-label-caps">Training</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined">photo_library</span>
+<span class="font-label-caps text-label-caps">Progress</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined">smart_toy</span>
+<span class="font-label-caps text-label-caps">AI Coach</span>
+</div>
+<div class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</div>
+</nav>
+<div class="mt-auto px-6">
+<button class="w-full bg-primary-container text-on-primary-container font-bold py-3 rounded active:scale-95 transition-transform uppercase tracking-wider text-xs">Start Session</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-margin-desktop bg-background min-h-screen">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+<div>
+<h1 class="font-display-lg text-display-lg mb-2">Registro de Nutrición e IA</h1>
+<div class="flex items-center gap-4 text-on-surface-variant">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container">calendar_today</span>
+                            Hoy, 14 de Octubre
+                        </span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container">schedule</span>
+                            Ventana: 07:00 - 17:00
+                        </span>
+</div>
+</div>
+<!-- Macro Overview -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full md:w-auto">
+<div class="bg-surface-container p-4 border border-outline-variant rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">CALORÍAS</p>
+<p class="font-data-point text-data-point">1,840 <span class="text-sm font-normal text-outline">/ 2,300</span></p>
+<div class="w-full bg-surface-variant h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[80%] shadow-[0_0_8px_#00f0ff]"></div>
+</div>
+</div>
+<div class="bg-surface-container p-4 border border-outline-variant rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">PROTEÍNA</p>
+<p class="font-data-point text-data-point">142g <span class="text-sm font-normal text-outline">/ 170g</span></p>
+<div class="w-full bg-surface-variant h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-secondary-container h-full w-[83%] shadow-[0_0_8px_#c3f400]"></div>
+</div>
+</div>
+<div class="bg-surface-container p-4 border border-outline-variant rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">CARBOS</p>
+<p class="font-data-point text-data-point">160g <span class="text-sm font-normal text-outline">/ 200g</span></p>
+<div class="w-full bg-surface-variant h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-on-surface-variant h-full w-[80%]"></div>
+</div>
+</div>
+<div class="bg-surface-container p-4 border border-outline-variant rounded-lg">
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-1">GRASAS</p>
+<p class="font-data-point text-data-point">52g <span class="text-sm font-normal text-outline">/ 65g</span></p>
+<div class="w-full bg-surface-variant h-1 mt-2 rounded-full overflow-hidden">
+<div class="bg-on-tertiary-fixed-variant h-full w-[80%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Layout Content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Section: Daily Log (Span 7) -->
+<section class="lg:col-span-7 flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md border-l-4 border-primary-container pl-4">Registro Diario</h3>
+<span class="font-label-caps text-label-caps text-secondary-fixed">80% COMPLETADO</span>
+</div>
+<!-- Desayuno Card -->
+<div class="bg-surface-container border border-outline-variant p-6 group transition-colors hover:border-primary-container/30 relative overflow-hidden">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-8xl">wb_sunny</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="font-label-caps text-label-caps text-primary-container">08:15 AM</span>
+<h4 class="font-headline-md text-headline-md">Desayuno</h4>
+</div>
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors">edit_square</button>
+</div>
+<ul class="space-y-4">
+<li class="flex justify-between items-center pb-2 border-b border-outline-variant/30">
+<div>
+<p class="font-body-regular text-on-surface">Huevos Revueltos (3)</p>
+<p class="text-xs text-outline font-label-caps">18g P | 1g C | 15g G</p>
+</div>
+<span class="font-data-point text-data-point text-sm">210 kcal</span>
+</li>
+<li class="flex justify-between items-center pb-2 border-b border-outline-variant/30">
+<div>
+<p class="font-body-regular text-on-surface">Pan Integral (2 rebanadas)</p>
+<p class="text-xs text-outline font-label-caps">6g P | 24g C | 2g G</p>
+</div>
+<span class="font-data-point text-data-point text-sm">140 kcal</span>
+</li>
+</ul>
+<div class="mt-4 pt-4 flex justify-between items-center text-on-surface-variant">
+<span class="font-label-caps text-label-caps">TOTAL MEAL</span>
+<span class="font-data-point text-data-point text-primary-container">350 kcal</span>
+</div>
+</div>
+<!-- Almuerzo Card -->
+<div class="bg-surface-container border border-outline-variant p-6 group transition-colors hover:border-primary-container/30 relative overflow-hidden">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-8xl">lunch_dining</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="font-label-caps text-label-caps text-primary-container">13:30 PM</span>
+<h4 class="font-headline-md text-headline-md">Almuerzo</h4>
+</div>
+<button class="material-symbols-outlined text-outline hover:text-primary transition-colors">edit_square</button>
+</div>
+<ul class="space-y-4">
+<li class="flex justify-between items-center pb-2 border-b border-outline-variant/30">
+<div>
+<p class="font-body-regular text-on-surface">Pechuga de Pollo (200g)</p>
+<p class="text-xs text-outline font-label-caps">62g P | 0g C | 7g G</p>
+</div>
+<span class="font-data-point text-data-point text-sm">330 kcal</span>
+</li>
+<li class="flex justify-between items-center pb-2 border-b border-outline-variant/30">
+<div>
+<p class="font-body-regular text-on-surface">Arroz Basmati (150g)</p>
+<p class="text-xs text-outline font-label-caps">4g P | 42g C | 1g G</p>
+</div>
+<span class="font-data-point text-data-point text-sm">180 kcal</span>
+</li>
+<li class="flex justify-between items-center pb-2 border-b border-outline-variant/30">
+<div>
+<p class="font-body-regular text-on-surface">Brócoli al Vapor</p>
+<p class="text-xs text-outline font-label-caps">3g P | 6g C | 0g G</p>
+</div>
+<span class="font-data-point text-data-point text-sm">35 kcal</span>
+</li>
+</ul>
+<div class="mt-4 pt-4 flex justify-between items-center text-on-surface-variant">
+<span class="font-label-caps text-label-caps">TOTAL MEAL</span>
+<span class="font-data-point text-data-point text-primary-container">545 kcal</span>
+</div>
+</div>
+<!-- Cena (Empty State) -->
+<div class="bg-surface-container-low border border-dashed border-outline-variant p-10 flex flex-col items-center justify-center text-center gap-4 group hover:bg-surface-container transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-full border border-outline flex items-center justify-center text-outline group-hover:border-primary group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface-variant">Cena</h4>
+<p class="text-sm text-outline">Pendiente (Ventana cierra a las 17:00)</p>
+</div>
+</div>
+</section>
+<!-- Right Section: AI Quick Log (Span 5) -->
+<section class="lg:col-span-5 flex flex-col gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h3 class="font-headline-md text-headline-md">AI Quick Log</h3>
+</div>
+<div class="bg-surface-container border border-primary-container/20 p-8 rounded-xl shadow-[0_0_40px_rgba(0,240,255,0.05)] flex flex-col gap-8 relative">
+<!-- AI Glow Effect -->
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-primary-container/10 blur-[60px] rounded-full pointer-events-none"></div>
+<!-- Text input -->
+<div class="space-y-4">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Entrada de Texto Natural</label>
+<div class="relative">
+<textarea class="w-full bg-background border border-outline-variant focus:border-primary-container focus:ring-1 focus:ring-primary-container p-4 rounded-lg font-body-regular text-on-surface min-h-[120px] transition-all resize-none" placeholder="Ej: '200g pollo, 100g arroz y una palta'"></textarea>
+<div class="absolute bottom-4 right-4 flex gap-2">
+<button class="bg-primary-container text-on-primary-container p-2 rounded-lg hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+<p class="text-xs text-outline italic">La IA identificará ingredientes, pesos y calculará macros automáticamente.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+<span class="font-label-caps text-label-caps text-outline">Ó</span>
+<div class="h-[1px] flex-1 bg-outline-variant"></div>
+</div>
+<!-- Image Upload / Scanner -->
+<div class="space-y-4">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase">Escaneo de Imagen</label>
+<div class="relative w-full aspect-video border-2 border-dashed border-outline-variant rounded-xl flex flex-col items-center justify-center gap-4 bg-background group hover:border-primary-container transition-all cursor-pointer overflow-hidden" id="drop-zone">
+<!-- Animated Background for Scan (hidden until upload) -->
+<div class="absolute inset-0 opacity-20 pointer-events-none hidden" id="scan-animation">
+<div class="scan-line absolute w-full top-0"></div>
+<div class="w-full h-full bg-gradient-to-b from-primary-container/20 to-transparent"></div>
+</div>
+<div class="flex flex-col items-center gap-2 group-hover:scale-105 transition-transform" id="upload-prompt">
+<span class="material-symbols-outlined text-4xl text-outline group-hover:text-primary-container">add_a_photo</span>
+<p class="font-body-regular text-on-surface-variant">Sube una foto de tu plato</p>
+<p class="text-xs text-outline">Análisis de visión por computadora v4.2</p>
+</div>
+</div>
+</div>
+<!-- Live Analysis Feed (Simulation) -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 rounded-lg font-label-caps text-[10px] space-y-2 opacity-60">
+<div class="flex justify-between items-center">
+<span class="text-secondary-fixed">SYSTEM_STATUS: READY</span>
+<span class="text-outline">LOG_ID: 99x41</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 bg-primary-container rounded-full animate-pulse"></span>
+<span class="text-on-surface">Esperando entrada del usuario...</span>
+</div>
+</div>
+</div>
+<!-- Macro Predictions (Skeleton/Placeholder) -->
+<div class="bg-surface-container border border-outline-variant p-6 rounded-xl">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">analytics</span>
+                            Resultados del Análisis AI
+                        </h4>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-sm">
+<span class="text-outline">Confianza</span>
+<span class="text-secondary-fixed font-data-point">98.2%</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-outline">Ingredientes detectados</span>
+<span class="text-on-surface">---</span>
+</div>
+<div class="w-full bg-surface-variant h-[1px]"></div>
+<div class="grid grid-cols-3 gap-2 pt-2">
+<div class="text-center p-2 rounded bg-background">
+<p class="text-[10px] text-outline">P</p>
+<p class="font-data-point text-primary-container">0g</p>
+</div>
+<div class="text-center p-2 rounded bg-background">
+<p class="text-[10px] text-outline">C</p>
+<p class="font-data-point text-on-surface">0g</p>
+</div>
+<div class="text-center p-2 rounded bg-background">
+<p class="text-[10px] text-outline">G</p>
+<p class="font-data-point text-on-surface">0g</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-6 py-2 border border-primary-container text-primary-container font-label-caps text-label-caps rounded hover:bg-primary-container hover:text-on-primary-container transition-all uppercase opacity-50 cursor-not-allowed">
+                            Confirmar Registro
+                        </button>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- Floating Action Button (Optional logic check: rendered on Home/Nutrition) -->
+<div class="fixed bottom-8 right-8 md:bottom-12 md:right-12 z-50">
+<button class="w-14 h-14 bg-primary-container text-on-primary-container rounded-full shadow-[0_8px_24px_rgba(0,240,255,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-90 transition-transform">add</span>
+</button>
+</div>
+<script>
+        // Micro-interactions for AI Quick Log
+        const dropZone = document.getElementById('drop-zone');
+        const scanAnimation = document.getElementById('scan-animation');
+        const uploadPrompt = document.getElementById('upload-prompt');
+
+        dropZone.addEventListener('click', () => {
+            // Simulated upload sequence
+            uploadPrompt.classList.add('opacity-20');
+            scanAnimation.classList.remove('hidden');
+            
+            setTimeout(() => {
+                scanAnimation.classList.add('hidden');
+                uploadPrompt.classList.remove('opacity-20');
+                alert('Funcionalidad de visión AI activada. Procesando imagen de prueba...');
+            }, 3000);
+        });
+
+        // Simple input focus effects
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('focus', () => {
+            textarea.parentElement.parentElement.classList.add('border-primary-container');
+        });
+        textarea.addEventListener('blur', () => {
+            textarea.parentElement.parentElement.classList.remove('border-primary-container');
+        });
+    </script>
+</body></html>
