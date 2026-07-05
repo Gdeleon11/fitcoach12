@@ -27,10 +27,8 @@ App de coaching de alto rendimiento construida con **Next.js 14 (App Router) + T
 ## 1. Crear la base de datos en Neon
 
 1. Entra a https://neon.tech y crea un proyecto (región cercana, PostgreSQL).
-2. En **Dashboard → Connection Details** copia dos cadenas:
-   - **Pooled** (host con `-pooler`) → será `DATABASE_URL`.
-   - **Direct** (sin `-pooler`) → será `DIRECT_URL`.
-   Ambas deben terminar en `?sslmode=require`.
+2. En **Dashboard → Connection Details** copia la cadena **Pooled** (host con `-pooler`) y úsala como `DATABASE_URL`.
+   Debe terminar en `?sslmode=require`.
 
 ## 2. Configurar variables de entorno
 
@@ -42,7 +40,6 @@ cp .env.example .env
 
 ```
 DATABASE_URL="postgresql://...-pooler...neon.tech/neondb?sslmode=require"
-DIRECT_URL="postgresql://...neon.tech/neondb?sslmode=require"
 NEXTAUTH_SECRET="..."   # genera con: openssl rand -base64 32
 NEXTAUTH_URL="http://localhost:3000"
 GOOGLE_CLIENT_ID=""      # opcional
@@ -78,8 +75,8 @@ El botón de Google aparece automáticamente solo si esas dos variables están c
 2. En https://vercel.com → **Add New → Project** → importa el repo.
 3. En **Settings → Environment Variables** agrega las mismas variables del `.env`
    (usa tu URL real de Vercel en `NEXTAUTH_URL`, p. ej. `https://fitcoach12.vercel.app`).
-4. Deploy. El `buildCommand` de `vercel.json` ejecuta `prisma generate && prisma db push && next build`,
-   así que las tablas se crean en Neon en el primer despliegue.
+4. Deploy. El `buildCommand` de `vercel.json` ejecuta `prisma generate && next build`,
+   así que Vercel solo necesita `DATABASE_URL` para compilar.
 
 ### Notas
 - El plan (TDEE, calorías objetivo, macros) se recalcula en el servidor cuando el perfil tiene peso, altura, edad, sexo y actividad.
