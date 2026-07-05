@@ -33,6 +33,8 @@ model User {
   recommendations  AIRecommendation[]
   healthDataBuffer HealthDataBuffer[]
   chatMessages     ChatMessage[]
+  supplements      Supplement[]
+  bloodMarkers     BloodMarker[]
 }
 
 model Account {
@@ -233,4 +235,37 @@ model ChatMessage {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+// User-managed supplement plan. slot: MORNING | PRE_WORKOUT | POST_WORKOUT | WITH_MEALS | EVENING
+model Supplement {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  dosage    String?
+  slot      String   @default("MORNING")
+  time      String? // "HH:MM"
+  notes     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// Manually-entered blood biomarkers, interpreted in code against reference ranges.
+model BloodMarker {
+  id        String   @id @default(cuid())
+  userId    String
+  panelDate DateTime @default(now())
+  markerKey String // normalized key, e.g. "glucose"
+  name      String // display name
+  value     Float
+  unit      String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, panelDate])
 }
