@@ -1,4 +1,4 @@
-// Ported verbatim from Stitch mockup: fitcoach_12_dashboard_con_nutrici_n_adaptativa
+// Ported from Stitch mockup (nav chrome stripped): fitcoach_12_dashboard_con_nutrici_n_adaptativa
 export const html = `<style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -33,55 +33,11 @@ export const html = `<style>
     </style>
 
 <!-- Top Navigation Anchor -->
-<header class="w-full sticky top-0 z-50 bg-background border-b border-outline-variant">
-<div class="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
-<h1 class="font-display-lg text-display-lg text-primary-container tracking-tighter">FitCoach 12%</h1>
-<div class="hidden md:flex gap-8 items-center">
-<span class="text-primary border-b-2 border-primary font-label-caps text-label-caps py-1 cursor-pointer">Dashboard</span>
-<span class="text-on-surface-variant hover:text-primary transition-colors font-label-caps text-label-caps py-1 cursor-pointer">Tracking</span>
-<span class="text-on-surface-variant hover:text-primary transition-colors font-label-caps text-label-caps py-1 cursor-pointer">Training</span>
-</div>
-<div class="flex gap-4 items-center">
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">monitor_weight</span>
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">local_fire_department</span>
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">account_circle</span>
-</div>
-</div>
-</header>
+
 <!-- Side Navigation Anchor (Hidden on Mobile) -->
-<aside class="hidden lg:flex flex-col h-screen w-64 fixed left-0 top-0 pt-24 bg-surface-container-low border-r border-outline-variant z-40">
-<div class="px-6 mb-8">
-<h2 class="font-headline-md text-headline-md text-primary">Elite Performance</h2>
-<p class="font-label-caps text-label-caps text-on-surface-variant">Phase: Hypertrophy</p>
-</div>
-<nav class="flex flex-col gap-1">
-<div class="flex items-center gap-3 px-6 py-4 bg-primary-container text-on-primary-container font-bold border-l-4 border-primary cursor-pointer">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-caps text-label-caps">Dashboard</span>
-</div>
-<div class="flex items-center gap-3 px-6 py-4 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
-<span class="material-symbols-outlined">analytics</span>
-<span class="font-label-caps text-label-caps">Tracking</span>
-</div>
-<div class="flex items-center gap-3 px-6 py-4 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
-<span class="material-symbols-outlined">restaurant</span>
-<span class="font-label-caps text-label-caps">Nutrition</span>
-</div>
-<div class="flex items-center gap-3 px-6 py-4 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
-<span class="material-symbols-outlined">fitness_center</span>
-<span class="font-label-caps text-label-caps">Training</span>
-</div>
-<div class="flex items-center gap-3 px-6 py-4 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 cursor-pointer active:scale-95">
-<span class="material-symbols-outlined">smart_toy</span>
-<span class="font-label-caps text-label-caps">AI Coach</span>
-</div>
-</nav>
-<div class="mt-auto p-6">
-<button class="w-full py-3 bg-primary-container text-on-primary-container font-label-caps text-label-caps font-bold active:scale-95 transition-transform shadow-[0_0_15px_rgba(0,240,255,0.4)]">READY FOR HIGH INTENSITY</button>
-</div>
-</aside>
+
 <!-- Main Content Canvas -->
-<main class="lg:pl-64 min-h-screen">
+<div class=" min-h-screen">
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8">
 <div class="mb-8">
 <p class="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">COMMAND CENTER // SYSTEM_ONLINE</p>
@@ -222,8 +178,5 @@ export const html = `<style>
 </div>
 </div>
 </div>
-</main>
-<!-- FAB for quick action -->
-<button class="fixed bottom-8 right-8 w-16 h-16 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all z-50">
-<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">add</span>
-</button>`;
+</div>
+<!-- FAB for quick action -->`;

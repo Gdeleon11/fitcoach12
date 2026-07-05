@@ -1,4 +1,4 @@
-// Ported verbatim from Stitch mockup: fitcoach_12_log_de_entrenamiento_con_ajuste_de_volumen_ia
+// Ported from Stitch mockup (nav chrome stripped): fitcoach_12_log_de_entrenamiento_con_ajuste_de_volumen_ia
 export const html = `<style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -30,26 +30,8 @@ export const html = `<style>
     </style>
 
 <!-- Top Navigation Anchor -->
-<header class="w-full sticky top-0 z-50 bg-background border-b border-outline-variant">
-<div class="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
-<div class="flex items-center gap-4">
-<span class="font-display-lg text-display-lg text-primary-container tracking-tighter">FitCoach 12%</span>
-</div>
-<div class="hidden md:flex items-center gap-8">
-<nav class="flex gap-6">
-<a class="text-primary border-b-2 border-primary font-label-caps text-label-caps py-1" href="#">Dashboard</a>
-<a class="text-on-surface-variant hover:text-primary transition-colors font-label-caps text-label-caps py-1" href="#">Tracking</a>
-<a class="text-on-surface-variant hover:text-primary transition-colors font-label-caps text-label-caps py-1" href="#">AI Coach</a>
-</nav>
-<div class="flex items-center gap-4 text-primary">
-<span class="material-symbols-outlined cursor-pointer active:opacity-80">monitor_weight</span>
-<span class="material-symbols-outlined cursor-pointer active:opacity-80">local_fire_department</span>
-<span class="material-symbols-outlined cursor-pointer active:opacity-80">account_circle</span>
-</div>
-</div>
-</div>
-</header>
-<main class="max-w-container-max mx-auto px-gutter md:px-margin-desktop py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+<div class="max-w-container-max mx-auto px-gutter md:px-margin-desktop py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
 <!-- Main Workout Content -->
 <section class="lg:col-span-8 space-y-8"><div class="bg-primary-container/10 border border-primary-container p-4 rounded-lg flex items-center justify-between mb-8">
 <div class="flex items-center gap-3">
@@ -181,89 +163,8 @@ export const html = `<style>
 </div>
 </section>
 <!-- Sidebar Performance Tracker -->
-<aside class="lg:col-span-4 space-y-6">
-<!-- Volume Tracker -->
-<div class="bg-surface-container p-6 border border-outline-variant rounded-lg">
-<h3 class="font-label-caps text-label-caps text-primary mb-4 flex items-center justify-between">
-                    VOLUME TRACKER
-                    <span class="material-symbols-outlined text-[18px]">analytics</span>
-</h3>
-<div class="relative pt-1">
-<div class="flex mb-2 items-center justify-between">
-<div>
-<span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-on-primary-container bg-primary-container">
-                                En Progreso
-                            </span>
+
 </div>
-<div class="text-right">
-<span class="text-xs font-semibold inline-block text-primary">
-                                48% (5,760kg)
-                            </span>
-</div>
-</div>
-<div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-surface-container-highest">
-<div class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-container" style="width:48%"></div>
-</div>
-<div class="flex justify-between text-on-surface-variant font-label-caps text-[10px]">
-<span>0 KG</span>
-<span>TARGET: 13,200 KG</span>
-</div>
-</div>
-</div>
-<!-- Rest Timer Card -->
-<div class="bg-surface-container p-6 border border-outline-variant rounded-lg text-center">
-<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-4">REST TIMER</h3>
-<div class="font-data-point text-4xl text-primary mb-4 tabular-nums">01:30</div>
-<div class="grid grid-cols-3 gap-2">
-<button class="py-2 bg-surface-container-high border border-outline-variant text-xs hover:border-primary transition-colors">+30s</button>
-<button class="py-2 bg-surface-container-high border border-outline-variant text-xs hover:border-primary transition-colors">RESET</button>
-<button class="py-2 bg-primary-container text-on-primary-container text-xs font-bold">START</button>
-</div>
-</div>
-<!-- Recovery & Session Stats -->
-<div class="bg-surface-container p-6 border border-outline-variant rounded-lg space-y-6">
-<h3 class="font-label-caps text-label-caps text-on-surface-variant border-b border-outline-variant pb-2">POST-SESSION ANALYSIS</h3>
-<div class="space-y-4">
-<div>
-<div class="flex justify-between items-center mb-2">
-<label class="font-label-caps text-[10px] text-on-surface-variant uppercase">RPE ESTIMADO (1-10)</label>
-<span class="font-data-point text-primary text-sm">8.5</span>
-</div>
-<input class="w-full accent-primary-container bg-surface-container-highest rounded-lg cursor-pointer" max="10" min="1" step="0.5" type="range"/>
-</div>
-<div>
-<div class="flex justify-between items-center mb-2">
-<label class="font-label-caps text-[10px] text-on-surface-variant uppercase">FATIGA CENTRAL</label>
-<span class="font-data-point text-primary text-sm">7</span>
-</div>
-<input class="w-full accent-primary-container bg-surface-container-highest rounded-lg cursor-pointer" max="10" min="1" type="range"/>
-</div>
-<div>
-<div class="flex justify-between items-center mb-2">
-<label class="font-label-caps text-[10px] text-on-surface-variant uppercase">NIVEL DE ENERGÍA</label>
-<span class="font-data-point text-primary text-sm">4</span>
-</div>
-<input class="w-full accent-primary-container bg-surface-container-highest rounded-lg cursor-pointer" max="10" min="1" type="range"/>
-</div>
-</div>
-<div class="pt-4">
-<button class="w-full bg-secondary-container text-on-secondary-container font-label-caps text-label-caps py-4 font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95">
-<span class="material-symbols-outlined">sync</span>
-                        FINALIZAR Y SINCRONIZAR SESIÓN
-                    </button>
-</div>
-</div>
-<!-- Visual Motivation -->
-<div class="relative group h-48 rounded-lg overflow-hidden border border-outline-variant">
-<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" data-alt="A gritty, high-contrast monochrome photograph of a professional athlete's chalk-covered hands gripping a heavy barbell in a dimly lit, industrial-style gym. Cyan laser lines subtly scan across the barbell, emphasizing a high-tech data-driven performance aesthetic. The lighting is dramatic, with sharp shadows and a focused atmosphere of extreme effort and concentration." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCEm9OlgB_kej6l5sXaO7GI4v9iHCAKuJ4_8fBDei6XyU587gQS6k0O9MDH1CDLtnxAg2-bxbjpk8BuR5qiQIXHL7qwdOeifKnMWLUVJrtJxSHsCUwUdlqMuV_etEoqy79CuHggnAwSPBo_4y58fTH2i3M11rWmh1bV9tI4rrUR1QfR5G-v-lTKrmAdWxVCHvmUoiCiJaIlX-yYhU3kp1eqRTJBqAvWBs40RWnpOOlg33MLegPaGtFf')"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-60"></div>
-<div class="absolute bottom-4 left-4">
-<span class="font-label-caps text-[10px] text-primary block">PRÓXIMO HITO</span>
-<span class="font-headline-md text-sm text-white">Récord histórico a 150kg</span>
-</div>
-</div>
-</aside>
-</main>
 <!-- Bottom Navigation for Mobile -->
 <nav class="md:hidden fixed bottom-0 left-0 w-full glass-panel border-t border-outline-variant flex justify-around py-3 px-2 z-50">
 <div class="flex flex-col items-center gap-1 text-on-surface-variant">

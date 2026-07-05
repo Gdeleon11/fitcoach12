@@ -1,4 +1,4 @@
-// Ported verbatim from Stitch mockup: fitcoach_12_integraci_n_de_anal_ticas_de_sangre
+// Ported from Stitch mockup (nav chrome stripped): fitcoach_12_integraci_n_de_anal_ticas_de_sangre
 export const html = `<style>
         body {
             background-color: #0A0A0A;
@@ -34,62 +34,11 @@ export const html = `<style>
     </style>
 
 <!-- SideNavBar (Desktop Only) -->
-<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 py-8 px-4 bg-surface-container-lowest border-r border-outline-variant z-[60]">
-<div class="mb-10 px-2">
-<h1 class="font-display-lg text-headline-md tracking-tighter text-secondary-fixed italic uppercase">FitCoach 12%</h1>
-<p class="font-label-caps text-[10px] tracking-widest text-primary-fixed-dim">PERFORMANCE MODE</p>
-</div>
-<nav class="flex-1 space-y-2">
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-label-caps hover:bg-surface-container-high hover:text-primary-fixed transition-colors" href="#">
-<span class="material-symbols-outlined">dashboard</span> Dashboard
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-primary-fixed-dim font-bold border-l-4 border-primary-fixed-dim bg-surface-container-low transition-colors scale-[0.98]" href="#">
-<span class="material-symbols-outlined">monitoring</span> Tracking
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-label-caps hover:bg-surface-container-high hover:text-primary-fixed transition-colors" href="#">
-<span class="material-symbols-outlined">nutrition</span> Nutrition
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-label-caps hover:bg-surface-container-high hover:text-primary-fixed transition-colors" href="#">
-<span class="material-symbols-outlined">fitness_center</span> Training
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-label-caps hover:bg-surface-container-high hover:text-primary-fixed transition-colors" href="#">
-<span class="material-symbols-outlined">analytics</span> Progress
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-label-caps hover:bg-surface-container-high hover:text-primary-fixed transition-colors" href="#">
-<span class="material-symbols-outlined">psychology</span> AI Coach
-            </a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-label-caps hover:bg-surface-container-high hover:text-primary-fixed transition-colors" href="#">
-<span class="material-symbols-outlined">settings</span> Settings
-            </a>
-</nav>
-<div class="mt-auto px-2">
-<button class="w-full bg-primary-fixed-dim text-on-primary-fixed py-4 font-label-caps text-xs tracking-widest hover:brightness-110 transition-all active:scale-95">
-                LOG BIO-DATA
-            </button>
-</div>
-</aside>
+
 <!-- TopAppBar -->
-<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-20 sticky top-0 z-50 bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant md:pl-72">
-<div class="flex flex-col">
-<h2 class="font-headline-md text-headline-md text-on-surface">Laboratorio y Biomarcadores</h2>
-<p class="font-label-caps text-[10px] text-on-surface-variant">Última actualización: 12 OCT 2023</p>
-</div>
-<div class="flex items-center gap-4">
-<button class="hidden sm:flex items-center gap-2 bg-surface-container-high text-on-surface px-4 py-2 border border-outline-variant font-label-caps text-xs hover:bg-surface-container-highest transition-all">
-<span class="material-symbols-outlined text-sm">upload_file</span>
-                Subir Analítica
-            </button>
-<div class="flex gap-4 items-center">
-<span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed transition-opacity cursor-pointer">notifications</span>
-<span class="material-symbols-outlined text-on-surface-variant hover:text-primary-fixed transition-opacity cursor-pointer">barcode_reader</span>
-<div class="w-10 h-10 rounded-full border border-primary-fixed-dim p-0.5">
-<img class="w-full h-full rounded-full object-cover" data-alt="Close up high-fidelity portrait of an elite professional athlete in a dark tech studio, dramatic side lighting highlighting facial features, dark clinical tech aesthetic with a cyan subtle glow in the background, sharp focus, cinematic hyperrealistic photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB11iJJ54_WwRHvPFcrFG2FD9w260vnvBmch_6eeMUzRLQ-3yPKSVuoeo7ZsJn4VZHw_V8q_wlLL4kcKapBv5AMXp1UVd58bbaigKFy8rYF5VvzSx6m1GnoqJKKSMAS7yzkjcysjVIyXcO5nbXIEdt9ryP85C2tc4PYVxKtxXwQHxslL3nL2320nxzwh_sZixDuzp1KSi8p5Y6GsXocSsHrWAPHDrCU08LVLUK82Pvak8qWWl7AMQgZ"/>
-</div>
-</div>
-</div>
-</header>
+
 <!-- Main Content -->
-<main class="md:ml-64 p-margin-mobile md:p-margin-desktop max-w-container-max mx-auto">
+<div class="md:ml-64 p-margin-mobile md:p-margin-desktop max-w-container-max mx-auto">
 <!-- Dashboard Summary Overlay -->
 <div class="grid grid-cols-1 lg:grid-cols-4 gap-gutter mb-12">
 <section class="lg:col-span-3 space-y-12">
@@ -324,62 +273,9 @@ export const html = `<style>
 </div>
 </section>
 <!-- Sidebar: AI Correlation Panel -->
-<aside class="lg:col-span-1 space-y-gutter">
-<div class="glass-panel p-6 sticky top-24">
-<div class="flex items-center gap-2 mb-6">
-<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">psychology</span>
-<h4 class="font-label-caps text-xs text-secondary-fixed tracking-wider">ANÁLISIS DE CORRELACIÓN IA</h4>
-</div>
-<div class="space-y-6">
-<!-- Insight 1 -->
-<div class="p-4 bg-surface-container-low border-l-2 border-primary-fixed-dim">
-<h5 class="font-label-caps text-[10px] text-primary-fixed-dim mb-2 uppercase">Recuperación del SNC</h5>
-<p class="font-body-regular text-xs text-on-surface-variant leading-relaxed">
-                                El aumento en los niveles de PCR (2.1) junto con el Estradiol elevado sugieren un estado de inflamación sistémica moderada.
-                            </p>
-<div class="mt-3 flex items-center gap-2 text-primary-fixed-dim">
-<span class="material-symbols-outlined text-sm">priority_high</span>
-<span class="font-label-caps text-[9px]">Sugerencia: Semana de Deload (Carga -40%)</span>
-</div>
-</div>
-<!-- Insight 2 -->
-<div class="p-4 bg-surface-container-low border-l-2 border-secondary-fixed">
-<h5 class="font-label-caps text-[10px] text-secondary-fixed mb-2 uppercase">Eficiencia Metabólica</h5>
-<p class="font-body-regular text-xs text-on-surface-variant leading-relaxed">
-                                Glucosa e Insulina en rangos óptimos. Tu sensibilidad a la insulina es del percentil 95. 
-                            </p>
-<div class="mt-3 flex items-center gap-2 text-secondary-fixed">
-<span class="material-symbols-outlined text-sm">check_circle</span>
-<span class="font-label-caps text-[9px]">Mantener ingesta de CHO actual (450g/día)</span>
-</div>
-</div>
-<!-- Performance Matrix Chart Placeholder -->
-<div class="pt-6 border-t border-outline-variant">
-<p class="font-label-caps text-[10px] text-on-surface-variant mb-4">CORRELACIÓN ENTRENAMIENTO/SANGRE</p>
-<div class="h-32 w-full relative">
 
-<div class="absolute inset-0 flex items-center justify-center">
-<span class="font-label-caps text-[8px] bg-background/80 px-2 py-1 border border-outline-variant">GENERANDO MATRIX DE DATOS...</span>
 </div>
 </div>
-</div>
-<button class="w-full py-3 border border-primary-fixed-dim/30 text-primary-fixed-dim font-label-caps text-[10px] hover:bg-primary-fixed-dim hover:text-on-primary-fixed transition-all group">
-                            DESCARGAR INFORME TÉCNICO (PDF)
-                            <span class="material-symbols-outlined text-sm align-middle ml-2 group-hover:translate-x-1 transition-transform">download</span>
-</button>
-</div>
-</div>
-<div class="glass-panel p-6 overflow-hidden relative h-40">
-<img class="absolute inset-0 w-full h-full object-cover opacity-30" data-alt="Close-up of a high-tech laboratory interface showing biological data streaming in cyan and green hues against a dark graphite background, blurred motion of digital readouts, technical medical visualization style, cinematic lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQPJm7E6YS0dHWYDgl2XEojHH5xmvUdBwb5vJTjviYKkvfaS2Z2xTcmnzvV_o25q9QbrqjODDxlAxbLV1OZXuMg7AhMyk_njt3fSe5qw3mEt_QruzkGmjSSe_8f13Rra3yryo5kyX0T-fN97aCQE8z8EiyhPT-e1CG3xq9QdIAxefZy3OLqJDHfcEH0UpBFEVqoGmrQK7PrQEInycaBL_Y0habiJJ-v_NVlOYHLzkL7Mh976rRLCBM"/>
-<div class="relative z-10">
-<p class="font-label-caps text-[10px] text-secondary-fixed">SÓLO PARA MIEMBROS ELITE</p>
-<h4 class="font-headline-md text-base mt-1">Sincroniza con Oura &amp; Whoop</h4>
-<button class="mt-4 text-xs font-label-caps text-primary-fixed-dim border-b border-primary-fixed-dim">CONECTAR DISPOSITIVOS</button>
-</div>
-</div>
-</aside>
-</div>
-</main>
 <!-- Navigation Shell Mobile -->
 <nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-dim border-t border-outline-variant z-50 flex justify-around items-center h-16 px-4">
 <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">

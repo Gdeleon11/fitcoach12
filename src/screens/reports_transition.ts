@@ -1,4 +1,4 @@
-// Ported verbatim from Stitch mockup: fitcoach_12_reporte_mensual_l_gica_de_transici_n_ajustada
+// Ported from Stitch mockup (nav chrome stripped): fitcoach_12_reporte_mensual_l_gica_de_transici_n_ajustada
 export const html = `<style>
         body {
             background-color: #131313;
@@ -36,63 +36,11 @@ export const html = `<style>
     </style>
 
 <!-- SideNavBar (Authority: JSON) -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container dark:bg-surface-container-low border-r border-outline-variant flex flex-col py-8 gap-4 z-50">
-<div class="px-6 mb-4">
-<h1 class="font-headline-md text-headline-md text-primary">Elite Performance</h1>
-<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Phase: Hypertrophy</p>
-</div>
-<nav class="flex-1 px-4 space-y-1">
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-caps text-label-caps">Dashboard</span>
-</a>
-<!-- Progress is Active -->
-<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container font-bold border-l-4 border-primary transition-all duration-200 rounded active:scale-95 shadow-[0_0_10px_rgba(0,240,255,0.2)]" href="#">
-<span class="material-symbols-outlined">photo_library</span>
-<span class="font-label-caps text-label-caps">Progress</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
-<span class="material-symbols-outlined">analytics</span>
-<span class="font-label-caps text-label-caps">Tracking</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
-<span class="material-symbols-outlined">restaurant</span>
-<span class="font-label-caps text-label-caps">Nutrition</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
-<span class="material-symbols-outlined">fitness_center</span>
-<span class="font-label-caps text-label-caps">Training</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
-<span class="material-symbols-outlined">smart_toy</span>
-<span class="font-label-caps text-label-caps">AI Coach</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200 rounded active:scale-95" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-label-caps text-label-caps">Settings</span>
-</a>
-</nav>
-<div class="px-4 mt-auto">
-<button class="w-full py-4 bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded-lg hover:brightness-110 active:scale-95 transition-all">
-                Start Session
-            </button>
-</div>
-</aside>
+
 <!-- Main Content Area -->
-<main class="ml-64 flex-1 flex flex-col min-h-screen">
+<div class="ml-64 flex-1 flex flex-col min-h-screen">
 <!-- TopAppBar (Authority: JSON) -->
-<header class="w-full sticky top-0 z-40 bg-background dark:bg-background border-b border-outline-variant">
-<div class="flex justify-between items-center px-12 py-4 max-w-container-max mx-auto">
-<div class="font-display-lg text-display-lg text-primary-container tracking-tighter">FitCoach 12%</div>
-<div class="flex items-center gap-6">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">monitor_weight</span>
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">local_fire_department</span>
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">account_circle</span>
-</div>
-</div>
-</div>
-</header>
+
 <!-- Content Canvas -->
 <div class="p-12 max-w-container-max mx-auto w-full flex flex-col gap-8">
 <!-- Header Section -->
@@ -361,4 +309,4 @@ export const html = `<style>
 <div>PRECISIÓN DEL REPORTE: 99.8% BASADO EN BIO-IMPEDANCIA Y FOTOMETRÍA</div>
 </footer>
 </div>
-</main>`;
+</div>`;

@@ -1,4 +1,4 @@
-// Ported verbatim from Stitch mockup: fitcoach_12_suplementaci_n_ia_estrat_gica
+// Ported from Stitch mockup (nav chrome stripped): fitcoach_12_suplementaci_n_ia_estrat_gica
 export const html = `<style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -39,63 +39,11 @@ export const html = `<style>
     </style>
 
 <!-- SideNavBar (Authority Source: JSON) -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container flex flex-col h-full py-8 gap-4 border-r border-outline-variant z-50">
-<div class="px-6 mb-8">
-<h1 class="font-headline-md text-headline-md text-primary">Elite Performance</h1>
-<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Phase: Hypertrophy</p>
-</div>
-<nav class="flex-1 space-y-1">
-<!-- Nutrition is active as this is Supplementation Dashboard -->
-<div class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-all duration-200 active:scale-95">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-caps text-label-caps">Dashboard</span>
-</div>
-<div class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-all duration-200 active:scale-95">
-<span class="material-symbols-outlined">analytics</span>
-<span class="font-label-caps text-label-caps">Tracking</span>
-</div>
-<div class="flex items-center px-6 py-3 gap-4 bg-primary-container text-on-primary-container font-bold border-l-4 border-primary cursor-pointer active:scale-95">
-<span class="material-symbols-outlined">restaurant</span>
-<span class="font-label-caps text-label-caps">Nutrition</span>
-</div>
-<div class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-all duration-200 active:scale-95">
-<span class="material-symbols-outlined">fitness_center</span>
-<span class="font-label-caps text-label-caps">Training</span>
-</div>
-<div class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-all duration-200 active:scale-95">
-<span class="material-symbols-outlined">photo_library</span>
-<span class="font-label-caps text-label-caps">Progress</span>
-</div>
-<div class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-all duration-200 active:scale-95">
-<span class="material-symbols-outlined">smart_toy</span>
-<span class="font-label-caps text-label-caps">AI Coach</span>
-</div>
-<div class="flex items-center px-6 py-3 gap-4 text-on-surface-variant hover:bg-surface-container-highest cursor-pointer transition-all duration-200 active:scale-95">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-label-caps text-label-caps">Settings</span>
-</div>
-</nav>
-<div class="px-6 mt-auto">
-<button class="w-full py-4 bg-primary-container text-on-primary-container font-bold rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-<span class="material-symbols-outlined">play_arrow</span>
-<span class="font-label-caps text-label-caps">Start Session</span>
-</button>
-</div>
-</aside>
+
 <!-- Main Content Canvas -->
-<main class="ml-64 min-h-screen">
+<div class="ml-64 min-h-screen">
 <!-- TopAppBar (Authority Source: JSON) -->
-<header class="w-full sticky top-0 z-40 bg-background flex justify-between items-center px-margin-desktop py-4 border-b border-outline-variant">
-<div class="font-display-lg text-display-lg text-primary-container tracking-tighter">FitCoach 12%</div>
-<div class="flex items-center gap-6">
-<span class="material-symbols-outlined text-primary cursor-pointer hover:text-primary transition-colors">monitor_weight</span>
-<span class="material-symbols-outlined text-primary cursor-pointer hover:text-primary transition-colors">local_fire_department</span>
-<div class="flex items-center gap-3 cursor-pointer group">
-<span class="material-symbols-outlined text-primary group-hover:text-primary transition-colors">account_circle</span>
-<span class="font-label-caps text-label-caps text-on-surface hidden md:block">ELITE_USER_01</span>
-</div>
-</div>
-</header>
+
 <div class="p-margin-desktop max-w-container-max mx-auto">
 <!-- Header Section -->
 <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
@@ -330,4 +278,4 @@ export const html = `<style>
 
 </div>
 </div>
-</main>`;
+</div>`;

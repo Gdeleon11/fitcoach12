@@ -1,4 +1,4 @@
-// Ported verbatim from Stitch mockup: fitcoach_12_sincronizaci_n_bio_data_wearables
+// Ported from Stitch mockup (nav chrome stripped): fitcoach_12_sincronizaci_n_bio_data_wearables
 export const html = `<style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -23,54 +23,11 @@ export const html = `<style>
     </style>
 
 <!-- Sidebar Navigation (Desktop) -->
-<aside class="hidden md:flex flex-col py-8 gap-unit fixed left-0 top-0 h-full w-64 bg-surface-container-low border-r border-outline-variant z-50">
-<div class="px-6 mb-8">
-<h1 class="font-headline-md text-headline-md text-primary">OPERATOR 01</h1>
-<p class="font-label-caps text-label-caps text-outline">Elite Performance Tier</p>
-</div>
-<nav class="flex flex-col w-full">
-<a class="flex items-center gap-4 px-6 py-3 text-outline hover:bg-surface-container-high transition-all active:scale-95 duration-150 font-label-caps text-label-caps" href="#">
-<span class="material-symbols-outlined">dashboard</span> Dashboard
-            </a>
-<a class="flex items-center gap-4 px-6 py-3 text-primary bg-surface-container-highest border-l-2 border-primary transition-all active:scale-95 duration-150 font-label-caps text-label-caps" href="#">
-<span class="material-symbols-outlined">monitoring</span> Tracking
-            </a>
-<a class="flex items-center gap-4 px-6 py-3 text-outline hover:bg-surface-container-high transition-all active:scale-95 duration-150 font-label-caps text-label-caps" href="#">
-<span class="material-symbols-outlined">restaurant</span> Nutrition
-            </a>
-<a class="flex items-center gap-4 px-6 py-3 text-outline hover:bg-surface-container-high transition-all active:scale-95 duration-150 font-label-caps text-label-caps" href="#">
-<span class="material-symbols-outlined">fitness_center</span> Training
-            </a>
-<a class="flex items-center gap-4 px-6 py-3 text-outline hover:bg-surface-container-high transition-all active:scale-95 duration-150 font-label-caps text-label-caps" href="#">
-<span class="material-symbols-outlined">query_stats</span> Progress
-            </a>
-<a class="flex items-center gap-4 px-6 py-3 text-outline hover:bg-surface-container-high transition-all active:scale-95 duration-150 font-label-caps text-label-caps" href="#">
-<span class="material-symbols-outlined">smart_toy</span> AI Coach
-            </a>
-<a class="flex items-center gap-4 px-6 py-3 text-outline hover:bg-surface-container-high transition-all active:scale-95 duration-150 font-label-caps text-label-caps" href="#">
-<span class="material-symbols-outlined">settings</span> Settings
-            </a>
-</nav>
-<div class="mt-auto px-6">
-<button class="w-full py-3 bg-primary-container text-on-primary-container font-label-caps text-label-caps rounded transition-all active:scale-95">
-                SYNC DATA
-            </button>
-</div>
-</aside>
+
 <!-- Main Content Area -->
-<main class="md:ml-64 min-h-screen">
+<div class="md:ml-64 min-h-screen">
 <!-- Top App Bar -->
-<header class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 sticky top-0 z-40 bg-background border-b border-outline-variant">
-<div class="flex flex-col">
-<span class="font-display-lg text-display-lg-mobile text-primary uppercase tracking-tighter">FitCoach 12%</span>
-</div>
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-fixed transition-colors">notifications</span>
-<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest flex items-center justify-center cursor-pointer">
-<span class="material-symbols-outlined text-outline">account_circle</span>
-</div>
-</div>
-</header>
+
 <!-- Dashboard Content -->
 <div class="p-margin-mobile md:p-margin-desktop space-y-gutter">
 <!-- Header Section -->
@@ -336,7 +293,7 @@ export const html = `<style>
 </section>
 </div>
 </div>
-</main>
+</div>
 <!-- Bottom Nav (Mobile) -->
 <nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-low flex justify-around items-center h-16 z-50 px-4">
 <a class="flex flex-col items-center gap-1 text-primary" href="#">

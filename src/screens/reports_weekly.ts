@@ -1,4 +1,4 @@
-// Ported verbatim from Stitch mockup: fitcoach_12_reporte_semanal_estrat_gico
+// Ported from Stitch mockup (nav chrome stripped): fitcoach_12_reporte_semanal_estrat_gico
 export const html = `<style>
         body {
             background-color: #0A0A0A;
@@ -17,70 +17,10 @@ export const html = `<style>
     </style>
 
 <!-- SideNavBar -->
-<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container dark:bg-surface-container-low border-r border-outline-variant flex flex-col py-8 gap-4 z-50 hidden md:flex">
-<div class="px-6 mb-4">
-<h1 class="font-headline-md text-headline-md text-primary">Elite Performance</h1>
-<p class="text-[10px] font-label-caps uppercase text-on-surface-variant">Phase: Hypertrophy</p>
-</div>
-<nav class="flex-1">
-<ul class="space-y-1">
-<li>
-<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
-<span class="material-symbols-outlined">dashboard</span>
-<span class="font-label-caps text-label-caps uppercase">Dashboard</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-4 px-6 py-3 bg-primary-container text-on-primary-container font-bold border-l-4 border-primary transition-all duration-200" href="#">
-<span class="material-symbols-outlined fill-icon" style="font-variation-settings: 'FILL' 1;">analytics</span>
-<span class="font-label-caps text-label-caps uppercase">Progress</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
-<span class="material-symbols-outlined">restaurant</span>
-<span class="font-label-caps text-label-caps uppercase">Nutrition</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
-<span class="material-symbols-outlined">fitness_center</span>
-<span class="font-label-caps text-label-caps uppercase">Training</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
-<span class="material-symbols-outlined">smart_toy</span>
-<span class="font-label-caps text-label-caps uppercase">AI Coach</span>
-</a>
-</li>
-<li>
-<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant hover:bg-surface-container-highest transition-all duration-200" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-label-caps text-label-caps uppercase">Settings</span>
-</a>
-</li>
-</ul>
-</nav>
-<div class="px-6 mt-auto">
-<button class="w-full py-3 bg-secondary-container text-on-secondary font-label-caps text-label-caps uppercase active:scale-95 transition-all">
-                Start Session
-            </button>
-</div>
-</aside>
-<main class="md:ml-64 min-h-screen relative">
+
+<div class="md:ml-64 min-h-screen relative">
 <!-- TopAppBar -->
-<header class="w-full sticky top-0 z-40 bg-background border-b border-outline-variant flex justify-between items-center px-6 md:px-margin-desktop py-4 max-w-container-max mx-auto">
-<div class="font-display-lg text-[24px] md:text-display-lg text-primary-container tracking-tighter">FitCoach 12%</div>
-<div class="flex items-center gap-6">
-<div class="hidden md:flex gap-4">
-<span class="material-symbols-outlined text-primary cursor-pointer">monitor_weight</span>
-<span class="material-symbols-outlined text-primary cursor-pointer">local_fire_department</span>
-<span class="material-symbols-outlined text-primary cursor-pointer">account_circle</span>
-</div>
-<button class="md:hidden material-symbols-outlined text-primary">menu</button>
-</div>
-</header>
+
 <section class="p-6 md:p-margin-desktop max-w-5xl mx-auto space-y-8">
 <!-- Header Section -->
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -235,7 +175,7 @@ export const html = `<style>
 <p class="text-[10px] font-label-caps text-on-surface-variant uppercase tracking-widest">Generating updated program for week 13... 85%</p>
 </div>
 </section>
-</main>
+</div>
 <!-- Mobile Navigation (BottomNavBar substitute) -->
 <nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container border-t border-outline-variant z-50 flex justify-around items-center py-3">
 <button class="flex flex-col items-center gap-1 text-on-surface-variant">

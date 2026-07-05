@@ -1,4 +1,4 @@
-// Ported verbatim from Stitch mockup: fitcoach_12_elite_performance_suite
+// Ported from Stitch mockup (nav chrome stripped): fitcoach_12_elite_performance_suite
 export const html = `<style>
         body {
             background-color: #131313;
@@ -41,17 +41,8 @@ export const html = `<style>
     </style>
 
 <!-- Top AppBar Component -->
-<header class="w-full sticky top-0 z-50 bg-background border-b border-outline-variant">
-<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
-<h1 class="font-display-lg text-headline-md md:text-display-lg text-primary-container tracking-tighter">FitCoach 12%</h1>
-<div class="flex gap-4 items-center">
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">monitor_weight</span>
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">local_fire_department</span>
-<span class="material-symbols-outlined text-primary cursor-pointer active:opacity-80">account_circle</span>
-</div>
-</div>
-</header>
-<main class="relative min-h-[calc(100vh-80px)] flex flex-col items-center justify-center py-8 px-4">
+
+<div class="relative min-h-[calc(100vh-80px)] flex flex-col items-center justify-center py-8 px-4">
 <!-- Background Animation -->
 <div class="fixed inset-0 pointer-events-none opacity-20">
 
@@ -260,7 +251,7 @@ export const html = `<style>
 </div>
 </form>
 </div>
-</main>
+</div>
 <!-- Footer Identity -->
 <footer class="py-8 border-t border-outline-variant bg-surface-container-lowest">
 <div class="max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4">

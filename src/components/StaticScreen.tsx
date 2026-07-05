@@ -1,20 +1,18 @@
-import Link from "next/link";
-
 /**
- * Renders a design screen ported verbatim from the Stitch mockups.
- * The markup is preserved exactly; a slim overlay bar provides navigation
- * back into the functional app (the mockups' own nav items are static).
+ * Renders an analytics/design screen ported from the Stitch mockups.
+ * The mockup's own header/sidebar were stripped at generation time, so this
+ * content now lives inside the app's real navigation (AppShell).
+ * A banner makes clear the figures shown are sample visualizations.
  */
-export default function StaticScreen({ html }: { html: string }) {
+export default function StaticScreen({ html, title }: { html: string; title?: string }) {
   return (
-    <div className="relative">
-      <div className="fixed top-3 left-3 z-[100] flex gap-2">
-        <Link
-          href="/dashboard"
-          className="px-3 py-1.5 bg-surface-container-high/90 backdrop-blur border border-outline-variant text-primary font-label-caps text-label-caps rounded hover:border-primary transition"
-        >
-          ← DASHBOARD
-        </Link>
+    <div>
+      <div className="mb-6 flex items-start gap-3 border border-outline-variant bg-surface-container-high rounded p-3">
+        <span className="material-symbols-outlined text-primary-fixed-dim">info</span>
+        <p className="text-sm text-on-surface-variant">
+          {title ? <span className="text-primary">{title}. </span> : null}
+          Vista de análisis con datos de muestra. Se poblará con tus registros a medida que uses la app.
+        </p>
       </div>
       <div dangerouslySetInnerHTML={{ __html: html }} />
     </div>
