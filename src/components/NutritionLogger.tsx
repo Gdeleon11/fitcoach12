@@ -37,22 +37,33 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
     if (desc.trim().length < 3) return;
     setEstimating(true);
     setNote(null);
-    const res = await fetch("/api/nutrition/estimate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ description: desc }),
-    });
-    const data = await res.json();
-    if (res.ok && data.estimate) {
-      setKcal(String(data.estimate.totalKcal));
-      setProtein(String(data.estimate.proteinG));
-      setCarbs(String(data.estimate.carbsG));
-      setFat(String(data.estimate.fatG));
-      setAiEstimated(true);
-      setNote(data.estimate.note || null);
-      if (!mealName) setMealName(desc.slice(0, 40));
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30000);
+    try {
+      const res = await fetch("/api/nutrition/estimate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description: desc }),
+        signal: controller.signal,
+      });
+      const data = await res.json();
+      if (res.ok && data.estimate) {
+        setKcal(String(data.estimate.totalKcal));
+        setProtein(String(data.estimate.proteinG));
+        setCarbs(String(data.estimate.carbsG));
+        setFat(String(data.estimate.fatG));
+        setAiEstimated(true);
+        setNote(data.estimate.note || null);
+        if (!mealName) setMealName(desc.slice(0, 40));
+      } else {
+        setNote(data.error || "No se pudo estimar. Ingresa los valores manualmente.");
+      }
+    } catch {
+      setNote("La estimación tardó demasiado o falló. Ingresa los valores manualmente.");
+    } finally {
+      clearTimeout(timer);
+      setEstimating(false);
     }
-    setEstimating(false);
   }
 
   async function save(e: React.FormEvent) {

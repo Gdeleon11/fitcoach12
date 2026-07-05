@@ -25,14 +25,23 @@ export default function CoachChat({ initial }: { initial: Msg[] }) {
     setInput("");
     setMessages((p) => [...p, { role: "user", content: text }]);
     setLoading(true);
-    const res = await fetch("/api/coach", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text }),
-    });
-    const data = await res.json();
-    setMessages((p) => [...p, { role: "assistant", content: res.ok ? data.reply : data.error ?? "Error." }]);
-    setLoading(false);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 35000);
+    try {
+      const res = await fetch("/api/coach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+        signal: controller.signal,
+      });
+      const data = await res.json();
+      setMessages((p) => [...p, { role: "assistant", content: res.ok ? data.reply : data.error ?? "Error." }]);
+    } catch {
+      setMessages((p) => [...p, { role: "assistant", content: "La respuesta tardó demasiado o falló. Revisa la clave de IA e inténtalo de nuevo." }]);
+    } finally {
+      clearTimeout(timer);
+      setLoading(false);
+    }
   }
 
   return (
