@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 const NAV = [
-  { href: "/dashboard", icon: "dashboard", label: "Dashboard" },
-  { href: "/tracking", icon: "analytics", label: "Tracking" },
-  { href: "/nutrition", icon: "restaurant", label: "Nutrition" },
-  { href: "/training/log", icon: "fitness_center", label: "Training" },
-  { href: "/coach", icon: "smart_toy", label: "AI Coach" },
+  { href: "/dashboard", icon: "dashboard", label: "Panel" },
+  { href: "/tracking", icon: "analytics", label: "Seguimiento" },
+  { href: "/nutrition", icon: "restaurant", label: "Nutrición" },
+  { href: "/training/log", icon: "fitness_center", label: "Entrenamiento" },
+  { href: "/coach", icon: "smart_toy", label: "Coach IA" },
 ];
 
 const SECONDARY = [
@@ -54,8 +54,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className="hidden lg:flex flex-col h-[calc(100vh-57px)] w-64 fixed left-0 top-[57px] bg-surface-container-low border-r border-outline-variant z-40 overflow-y-auto scroll-hide">
         <div className="px-6 pt-6 mb-4">
-          <h2 className="font-headline-md text-lg text-primary">Elite Performance</h2>
-          <p className="font-label-caps text-label-caps text-on-surface-variant">Phase: Hypertrophy</p>
+          <h2 className="font-headline-md text-lg text-primary">Rendimiento Élite</h2>
+          <p className="font-label-caps text-label-caps text-on-surface-variant">Fase: Hipertrofia</p>
         </div>
         <nav className="flex flex-col gap-1">
           {NAV.map((item) => {
@@ -78,7 +78,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
         <div className="px-6 pt-6 pb-2">
-          <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60 mb-2">ANALYTICS</p>
+          <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60 mb-2">ANÁLISIS</p>
           <div className="flex flex-col gap-1">
             {SECONDARY.map((item) => (
               <Link

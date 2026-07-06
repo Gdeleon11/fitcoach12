@@ -22,7 +22,7 @@ export default async function ProgressPage() {
     <AppShell>
       <div className="mb-8">
         <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">
-          VISUAL ANALYSIS // BODY COMPOSITION
+          ANÁLISIS VISUAL // COMPOSICIÓN CORPORAL
         </p>
         <h1 className="font-headline-md text-headline-md">Análisis de progreso</h1>
         <p className="text-sm text-on-surface-variant mt-1">

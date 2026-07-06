@@ -51,7 +51,7 @@ export default async function WeeklyReportPage() {
     <AppShell>
       <div className="mb-8">
         <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">
-          STRATEGIC REVIEW // LAST_7_DAYS
+          REVISIÓN ESTRATÉGICA // ÚLTIMOS_7_DÍAS
         </p>
         <h1 className="font-headline-md text-headline-md">Reporte Semanal Estratégico</h1>
         <p className="text-sm text-on-surface-variant mt-1">Datos reales de tus últimos 7 días.</p>

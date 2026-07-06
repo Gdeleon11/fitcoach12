@@ -39,7 +39,7 @@ export default async function DashboardPage() {
     <AppShell>
       <div className="mb-8">
         <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">
-          COMMAND CENTER // SYSTEM_ONLINE
+          CENTRO DE MANDO // SISTEMA EN LÍNEA
         </p>
         <h1 className="font-headline-md text-headline-md">
           Hola{profile.name ? `, ${profile.name}` : ""}. Aquí está tu estado.

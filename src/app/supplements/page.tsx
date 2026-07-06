@@ -19,7 +19,7 @@ export default async function SupplementsPage() {
     <AppShell>
       <div className="mb-8">
         <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">
-          SUPPLEMENTATION // PROTOCOL
+          SUPLEMENTACIÓN // PROTOCOLO
         </p>
         <h1 className="font-headline-md text-headline-md">Suplementación</h1>
         <p className="text-sm text-on-surface-variant mt-1">

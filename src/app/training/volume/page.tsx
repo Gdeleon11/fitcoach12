@@ -39,7 +39,7 @@ export default async function VolumePage() {
     <AppShell>
       <div className="mb-8">
         <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">
-          TRAINING ENGINE // VOLUME_&_PROGRESSION
+          MOTOR DE ENTRENAMIENTO // VOLUMEN_Y_PROGRESIÓN
         </p>
         <h1 className="font-headline-md text-headline-md">Ajuste de Volumen IA</h1>
         <p className="text-sm text-on-surface-variant mt-1">

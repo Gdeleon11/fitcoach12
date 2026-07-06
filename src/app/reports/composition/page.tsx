@@ -28,7 +28,7 @@ export default async function CompositionReportPage() {
     <AppShell>
       <div className="mb-8">
         <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">
-          BODY COMPOSITION // LAST_30_DAYS
+          COMPOSICIÓN CORPORAL // ÚLTIMOS_30_DÍAS
         </p>
         <h1 className="font-headline-md text-headline-md">Reporte de Composición Corporal</h1>
         <p className="text-sm text-on-surface-variant mt-1">

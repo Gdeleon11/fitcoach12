@@ -24,7 +24,10 @@ export async function POST() {
 
   if (!plan) {
     return NextResponse.json(
-      { error: "No se pudo generar el menú. Requiere una clave de IA (GEMINI_API_KEY) válida e inténtalo de nuevo." },
+      {
+        error:
+          "No se pudo generar el menú. Puede ser el límite de uso de la IA (plan gratis de Gemini): espera ~1 minuto y reintenta. Si acabas de usar otra función de IA, dale unos segundos.",
+      },
       { status: 502 }
     );
   }

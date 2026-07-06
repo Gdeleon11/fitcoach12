@@ -19,7 +19,7 @@ export default async function TrackingPage() {
   return (
     <AppShell>
       <div className="mb-8">
-        <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">DAILY LOG // BIOMETRICS</p>
+        <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">REGISTRO DIARIO // BIOMÉTRICOS</p>
         <h1 className="font-headline-md text-headline-md">Check-in diario</h1>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

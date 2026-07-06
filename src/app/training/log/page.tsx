@@ -20,7 +20,7 @@ export default async function TrainingLogPage() {
   return (
     <AppShell>
       <div className="mb-8">
-        <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">TRAINING // AI ROUTINE</p>
+        <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">ENTRENAMIENTO // RUTINA IA</p>
         <h1 className="font-headline-md text-headline-md">Entrenamiento</h1>
         <p className="text-sm text-on-surface-variant mt-1">
           Genera tu rutina con IA y confirma cada ejercicio con tus reps, peso y RIR reales.

@@ -75,7 +75,7 @@ export default async function ReadinessPage() {
     <AppShell>
       <div className="mb-8">
         <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">
-          RECOVERY // READINESS_SCORE
+          RECUPERACIÓN // READINESS
         </p>
         <h1 className="font-headline-md text-headline-md">Readiness Score</h1>
         <p className="text-sm text-on-surface-variant mt-1">Calculado con tu último check-in de bienestar.</p>

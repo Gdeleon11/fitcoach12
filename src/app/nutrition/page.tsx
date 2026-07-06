@@ -21,7 +21,7 @@ export default async function NutritionPage() {
   return (
     <AppShell>
       <div className="mb-8">
-        <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">NUTRITION LOG // IA</p>
+        <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">REGISTRO DE NUTRICIÓN // IA</p>
         <h1 className="font-headline-md text-headline-md">Registro de nutrición</h1>
       </div>
       <NutritionLogger

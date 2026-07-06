@@ -55,7 +55,7 @@ export default async function TransitionPage() {
     <AppShell>
       <div className="mb-8">
         <p className="font-label-caps text-label-caps text-primary-fixed-dim opacity-70 mb-1">
-          PHASE LOGIC // TRANSITION
+          LÓGICA DE FASE // TRANSICIÓN
         </p>
         <h1 className="font-headline-md text-headline-md">Lógica de Transición</h1>
         <p className="text-sm text-on-surface-variant mt-1">

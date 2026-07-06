@@ -99,7 +99,7 @@ export async function analyzeImages(dataUrls: string[], context: string): Promis
   try {
     const content = [
       { type: "text" as const, text: context },
-      ...dataUrls.slice(0, 3).map((url) => ({ type: "image_url" as const, image_url: { url } })),
+      ...dataUrls.slice(0, 2).map((url) => ({ type: "image_url" as const, image_url: { url } })),
     ];
     const res = await c.chat.completions.create({
       model: MODEL,
@@ -113,17 +113,23 @@ export async function analyzeImages(dataUrls: string[], context: string): Promis
     return res.choices[0]?.message?.content?.trim() ?? "Sin análisis.";
   } catch (err) {
     console.error("AI analyzeImages error", err);
-    return `No se pudo analizar las fotos. Motivo: ${errorReason(err)}`;
+    return friendlyAiError(err, "No se pudieron analizar las fotos");
   }
 }
 
-// Extracts a short, human-readable reason from an OpenAI/Gemini SDK error.
-function errorReason(err: unknown): string {
-  const e = err as { status?: number; code?: string; message?: string; error?: { message?: string } };
-  const status = e?.status ? `HTTP ${e.status}` : "";
+// Turns an OpenAI/Gemini SDK error into a clear, user-facing message.
+export function friendlyAiError(err: unknown, prefix: string): string {
+  const e = err as { status?: number; message?: string; error?: { message?: string } };
+  const status = e?.status;
+  if (status === 429) {
+    return `${prefix}: alcanzaste el límite de uso de la IA (plan gratis de Gemini). Espera ~1 minuto y vuelve a intentar.`;
+  }
+  if (status === 401 || status === 403) {
+    return `${prefix}: la clave de IA no es válida o no tiene permiso. Revisa GEMINI_API_KEY en Vercel.`;
+  }
   const msg = e?.error?.message || e?.message || String(err);
-  const trimmed = msg.length > 260 ? msg.slice(0, 260) + "…" : msg;
-  return [status, trimmed].filter(Boolean).join(" · ");
+  const trimmed = msg.length > 200 ? msg.slice(0, 200) + "…" : msg;
+  return `${prefix}. Motivo: ${status ? `HTTP ${status} · ` : ""}${trimmed}`;
 }
 
 // Estimate macros for a free-text meal description. Never throws — returns a
