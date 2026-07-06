@@ -15,7 +15,7 @@ type ActivePlan = {
 };
 type Recent = { id: string; name: string | null; date: string; volumeKg: number | null; setCount: number };
 
-type RowState = { reps: string; weight: string; rir: string; done: boolean };
+type RowState = { sets: string; reps: string; weight: string; rir: string; done: boolean };
 
 export default function TrainingHub({ activePlan, recent }: { activePlan: ActivePlan | null; recent: Recent[] }) {
   const router = useRouter();
@@ -113,7 +113,13 @@ export default function TrainingHub({ activePlan, recent }: { activePlan: Active
 function RoutineRunner({ plan }: { plan: ActivePlan }) {
   const router = useRouter();
   const [rows, setRows] = useState<RowState[]>(
-    plan.exercises.map((e) => ({ reps: "", weight: e.suggestedWeightKg != null ? String(e.suggestedWeightKg) : "", rir: "", done: false }))
+    plan.exercises.map((e) => ({
+      sets: String(e.sets),
+      reps: "",
+      weight: e.suggestedWeightKg != null ? String(e.suggestedWeightKg) : "",
+      rir: "",
+      done: false,
+    }))
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -129,10 +135,10 @@ function RoutineRunner({ plan }: { plan: ActivePlan }) {
     setError(null);
     const results = plan.exercises.map((e, i) => ({
       name: e.name,
-      sets: e.sets,
-      reps: rows[i].reps ? Number(rows[i].reps) : null,
-      weightKg: rows[i].weight ? Number(rows[i].weight) : null,
-      rir: rows[i].rir ? Number(rows[i].rir) : null,
+      sets: rows[i].sets ? Math.max(1, Math.round(Number(rows[i].sets))) : e.sets,
+      reps: rows[i].reps !== "" ? Math.round(Number(rows[i].reps)) : null,
+      weightKg: rows[i].weight !== "" ? Number(rows[i].weight) : null,
+      rir: rows[i].rir !== "" ? Math.round(Number(rows[i].rir)) : null,
       done: rows[i].done,
     }));
     const res = await fetch("/api/workout-plans/complete", {
@@ -187,7 +193,7 @@ function RoutineRunner({ plan }: { plan: ActivePlan }) {
               <div>
                 <p className="text-on-surface font-bold">{e.name}</p>
                 <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">
-                  OBJETIVO: {e.sets}×{e.reps}{e.suggestedWeightKg != null ? ` @ ~${e.suggestedWeightKg}kg` : ""}
+                  OBJETIVO: {e.sets} series × {e.reps} reps{e.suggestedWeightKg != null ? ` · sugerido ~${e.suggestedWeightKg}kg` : ""}
                   {e.note ? ` · ${e.note}` : ""}
                 </p>
               </div>
@@ -204,10 +210,11 @@ function RoutineRunner({ plan }: { plan: ActivePlan }) {
                 {rows[i].done ? "HECHO" : "MARCAR"}
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <Mini label="SERIES" value={rows[i].sets} onChange={(v) => update(i, { sets: v })} placeholder={String(e.sets)} />
               <Mini label="REPS" value={rows[i].reps} onChange={(v) => update(i, { reps: v })} placeholder={e.reps} />
               <Mini label="PESO (KG)" value={rows[i].weight} onChange={(v) => update(i, { weight: v })} placeholder="kg" />
-              <Mini label="RIR" value={rows[i].rir} onChange={(v) => update(i, { rir: v })} placeholder="0-4" />
+              <Mini label="RIR" value={rows[i].rir} onChange={(v) => update(i, { rir: v })} placeholder="ej. 2" />
             </div>
           </div>
         ))}

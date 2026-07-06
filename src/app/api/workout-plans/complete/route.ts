@@ -5,10 +5,11 @@ import { requireUserId } from "@/lib/session";
 
 const resultSchema = z.object({
   name: z.string().min(1),
-  sets: z.number().int().min(1).max(10),
-  reps: z.number().int().min(0).max(100).nullable(),
+  sets: z.number().int().min(1).max(20),
+  reps: z.number().int().min(0).max(200).nullable(),
   weightKg: z.number().min(0).max(1000).nullable(),
-  rir: z.number().int().min(0).max(10).nullable(),
+  // RIR can be negative (reps taken past failure / forced reps).
+  rir: z.number().int().min(-5).max(10).nullable(),
   done: z.boolean(),
 });
 
@@ -21,7 +22,13 @@ export async function POST(req: Request) {
   const userId = await requireUserId();
   if (!userId) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   const parsed = schema.safeParse(await req.json());
-  if (!parsed.success) return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
+  if (!parsed.success) {
+    const issue = parsed.error.issues[0];
+    return NextResponse.json(
+      { error: `Revisa los valores ingresados (${issue?.path.join(".") || "campo"}): ${issue?.message ?? "dato inválido"}.` },
+      { status: 400 }
+    );
+  }
 
   const plan = await prisma.workoutPlan.findFirst({ where: { id: parsed.data.planId, userId } });
   if (!plan) return NextResponse.json({ error: "Plan no encontrado" }, { status: 404 });
