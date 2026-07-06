@@ -1,33 +1,108 @@
 import OpenAI from "openai";
 
-// Supports Google Gemini (free tier) via its OpenAI-compatible endpoint,
-// or OpenAI directly. Gemini takes priority when GEMINI_API_KEY is set.
+// Multi-provider AI with automatic fallback.
+// Primary: Google Gemini (free tier) via its OpenAI-compatible endpoint.
+// Fallback: Groq (fast, generous free tier) — used when the primary fails (e.g. 429).
+// Both expose an OpenAI-compatible API, so we drive them with the `openai` SDK.
+
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
+const GROQ_KEY = process.env.GROQ_API_KEY;
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
 
-export const aiEnabled = Boolean(GEMINI_KEY || OPENAI_KEY);
+export const aiEnabled = Boolean(GEMINI_KEY || GROQ_KEY || OPENAI_KEY);
 
-const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/";
-
-// Fail fast instead of hanging: short timeout + a single retry.
 const REQUEST_TIMEOUT_MS = 25_000;
 
-let client: OpenAI | null = null;
-function getClient(): OpenAI | null {
-  if (!aiEnabled) return null;
-  if (!client) {
-    if (GEMINI_KEY) {
-      client = new OpenAI({ apiKey: GEMINI_KEY, baseURL: GEMINI_BASE_URL, maxRetries: 1, timeout: REQUEST_TIMEOUT_MS });
-    } else {
-      client = new OpenAI({ apiKey: OPENAI_KEY, maxRetries: 1, timeout: REQUEST_TIMEOUT_MS });
-    }
+const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/";
+const GROQ_BASE_URL = "https://api.groq.com/openai/v1";
+
+type Provider = { name: string; client: OpenAI; model: string; visionModel: string; supportsVision: boolean };
+
+let cached: Provider[] | null = null;
+function providers(): Provider[] {
+  if (cached) return cached;
+  const list: Provider[] = [];
+  if (GEMINI_KEY) {
+    list.push({
+      name: "gemini",
+      client: new OpenAI({ apiKey: GEMINI_KEY, baseURL: GEMINI_BASE_URL, maxRetries: 0, timeout: REQUEST_TIMEOUT_MS }),
+      model: process.env.GEMINI_MODEL || "gemini-2.0-flash",
+      visionModel: process.env.GEMINI_MODEL || "gemini-2.0-flash",
+      supportsVision: true,
+    });
   }
-  return client;
+  if (GROQ_KEY) {
+    list.push({
+      name: "groq",
+      client: new OpenAI({ apiKey: GROQ_KEY, baseURL: GROQ_BASE_URL, maxRetries: 0, timeout: REQUEST_TIMEOUT_MS }),
+      model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
+      visionModel: process.env.GROQ_VISION_MODEL || "meta-llama/llama-4-scout-17b-16e-instruct",
+      supportsVision: true,
+    });
+  }
+  if (OPENAI_KEY) {
+    list.push({
+      name: "openai",
+      client: new OpenAI({ apiKey: OPENAI_KEY, maxRetries: 0, timeout: REQUEST_TIMEOUT_MS }),
+      model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      visionModel: process.env.OPENAI_MODEL || "gpt-4o-mini",
+      supportsVision: true,
+    });
+  }
+  cached = list;
+  return list;
 }
 
-const MODEL =
-  process.env.AI_MODEL ||
-  (GEMINI_KEY ? process.env.GEMINI_MODEL || "gemini-2.0-flash" : process.env.OPENAI_MODEL || "gpt-4o-mini");
+class NoProviderError extends Error {}
+
+// Runs a chat completion across providers, falling back on error. Returns the
+// text of the first success. Throws the last error if all providers fail.
+type Msg = { role: "system" | "user" | "assistant"; content: unknown };
+async function runCompletion(
+  messages: Msg[],
+  opts: { vision?: boolean; maxTokens: number; temperature: number }
+): Promise<string> {
+  const provs = providers();
+  if (provs.length === 0) throw new NoProviderError("no ai provider configured");
+  let lastErr: unknown;
+  for (const p of provs) {
+    if (opts.vision && !p.supportsVision) continue;
+    try {
+      const res = await p.client.chat.completions.create({
+        model: opts.vision ? p.visionModel : p.model,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        messages: messages as any,
+        temperature: opts.temperature,
+        max_tokens: opts.maxTokens,
+      });
+      const text = res.choices[0]?.message?.content?.trim();
+      if (text) return text;
+      lastErr = new Error("empty response");
+    } catch (err) {
+      lastErr = err;
+      console.error(`AI provider "${p.name}" failed`, (err as { status?: number })?.status ?? err);
+    }
+  }
+  throw lastErr ?? new Error("all providers failed");
+}
+
+// Turns an OpenAI/Gemini/Groq SDK error into a clear, user-facing message.
+export function friendlyAiError(err: unknown, prefix: string): string {
+  if (err instanceof NoProviderError) {
+    return `${prefix}: no hay ninguna clave de IA configurada (GEMINI_API_KEY o GROQ_API_KEY).`;
+  }
+  const e = err as { status?: number; message?: string; error?: { message?: string } };
+  const status = e?.status;
+  if (status === 429) {
+    return `${prefix}: se alcanzó el límite de uso de la IA en todos los proveedores. Espera ~1 minuto y reintenta.`;
+  }
+  if (status === 401 || status === 403) {
+    return `${prefix}: alguna clave de IA no es válida. Revisa GEMINI_API_KEY / GROQ_API_KEY en Vercel.`;
+  }
+  const msg = e?.error?.message || e?.message || String(err);
+  const trimmed = msg.length > 200 ? msg.slice(0, 200) + "…" : msg;
+  return `${prefix}. Motivo: ${status ? `HTTP ${status} · ` : ""}${trimmed}`;
+}
 
 export const GUARDIAN = `Eres el AI Coach de FitCoach 12%, un sistema de alto rendimiento orientado a llegar y sostener ~12% de grasa corporal.
 Reglas de seguridad INQUEBRANTABLES:
@@ -38,24 +113,29 @@ Estilo: directo, analítico, "lectura honesta", basado en datos. Responde en esp
 
 export type ChatMsg = { role: "system" | "user" | "assistant"; content: string };
 
-// Sends a prompt expecting a JSON reply and returns the parsed value, or null on
-// any failure (bad key, timeout, invalid JSON). Never throws.
-export async function aiJson<T = unknown>(system: string, user: string, maxTokens = 900): Promise<T | null> {
-  const c = getClient();
-  if (!c) return null;
+export async function chat(messages: ChatMsg[]): Promise<string> {
+  if (!aiEnabled) {
+    return "El AI Coach está en modo demo (no hay clave de IA configurada). Con GEMINI_API_KEY o GROQ_API_KEY verás lecturas honestas basadas en tus últimos 7 días de datos.";
+  }
   try {
-    const res = await c.chat.completions.create({
-      model: MODEL,
-      messages: [
+    return await runCompletion([{ role: "system", content: GUARDIAN }, ...messages], { maxTokens: 500, temperature: 0.6 });
+  } catch (err) {
+    return friendlyAiError(err, "No pude responder ahora");
+  }
+}
+
+// Prompt expecting JSON. Returns parsed value or null on any failure.
+export async function aiJson<T = unknown>(system: string, user: string, maxTokens = 900): Promise<T | null> {
+  if (!aiEnabled) return null;
+  try {
+    const raw = await runCompletion(
+      [
         { role: "system", content: system + " Responde SOLO con JSON válido, sin texto adicional ni markdown." },
         { role: "user", content: user },
       ],
-      temperature: 0.4,
-      max_tokens: maxTokens,
-    });
-    const raw = res.choices[0]?.message?.content ?? "";
+      { maxTokens, temperature: 0.4 }
+    );
     const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
-    // Extract the first JSON object/array in case the model adds stray text.
     const match = cleaned.match(/[[{][\s\S]*[\]}]/);
     return JSON.parse(match ? match[0] : cleaned) as T;
   } catch (err) {
@@ -64,22 +144,23 @@ export async function aiJson<T = unknown>(system: string, user: string, maxToken
   }
 }
 
-export async function chat(messages: ChatMsg[]): Promise<string> {
-  const c = getClient();
-  if (!c) {
-    return "El AI Coach está en modo demo (no hay clave de IA configurada). Con GEMINI_API_KEY (o OPENAI_API_KEY) activa, aquí verás lecturas honestas y ajustes basados en tus últimos 7 días de datos.";
-  }
+// Vision analysis of progress photos (data URLs). Never throws.
+export async function analyzeImages(dataUrls: string[], context: string): Promise<string> {
+  if (!aiEnabled) return "El análisis con IA requiere una clave (GEMINI_API_KEY o GROQ_API_KEY). Sin ella no se puede analizar la imagen.";
   try {
-    const res = await c.chat.completions.create({
-      model: MODEL,
-      messages: [{ role: "system", content: GUARDIAN }, ...messages],
-      temperature: 0.6,
-      max_tokens: 500,
-    });
-    return res.choices[0]?.message?.content?.trim() ?? "Sin respuesta.";
+    const content = [
+      { type: "text" as const, text: context },
+      ...dataUrls.slice(0, 2).map((url) => ({ type: "image_url" as const, image_url: { url } })),
+    ];
+    return await runCompletion(
+      [
+        { role: "system", content: VISION_GUARD },
+        { role: "user", content },
+      ],
+      { vision: true, maxTokens: 500, temperature: 0.5 }
+    );
   } catch (err) {
-    console.error("AI chat error", err);
-    return "No pude conectar con el motor de IA en este momento. Verifica que la clave (GEMINI_API_KEY) sea válida e inténtalo de nuevo.";
+    return friendlyAiError(err, "No se pudieron analizar las fotos");
   }
 }
 
@@ -92,48 +173,7 @@ Reglas:
 - No diagnostiques ni des consejo médico. Si detectas señales de conducta alimentaria de riesgo, sugiere apoyo profesional.
 Responde en español, en 4-6 frases, sin markdown.`;
 
-// Vision analysis of progress photos (data URLs). Never throws.
-export async function analyzeImages(dataUrls: string[], context: string): Promise<string> {
-  const c = getClient();
-  if (!c) return "El análisis con IA requiere una clave de IA configurada (GEMINI_API_KEY). Sin ella no se puede analizar la imagen.";
-  try {
-    const content = [
-      { type: "text" as const, text: context },
-      ...dataUrls.slice(0, 2).map((url) => ({ type: "image_url" as const, image_url: { url } })),
-    ];
-    const res = await c.chat.completions.create({
-      model: MODEL,
-      messages: [
-        { role: "system", content: VISION_GUARD },
-        { role: "user", content },
-      ],
-      temperature: 0.5,
-      max_tokens: 500,
-    });
-    return res.choices[0]?.message?.content?.trim() ?? "Sin análisis.";
-  } catch (err) {
-    console.error("AI analyzeImages error", err);
-    return friendlyAiError(err, "No se pudieron analizar las fotos");
-  }
-}
-
-// Turns an OpenAI/Gemini SDK error into a clear, user-facing message.
-export function friendlyAiError(err: unknown, prefix: string): string {
-  const e = err as { status?: number; message?: string; error?: { message?: string } };
-  const status = e?.status;
-  if (status === 429) {
-    return `${prefix}: alcanzaste el límite de uso de la IA (plan gratis de Gemini). Espera ~1 minuto y vuelve a intentar.`;
-  }
-  if (status === 401 || status === 403) {
-    return `${prefix}: la clave de IA no es válida o no tiene permiso. Revisa GEMINI_API_KEY en Vercel.`;
-  }
-  const msg = e?.error?.message || e?.message || String(err);
-  const trimmed = msg.length > 200 ? msg.slice(0, 200) + "…" : msg;
-  return `${prefix}. Motivo: ${status ? `HTTP ${status} · ` : ""}${trimmed}`;
-}
-
-// Estimate macros for a free-text meal description. Never throws — returns a
-// heuristic fallback on any error so the UI never hangs.
+// Estimate macros for a free-text meal description. Never throws.
 export async function estimateMeal(description: string): Promise<{
   totalKcal: number;
   proteinG: number;
@@ -151,14 +191,10 @@ export async function estimateMeal(description: string): Promise<{
       note,
     };
   };
-
-  const c = getClient();
-  if (!c) return heuristic("Estimación aproximada (sin clave de IA). Ajusta manualmente.");
-
+  if (!aiEnabled) return heuristic("Estimación aproximada (sin clave de IA). Ajusta manualmente.");
   try {
-    const res = await c.chat.completions.create({
-      model: MODEL,
-      messages: [
+    const raw = await runCompletion(
+      [
         {
           role: "system",
           content:
@@ -166,12 +202,11 @@ export async function estimateMeal(description: string): Promise<{
         },
         { role: "user", content: description },
       ],
-      temperature: 0.2,
-      max_tokens: 200,
-    });
-    const raw = res.choices[0]?.message?.content ?? "{}";
+      { maxTokens: 200, temperature: 0.2 }
+    );
     const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
-    const parsed = JSON.parse(cleaned);
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(match ? match[0] : cleaned);
     return {
       totalKcal: Math.round(parsed.totalKcal ?? 0),
       proteinG: Math.round(parsed.proteinG ?? 0),
@@ -181,6 +216,6 @@ export async function estimateMeal(description: string): Promise<{
     };
   } catch (err) {
     console.error("AI estimateMeal error", err);
-    return heuristic("No se pudo estimar con IA (revisa la clave). Estimación aproximada — ajusta los valores.");
+    return heuristic("No se pudo estimar con IA (límite o clave). Estimación aproximada — ajusta los valores.");
   }
 }

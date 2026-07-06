@@ -44,8 +44,11 @@ NEXTAUTH_SECRET="..."   # genera con: openssl rand -base64 32
 NEXTAUTH_URL="http://localhost:3000"
 GOOGLE_CLIENT_ID=""      # opcional
 GOOGLE_CLIENT_SECRET=""  # opcional
-GEMINI_API_KEY=""        # IA gratis (Google AI Studio). Sin esto, la IA va en modo demo
+GEMINI_API_KEY=""        # IA primaria (Google AI Studio). Sin esto, la IA va en modo demo
 GEMINI_MODEL="gemini-2.0-flash"
+GROQ_API_KEY=""          # Fallback automático si Gemini se queda sin cupo (console.groq.com/keys)
+GROQ_MODEL="llama-3.3-70b-versatile"
+GROQ_VISION_MODEL="meta-llama/llama-4-scout-17b-16e-instruct"
 ```
 
 ## 3. Instalar y crear las tablas
