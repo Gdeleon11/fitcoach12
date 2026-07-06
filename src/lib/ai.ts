@@ -113,8 +113,17 @@ export async function analyzeImages(dataUrls: string[], context: string): Promis
     return res.choices[0]?.message?.content?.trim() ?? "Sin análisis.";
   } catch (err) {
     console.error("AI analyzeImages error", err);
-    return "No se pudo analizar las fotos en este momento. Verifica que la clave de IA (GEMINI_API_KEY) sea válida y que el modelo soporte imágenes.";
+    return `No se pudo analizar las fotos. Motivo: ${errorReason(err)}`;
   }
+}
+
+// Extracts a short, human-readable reason from an OpenAI/Gemini SDK error.
+function errorReason(err: unknown): string {
+  const e = err as { status?: number; code?: string; message?: string; error?: { message?: string } };
+  const status = e?.status ? `HTTP ${e.status}` : "";
+  const msg = e?.error?.message || e?.message || String(err);
+  const trimmed = msg.length > 260 ? msg.slice(0, 260) + "…" : msg;
+  return [status, trimmed].filter(Boolean).join(" · ");
 }
 
 // Estimate macros for a free-text meal description. Never throws — returns a
