@@ -35,6 +35,7 @@ model User {
   chatMessages     ChatMessage[]
   supplements      Supplement[]
   bloodMarkers     BloodMarker[]
+  workoutPlans     WorkoutPlan[]
 }
 
 model Account {
@@ -252,6 +253,24 @@ model Supplement {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+// AI-generated (or template) training routine the user confirms exercise by exercise.
+model WorkoutPlan {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  focus     String?
+  rationale String?  @db.Text
+  exercises Json // [{ name, sets, reps, suggestedWeightKg, note }]
+  status    String   @default("active") // active | completed
+  source    String   @default("ai") // ai | template
+  workoutId String? // logged Workout created on completion
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
 }
 
 // Manually-entered blood biomarkers, interpreted in code against reference ranges.

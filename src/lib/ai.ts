@@ -38,6 +38,32 @@ Estilo: directo, analítico, "lectura honesta", basado en datos. Responde en esp
 
 export type ChatMsg = { role: "system" | "user" | "assistant"; content: string };
 
+// Sends a prompt expecting a JSON reply and returns the parsed value, or null on
+// any failure (bad key, timeout, invalid JSON). Never throws.
+export async function aiJson<T = unknown>(system: string, user: string): Promise<T | null> {
+  const c = getClient();
+  if (!c) return null;
+  try {
+    const res = await c.chat.completions.create({
+      model: MODEL,
+      messages: [
+        { role: "system", content: system + " Responde SOLO con JSON válido, sin texto adicional ni markdown." },
+        { role: "user", content: user },
+      ],
+      temperature: 0.4,
+      max_tokens: 900,
+    });
+    const raw = res.choices[0]?.message?.content ?? "";
+    const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
+    // Extract the first JSON object/array in case the model adds stray text.
+    const match = cleaned.match(/[[{][\s\S]*[\]}]/);
+    return JSON.parse(match ? match[0] : cleaned) as T;
+  } catch (err) {
+    console.error("aiJson error", err);
+    return null;
+  }
+}
+
 export async function chat(messages: ChatMsg[]): Promise<string> {
   const c = getClient();
   if (!c) {
