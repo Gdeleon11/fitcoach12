@@ -40,12 +40,30 @@ function fileToCompressedDataUrl(file: File, maxDim = 1024, quality = 0.8): Prom
   });
 }
 
-export default function ProgressGallery({ initial }: { initial: Photo[] }) {
+export default function ProgressGallery({ initial, initialAnalysis }: { initial: Photo[]; initialAnalysis?: string | null }) {
   const [photos, setPhotos] = useState<Photo[]>(initial);
   const [angle, setAngle] = useState<"FRONT" | "SIDE" | "BACK">("FRONT");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [analysis, setAnalysis] = useState<string | null>(initialAnalysis ?? null);
+  const [analyzing, setAnalyzing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  async function analyze() {
+    setAnalyzing(true);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 45000);
+    try {
+      const res = await fetch("/api/progress/analyze", { method: "POST", signal: controller.signal });
+      const data = await res.json();
+      setAnalysis(res.ok ? data.analysis : data.error ?? "No se pudo analizar.");
+    } catch {
+      setAnalysis("El análisis tardó demasiado o falló. Revisa la clave de IA e inténtalo de nuevo.");
+    } finally {
+      clearTimeout(timer);
+      setAnalyzing(false);
+    }
+  }
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -128,6 +146,33 @@ export default function ProgressGallery({ initial }: { initial: Photo[] }) {
           Las imágenes se comprimen en tu dispositivo antes de subirlas.
         </p>
       </div>
+
+      {/* AI analysis */}
+      {photos.length > 0 && (
+        <div className="glass-card p-6 border-l-4 border-primary">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary-fixed-dim">smart_toy</span>
+              <span className="font-label-caps text-label-caps text-primary-fixed-dim">ANÁLISIS IA DE COMPOSICIÓN</span>
+            </div>
+            <button
+              onClick={analyze}
+              disabled={analyzing}
+              className="px-4 py-2 bg-primary-container text-on-primary-container font-label-caps text-label-caps font-bold hover:brightness-110 transition disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              <span className="material-symbols-outlined text-base">{analyzing ? "hourglass_top" : "auto_awesome"}</span>
+              {analyzing ? "ANALIZANDO..." : analysis ? "VOLVER A ANALIZAR" : "ANALIZAR MI PROGRESO"}
+            </button>
+          </div>
+          {analysis ? (
+            <p className="text-on-surface leading-relaxed whitespace-pre-wrap">{analysis}</p>
+          ) : (
+            <p className="text-sm text-on-surface-variant">
+              La IA revisa tus fotos más recientes (frente/perfil/espalda) junto con tu peso, cintura y objetivo, y te da una lectura honesta. Estimación visual orientativa, no diagnóstico.
+            </p>
+          )}
+        </div>
+      )}
 
       {photos.length === 0 && (
         <div className="glass-card p-10 text-center">

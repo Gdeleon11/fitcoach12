@@ -10,11 +10,13 @@ export const dynamic = "force-dynamic";
 export default async function ProgressPage() {
   const userId = await requireUserId();
   if (!userId) redirect("/login");
-  const photos = await prisma.progressPhoto.findMany({
-    where: { userId },
-    orderBy: { date: "desc" },
-    take: 60,
-  });
+  const [photos, lastAnalysis] = await Promise.all([
+    prisma.progressPhoto.findMany({ where: { userId }, orderBy: { date: "desc" }, take: 60 }),
+    prisma.aIRecommendation.findFirst({
+      where: { userId, type: "Composition" },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
 
   return (
     <AppShell>
@@ -28,6 +30,7 @@ export default async function ProgressPage() {
         </p>
       </div>
       <ProgressGallery
+        initialAnalysis={lastAnalysis?.reasoning ?? null}
         initial={photos.map((p) => ({
           id: p.id,
           url: p.url,

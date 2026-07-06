@@ -40,7 +40,7 @@ export type ChatMsg = { role: "system" | "user" | "assistant"; content: string }
 
 // Sends a prompt expecting a JSON reply and returns the parsed value, or null on
 // any failure (bad key, timeout, invalid JSON). Never throws.
-export async function aiJson<T = unknown>(system: string, user: string): Promise<T | null> {
+export async function aiJson<T = unknown>(system: string, user: string, maxTokens = 900): Promise<T | null> {
   const c = getClient();
   if (!c) return null;
   try {
@@ -51,7 +51,7 @@ export async function aiJson<T = unknown>(system: string, user: string): Promise
         { role: "user", content: user },
       ],
       temperature: 0.4,
-      max_tokens: 900,
+      max_tokens: maxTokens,
     });
     const raw = res.choices[0]?.message?.content ?? "";
     const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
@@ -80,6 +80,40 @@ export async function chat(messages: ChatMsg[]): Promise<string> {
   } catch (err) {
     console.error("AI chat error", err);
     return "No pude conectar con el motor de IA en este momento. Verifica que la clave (GEMINI_API_KEY) sea válida e inténtalo de nuevo.";
+  }
+}
+
+const VISION_GUARD = `Eres un coach de composición corporal analizando fotos de progreso de un usuario que las sube voluntariamente para seguir su avance físico.
+Tono: profesional, respetuoso, alentador y constructivo. NUNCA hagas comentarios despectivos sobre el cuerpo.
+Reglas:
+- Da un rango estimado de grasa corporal (ej. "aprox. 15-18%") SIEMPRE con la advertencia de que es una estimación visual imprecisa.
+- Comenta desarrollo muscular, definición y postura de forma objetiva y útil.
+- Da 2-3 acciones concretas alineadas al objetivo del usuario.
+- No diagnostiques ni des consejo médico. Si detectas señales de conducta alimentaria de riesgo, sugiere apoyo profesional.
+Responde en español, en 4-6 frases, sin markdown.`;
+
+// Vision analysis of progress photos (data URLs). Never throws.
+export async function analyzeImages(dataUrls: string[], context: string): Promise<string> {
+  const c = getClient();
+  if (!c) return "El análisis con IA requiere una clave de IA configurada (GEMINI_API_KEY). Sin ella no se puede analizar la imagen.";
+  try {
+    const content = [
+      { type: "text" as const, text: context },
+      ...dataUrls.slice(0, 3).map((url) => ({ type: "image_url" as const, image_url: { url } })),
+    ];
+    const res = await c.chat.completions.create({
+      model: MODEL,
+      messages: [
+        { role: "system", content: VISION_GUARD },
+        { role: "user", content },
+      ],
+      temperature: 0.5,
+      max_tokens: 500,
+    });
+    return res.choices[0]?.message?.content?.trim() ?? "Sin análisis.";
+  } catch (err) {
+    console.error("AI analyzeImages error", err);
+    return "No se pudo analizar las fotos en este momento. Verifica que la clave de IA (GEMINI_API_KEY) sea válida y que el modelo soporte imágenes.";
   }
 }
 

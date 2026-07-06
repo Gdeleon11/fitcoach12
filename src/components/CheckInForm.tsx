@@ -16,6 +16,8 @@ export default function CheckInForm() {
     energy: 3,
     hunger: 3,
     fatigue: 3,
+    digestion: 3,
+    stress: 3,
     notes: "",
   });
 
@@ -23,7 +25,13 @@ export default function CheckInForm() {
     e.preventDefault();
     setSaving(true);
     setError(null);
-    const payload: Record<string, unknown> = { energy: v.energy, hunger: v.hunger, fatigue: v.fatigue };
+    const payload: Record<string, unknown> = {
+      energy: v.energy,
+      hunger: v.hunger,
+      fatigue: v.fatigue,
+      digestion: v.digestion,
+      stress: v.stress,
+    };
     if (v.weightKg) payload.weightKg = Number(v.weightKg);
     if (v.waistCm) payload.waistCm = Number(v.waistCm);
     if (v.sleepH) payload.sleepH = Number(v.sleepH);
@@ -61,6 +69,8 @@ export default function CheckInForm() {
       <Rating label="ENERGÍA" value={v.energy} onChange={(x) => setV({ ...v, energy: x })} />
       <Rating label="HAMBRE" value={v.hunger} onChange={(x) => setV({ ...v, hunger: x })} />
       <Rating label="FATIGA" value={v.fatigue} onChange={(x) => setV({ ...v, fatigue: x })} />
+      <Rating label="DIGESTIÓN" value={v.digestion} onChange={(x) => setV({ ...v, digestion: x })} />
+      <Rating label="ESTRÉS" value={v.stress} onChange={(x) => setV({ ...v, stress: x })} />
       <label className="block">
         <span className="font-label-caps text-label-caps text-on-surface-variant">NOTAS</span>
         <textarea

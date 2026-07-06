@@ -1,5 +1,6 @@
 import AppShell from "@/components/AppShell";
 import NutritionLogger from "@/components/NutritionLogger";
+import MealPlanGenerator from "@/components/MealPlanGenerator";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { redirect } from "next/navigation";
@@ -35,6 +36,7 @@ export default async function NutritionPage() {
           aiEstimated: l.aiEstimated,
         }))}
       />
+      <MealPlanGenerator />
     </AppShell>
   );
 }
