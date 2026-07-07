@@ -26,7 +26,7 @@ export async function POST() {
     return NextResponse.json(
       {
         error:
-          "No se pudo generar el menú. Puede ser el límite de uso de la IA (plan gratis de Gemini): espera ~1 minuto y reintenta. Si acabas de usar otra función de IA, dale unos segundos.",
+          "No se pudo generar el menú: la IA no respondió (límite de uso en todos los proveedores o clave faltante). Verifica que GROQ_API_KEY esté configurada en Vercel, espera ~1 minuto y reintenta.",
       },
       { status: 502 }
     );

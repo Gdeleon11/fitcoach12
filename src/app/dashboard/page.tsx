@@ -3,6 +3,7 @@ import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
+import { estimateBodyFatRFM, bodyFatStatus } from "@/lib/bodyfat";
 
 export const metadata = { title: "FitCoach 12% — Command Center" };
 export const dynamic = "force-dynamic";
@@ -28,8 +29,13 @@ export default async function DashboardPage() {
   ]);
 
   const latest = checkins[0];
+  const latestWeight = checkins.find((c) => c.weightKg != null)?.weightKg ?? profile.weightKg ?? null;
+  const latestWaist = checkins.find((c) => c.waistCm != null)?.waistCm ?? null;
   const weights = checkins.filter((c) => c.weightKg != null).map((c) => c.weightKg as number);
   const avg7 = weights.length ? weights.reduce((a, b) => a + b, 0) / weights.length : null;
+
+  const estBf = estimateBodyFatRFM(profile.heightCm ?? null, latestWaist, profile.gender ?? null);
+  const bfStatus = bodyFatStatus(estBf, profile.goalBodyFat ?? null);
 
   const kcalToday = todayNutrition.reduce((a, n) => a + (n.totalKcal ?? 0), 0);
   const proteinToday = todayNutrition.reduce((a, n) => a + (n.proteinG ?? 0), 0);
@@ -55,7 +61,7 @@ export default async function DashboardPage() {
               <div className="status-dot bg-secondary-container" />
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="font-data-point text-display-lg text-primary">{fmt(latest?.weightKg)}</span>
+              <span className="font-data-point text-display-lg text-primary">{fmt(latestWeight)}</span>
               <span className="font-label-caps text-label-caps text-on-surface-variant">KG</span>
             </div>
           </div>
@@ -72,14 +78,25 @@ export default async function DashboardPage() {
             <div className="status-dot bg-secondary-container" />
           </div>
           <div className="flex items-baseline gap-2 mb-6">
-            <span className="font-data-point text-display-lg text-on-surface">{fmt(latest?.waistCm, 0)}</span>
+            <span className="font-data-point text-display-lg text-on-surface">{fmt(latestWaist, 0)}</span>
             <span className="font-label-caps text-label-caps text-on-surface-variant">CM</span>
           </div>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="font-label-caps text-label-caps opacity-60">OBJETIVO BF</span>
+              <span className="font-label-caps text-label-caps opacity-60">GRASA EST.</span>
+              <span className="font-data-point text-sm" style={{ color: bfStatus.color }}>
+                {estBf != null ? `${estBf}%` : "—"}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-label-caps text-label-caps opacity-60">OBJETIVO</span>
               <span className="font-label-caps text-label-caps text-secondary-container">{fmt(profile.goalBodyFat, 0)}%</span>
             </div>
+            {estBf != null && (
+              <p className="font-label-caps text-label-caps" style={{ color: bfStatus.color }}>
+                {bfStatus.label}
+              </p>
+            )}
           </div>
         </div>
 
@@ -87,7 +104,7 @@ export default async function DashboardPage() {
         <div className="col-span-12 md:col-span-4 lg:col-span-6 glass-card p-6 border-l-4 border-primary bg-surface-container-high">
           <div className="flex items-center gap-2 mb-4">
             <span className="material-symbols-outlined text-primary-fixed-dim">smart_toy</span>
-            <span className="font-label-caps text-label-caps text-primary-fixed-dim">AI COACH INSIGHTS</span>
+            <span className="font-label-caps text-label-caps text-primary-fixed-dim">COACH IA · LECTURA</span>
           </div>
           <p className="font-headline-md text-headline-md leading-tight mb-4">
             {latest

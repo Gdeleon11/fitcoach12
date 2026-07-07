@@ -62,8 +62,11 @@ async function runCompletion(
   messages: Msg[],
   opts: { vision?: boolean; maxTokens: number; temperature: number }
 ): Promise<string> {
-  const provs = providers();
-  if (provs.length === 0) throw new NoProviderError("no ai provider configured");
+  const all = providers();
+  if (all.length === 0) throw new NoProviderError("no ai provider configured");
+  // Text prefers Groq (more generous free tier); vision prefers Gemini (more reliable).
+  const order = opts.vision ? ["gemini", "groq", "openai"] : ["groq", "gemini", "openai"];
+  const provs = order.map((n) => all.find((p) => p.name === n)).filter((p): p is Provider => Boolean(p));
   let lastErr: unknown;
   for (const p of provs) {
     if (opts.vision && !p.supportsVision) continue;

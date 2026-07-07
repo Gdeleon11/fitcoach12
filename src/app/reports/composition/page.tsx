@@ -5,6 +5,7 @@ import { requireUserId } from "@/lib/session";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { trend } from "@/lib/reports";
+import { estimateBodyFatRFM, bodyFatStatus } from "@/lib/bodyfat";
 
 export const metadata = { title: "FitCoach 12% — Composición Corporal" };
 export const dynamic = "force-dynamic";
@@ -23,6 +24,9 @@ export default async function CompositionReportPage() {
   const weight = trend(checkins, "weightKg");
   const waist = trend(checkins, "waistCm");
   const hasData = weight.series.length > 0 || waist.series.length > 0 || photos.length > 0;
+
+  const estBf = estimateBodyFatRFM(profile?.heightCm ?? null, waist.last, profile?.gender ?? null);
+  const bfStatus = bodyFatStatus(estBf, profile?.goalBodyFat ?? null);
 
   return (
     <AppShell>
@@ -72,12 +76,15 @@ export default async function CompositionReportPage() {
               </p>
             </div>
             <div className="glass-card p-6">
-              <p className="font-label-caps text-label-caps text-on-surface-variant mb-2">OBJETIVO BF</p>
+              <p className="font-label-caps text-label-caps text-on-surface-variant mb-2">GRASA ESTIMADA</p>
               <div className="flex items-baseline gap-2">
-                <span className="font-data-point text-display-lg text-secondary-container">{profile?.goalBodyFat ?? "—"}</span>
+                <span className="font-data-point text-display-lg" style={{ color: bfStatus.color }}>{estBf ?? "—"}</span>
                 <span className="font-label-caps text-label-caps text-on-surface-variant">%</span>
               </div>
-              <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60 mt-2">meta de grasa corporal</p>
+              <p className="font-label-caps text-label-caps mt-2" style={{ color: bfStatus.color }}>
+                {estBf != null ? `objetivo ${profile?.goalBodyFat ?? "—"}% · ${bfStatus.label}` : `objetivo ${profile?.goalBodyFat ?? "—"}%`}
+              </p>
+              <p className="text-[10px] text-on-surface-variant opacity-50 mt-1">Estimación por cintura/altura (RFM), orientativa.</p>
             </div>
           </div>
 
