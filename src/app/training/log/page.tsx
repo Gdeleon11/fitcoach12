@@ -14,7 +14,7 @@ export default async function TrainingLogPage() {
 
   const [activePlan, workouts] = await Promise.all([
     prisma.workoutPlan.findFirst({ where: { userId, status: "active" }, orderBy: { createdAt: "desc" } }),
-    prisma.workout.findMany({ where: { userId }, orderBy: { date: "desc" }, take: 8, include: { sets: true } }),
+    prisma.workout.findMany({ where: { userId }, orderBy: { date: "desc" }, take: 30, include: { sets: true } }),
   ]);
 
   return (

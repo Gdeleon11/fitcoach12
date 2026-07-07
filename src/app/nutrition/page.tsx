@@ -11,11 +11,10 @@ export const dynamic = "force-dynamic";
 export default async function NutritionPage() {
   const userId = await requireUserId();
   if (!userId) redirect("/login");
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
+  const since = new Date(Date.now() - 30 * 86400000);
   const [profile, logs] = await Promise.all([
     prisma.userProfile.findUnique({ where: { userId } }),
-    prisma.nutritionLog.findMany({ where: { userId, date: { gte: start } }, orderBy: { date: "asc" } }),
+    prisma.nutritionLog.findMany({ where: { userId, date: { gte: since } }, orderBy: { date: "desc" } }),
   ]);
 
   return (
@@ -28,6 +27,7 @@ export default async function NutritionPage() {
         target={{ kcal: profile?.targetKcal ?? null, protein: profile?.proteinG ?? null, carbs: profile?.carbsG ?? null, fat: profile?.fatG ?? null }}
         initialLogs={logs.map((l) => ({
           id: l.id,
+          date: l.date.toISOString().slice(0, 10),
           mealName: l.mealName,
           totalKcal: l.totalKcal,
           proteinG: l.proteinG,

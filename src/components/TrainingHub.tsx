@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FOCUS_OPTIONS, focusLabel, type PlanExercise } from "@/lib/routine";
+import ManualWorkoutForm from "@/components/ManualWorkoutForm";
 
 type ActivePlan = {
   id: string;
@@ -22,6 +23,19 @@ export default function TrainingHub({ activePlan, recent }: { activePlan: Active
   const [focus, setFocus] = useState<string>("full");
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
+  const [deletingW, setDeletingW] = useState<Set<string>>(new Set());
+
+  async function deleteWorkout(id: string) {
+    if (!confirm("¿Eliminar esta sesión?")) return;
+    setDeletingW((prev) => new Set(prev).add(id));
+    await fetch("/api/workouts", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+    router.refresh();
+  }
+  const visibleRecent = recent.filter((w) => !deletingW.has(w.id));
 
   async function generate() {
     setGenerating(true);
@@ -86,19 +100,23 @@ export default function TrainingHub({ activePlan, recent }: { activePlan: Active
             </p>
           </div>
         )}
+        <ManualWorkoutForm />
       </div>
 
       <div className="glass-card p-6 h-fit">
         <span className="font-label-caps text-label-caps text-on-surface-variant">SESIONES RECIENTES</span>
         <div className="mt-4 divide-y divide-outline-variant">
-          {recent.length === 0 && <p className="text-sm text-on-surface-variant py-4">Aún no hay sesiones registradas.</p>}
-          {recent.map((w) => (
-            <div key={w.id} className="py-3 flex justify-between items-center">
+          {visibleRecent.length === 0 && <p className="text-sm text-on-surface-variant py-4">Aún no hay sesiones registradas.</p>}
+          {visibleRecent.map((w) => (
+            <div key={w.id} className="py-3 flex justify-between items-center gap-3">
               <div>
                 <p className="text-sm text-on-surface">{w.name || "Sesión"}</p>
                 <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">{w.date} · {w.setCount} series</p>
               </div>
-              <p className="font-data-point text-sm text-primary">{w.volumeKg ? `${Math.round(w.volumeKg).toLocaleString()}kg` : "—"}</p>
+              <div className="flex items-center gap-3">
+                <p className="font-data-point text-sm text-primary">{w.volumeKg ? `${Math.round(w.volumeKg).toLocaleString()}kg` : "—"}</p>
+                <button onClick={() => deleteWorkout(w.id)} className="material-symbols-outlined text-on-surface-variant hover:text-error text-base" title="Eliminar">delete</button>
+              </div>
             </div>
           ))}
         </div>
