@@ -18,6 +18,7 @@ const schema = z.object({
   // data URL (image compressed client-side). Cap ~2MB to protect the DB.
   url: z.string().startsWith("data:image/").max(2_800_000),
   angle: z.enum(["FRONT", "SIDE", "BACK"]).optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), // backdate to any day
 });
 
 export async function POST(req: Request) {
@@ -27,8 +28,9 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Imagen inválida o demasiado grande" }, { status: 400 });
   }
+  const when = parsed.data.date ? new Date(`${parsed.data.date}T12:00:00Z`) : undefined;
   const photo = await prisma.progressPhoto.create({
-    data: { userId, url: parsed.data.url, angle: parsed.data.angle ?? "FRONT" },
+    data: { userId, url: parsed.data.url, angle: parsed.data.angle ?? "FRONT", ...(when ? { date: when } : {}) },
   });
   return NextResponse.json({ photo }, { status: 201 });
 }

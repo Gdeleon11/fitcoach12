@@ -150,7 +150,7 @@ export async function analyzeImages(dataUrls: string[], context: string): Promis
   try {
     const content = [
       { type: "text" as const, text: context },
-      ...dataUrls.slice(0, 2).map((url) => ({ type: "image_url" as const, image_url: { url } })),
+      ...dataUrls.slice(0, 3).map((url) => ({ type: "image_url" as const, image_url: { url } })),
     ];
     return await runCompletion(
       [

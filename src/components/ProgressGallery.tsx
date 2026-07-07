@@ -43,6 +43,7 @@ function fileToCompressedDataUrl(file: File, maxDim = 1024, quality = 0.8): Prom
 export default function ProgressGallery({ initial, initialAnalysis }: { initial: Photo[]; initialAnalysis?: string | null }) {
   const [photos, setPhotos] = useState<Photo[]>(initial);
   const [angle, setAngle] = useState<"FRONT" | "SIDE" | "BACK">("FRONT");
+  const [photoDate, setPhotoDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<string | null>(initialAnalysis ?? null);
@@ -75,7 +76,7 @@ export default function ProgressGallery({ initial, initialAnalysis }: { initial:
       const res = await fetch("/api/progress", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: dataUrl, angle }),
+        body: JSON.stringify({ url: dataUrl, angle, date: photoDate }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -125,7 +126,17 @@ export default function ProgressGallery({ initial, initialAnalysis }: { initial:
               ))}
             </div>
           </div>
-          <div>
+          <div className="flex items-end gap-3">
+            <label className="block">
+              <span className="font-label-caps text-label-caps text-on-surface-variant">FECHA</span>
+              <input
+                type="date"
+                value={photoDate}
+                max={new Date().toISOString().slice(0, 10)}
+                onChange={(e) => setPhotoDate(e.target.value)}
+                className="mt-1 bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2"
+              />
+            </label>
             <input ref={inputRef} type="file" accept="image/*" onChange={onFile} className="hidden" id="photo-input" />
             <label
               htmlFor="photo-input"

@@ -18,22 +18,28 @@ export async function POST() {
     return NextResponse.json({ error: "Sube al menos una foto antes de analizar." }, { status: 400 });
   }
 
-  // Most recent photo per angle (max 3 images).
-  const seen = new Set<string>();
-  const chosen: string[] = [];
-  for (const p of photos) {
-    if (!seen.has(p.angle)) {
-      seen.add(p.angle);
-      chosen.push(p.url);
-    }
-    if (chosen.length >= 3) break;
-  }
+  // Choose an informative set (max 3): baseline (oldest) + current per angle, so
+  // the model can compare progress over time when several dated photos exist.
+  const byId = new Map<string, { url: string; date: Date; angle: string }>();
+  const front = photos.filter((p) => p.angle === "FRONT");
+  const side = photos.filter((p) => p.angle === "SIDE");
+  const back = photos.filter((p) => p.angle === "BACK");
+  const add = (p?: { id: string; url: string; date: Date; angle: string }) => {
+    if (p && !byId.has(p.id) && byId.size < 3) byId.set(p.id, { url: p.url, date: p.date, angle: p.angle });
+  };
+  // photos are ordered desc (newest first).
+  add(front.at(-1)); // baseline front (oldest)
+  add(front[0]); // current front (newest)
+  add(side[0] ?? back[0] ?? photos[0]); // a second angle if available
+  const selected = [...byId.values()].sort((a, b) => a.date.getTime() - b.date.getTime());
+  const chosen = selected.map((s) => s.url);
+  const photoDesc = selected.map((s) => `${s.angle} ${s.date.toISOString().slice(0, 10)}`).join(", ");
 
   const latest = checkins[0];
   const w = trend([...checkins].reverse().map((c) => ({ date: c.date, weightKg: c.weightKg, waistCm: c.waistCm, steps: null, sleepH: null, energy: null })), "weightKg");
   const waist = trend([...checkins].reverse().map((c) => ({ date: c.date, weightKg: c.weightKg, waistCm: c.waistCm, steps: null, sleepH: null, energy: null })), "waistCm");
 
-  const context = `Analiza estas fotos de progreso. Contexto del usuario:
+  const context = `Analiza estas fotos de progreso (en orden cronológico: ${photoDesc}). Si hay varias fechas, compara la más antigua (base) con la más reciente y describe los cambios. Contexto del usuario:
 - Objetivo de grasa corporal: ${profile?.goalBodyFat ?? 12}%
 - Peso actual: ${latest?.weightKg ?? profile?.weightKg ?? "?"} kg (cambio 30d: ${w.delta ?? "?"} kg)
 - Cintura: ${latest?.waistCm ?? "?"} cm (cambio 30d: ${waist.delta ?? "?"} cm)
