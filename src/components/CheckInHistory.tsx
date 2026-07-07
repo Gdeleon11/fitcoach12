@@ -14,11 +14,14 @@ type Item = {
 
 export default function CheckInHistory({ initial }: { initial: Item[] }) {
   const router = useRouter();
-  const [items, setItems] = useState<Item[]>(initial);
+  // Render straight from the server prop (stays fresh after router.refresh());
+  // only track ids being deleted so they disappear immediately.
+  const [deleting, setDeleting] = useState<Set<string>>(new Set());
+  const items = initial.filter((x) => !deleting.has(x.id));
 
   async function remove(id: string) {
     if (!confirm("¿Eliminar este check-in?")) return;
-    setItems((p) => p.filter((x) => x.id !== id));
+    setDeleting((prev) => new Set(prev).add(id));
     await fetch("/api/checkins", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -29,7 +32,10 @@ export default function CheckInHistory({ initial }: { initial: Item[] }) {
 
   return (
     <div className="glass-card p-6">
-      <span className="font-label-caps text-label-caps text-on-surface-variant">HISTORIAL</span>
+      <div className="flex justify-between items-center">
+        <span className="font-label-caps text-label-caps text-on-surface-variant">HISTORIAL</span>
+        <span className="font-label-caps text-label-caps text-on-surface-variant opacity-50">{items.length}</span>
+      </div>
       <div className="mt-4 divide-y divide-outline-variant">
         {items.length === 0 && <p className="text-sm text-on-surface-variant py-4">Aún no hay check-ins. Registra el primero.</p>}
         {items.map((c) => (

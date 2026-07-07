@@ -14,7 +14,7 @@ export default async function TrackingPage() {
   const checkins = await prisma.dailyCheckIn.findMany({
     where: { userId },
     orderBy: { date: "desc" },
-    take: 10,
+    take: 60,
   });
 
   return (
