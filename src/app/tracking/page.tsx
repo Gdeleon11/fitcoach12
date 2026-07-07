@@ -31,12 +31,14 @@ export default async function TrackingPage() {
               <p className="text-sm text-on-surface-variant py-4">Aún no hay check-ins. Registra el primero.</p>
             )}
             {checkins.map((c) => (
-              <div key={c.id} className="py-3 flex justify-between items-center">
-                <span className="font-label-caps text-label-caps text-on-surface-variant">
+              <div key={c.id} className="py-3 flex justify-between items-center gap-3">
+                <span className="font-label-caps text-label-caps text-on-surface-variant shrink-0">
                   {c.date.toISOString().slice(0, 10)}
                 </span>
-                <span className="font-data-point text-sm">
+                <span className="font-data-point text-sm text-right">
                   {c.weightKg ? `${c.weightKg}kg` : "—"} · {c.steps ? `${c.steps} pasos` : "—"}
+                  {c.activeKcal ? ` · ${c.activeKcal}kcal act.` : ""}
+                  {c.distanceKm ? ` · ${c.distanceKm}km` : ""}
                 </span>
               </div>
             ))}

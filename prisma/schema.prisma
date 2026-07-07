@@ -118,6 +118,9 @@ model DailyCheckIn {
   digestion Int?
   stress    Int?
   steps     Int?
+  activeKcal Int? // active energy burned
+  basalKcal  Int? // basal/resting energy (BMR)
+  distanceKm Float? // distance covered
   notes     String?
   createdAt DateTime @default(now())
 

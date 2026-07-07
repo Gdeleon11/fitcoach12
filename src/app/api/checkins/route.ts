@@ -15,6 +15,7 @@ export async function GET() {
 }
 
 const schema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), // backdate to any day
   weightKg: z.number().min(30).max(300).optional(),
   waistCm: z.number().min(40).max(200).optional(),
   sleepH: z.number().min(0).max(24).optional(),
@@ -24,6 +25,9 @@ const schema = z.object({
   digestion: z.number().int().min(1).max(5).optional(),
   stress: z.number().int().min(1).max(5).optional(),
   steps: z.number().int().min(0).max(100000).optional(),
+  activeKcal: z.number().int().min(0).max(20000).optional(),
+  basalKcal: z.number().int().min(0).max(10000).optional(),
+  distanceKm: z.number().min(0).max(500).optional(),
   notes: z.string().max(1000).optional(),
 });
 
@@ -34,6 +38,11 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Datos inválidos" }, { status: 400 });
   }
-  const checkin = await prisma.dailyCheckIn.create({ data: { userId, ...parsed.data } });
+  const { date, ...rest } = parsed.data;
+  // Store backdated entries at noon UTC so the calendar day never shifts by timezone.
+  const when = date ? new Date(`${date}T12:00:00Z`) : undefined;
+  const checkin = await prisma.dailyCheckIn.create({
+    data: { userId, ...rest, ...(when ? { date: when } : {}) },
+  });
   return NextResponse.json({ checkin }, { status: 201 });
 }

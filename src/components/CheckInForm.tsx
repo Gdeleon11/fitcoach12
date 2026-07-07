@@ -9,10 +9,14 @@ export default function CheckInForm() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [v, setV] = useState({
+    date: new Date().toISOString().slice(0, 10),
     weightKg: "",
     waistCm: "",
     sleepH: "",
     steps: "",
+    activeKcal: "",
+    basalKcal: "",
+    distanceKm: "",
     energy: 3,
     hunger: 3,
     fatigue: 3,
@@ -26,6 +30,7 @@ export default function CheckInForm() {
     setSaving(true);
     setError(null);
     const payload: Record<string, unknown> = {
+      date: v.date,
       energy: v.energy,
       hunger: v.hunger,
       fatigue: v.fatigue,
@@ -36,6 +41,9 @@ export default function CheckInForm() {
     if (v.waistCm) payload.waistCm = Number(v.waistCm);
     if (v.sleepH) payload.sleepH = Number(v.sleepH);
     if (v.steps) payload.steps = Number(v.steps);
+    if (v.activeKcal) payload.activeKcal = Number(v.activeKcal);
+    if (v.basalKcal) payload.basalKcal = Number(v.basalKcal);
+    if (v.distanceKm) payload.distanceKm = Number(v.distanceKm);
     if (v.notes) payload.notes = v.notes;
 
     const res = await fetch("/api/checkins", {
@@ -51,7 +59,7 @@ export default function CheckInForm() {
     }
     setDone(true);
     setSaving(false);
-    setV((p) => ({ ...p, weightKg: "", waistCm: "", sleepH: "", steps: "", notes: "" }));
+    setV((p) => ({ ...p, weightKg: "", waistCm: "", sleepH: "", steps: "", activeKcal: "", basalKcal: "", distanceKm: "", notes: "" }));
     router.refresh();
     setTimeout(() => setDone(false), 2500);
   }
@@ -60,11 +68,24 @@ export default function CheckInForm() {
     <form onSubmit={submit} className="glass-card p-6 space-y-5">
       {error && <div className="text-sm text-error border border-error/40 bg-error/10 px-3 py-2 rounded">{error}</div>}
       {done && <div className="text-sm text-secondary-container border border-secondary-container/40 px-3 py-2 rounded">Check-in guardado ✓</div>}
+      <label className="block">
+        <span className="font-label-caps text-label-caps text-on-surface-variant">FECHA (puedes registrar días pasados)</span>
+        <input
+          type="date"
+          value={v.date}
+          max={new Date().toISOString().slice(0, 10)}
+          onChange={(e) => setV({ ...v, date: e.target.value })}
+          className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2"
+        />
+      </label>
       <div className="grid grid-cols-2 gap-4">
         <Field label="PESO (KG)" value={v.weightKg} onChange={(x) => setV({ ...v, weightKg: x })} type="number" />
         <Field label="CINTURA (CM)" value={v.waistCm} onChange={(x) => setV({ ...v, waistCm: x })} type="number" />
         <Field label="SUEÑO (H)" value={v.sleepH} onChange={(x) => setV({ ...v, sleepH: x })} type="number" />
         <Field label="PASOS" value={v.steps} onChange={(x) => setV({ ...v, steps: x })} type="number" />
+        <Field label="CAL. ACTIVAS" value={v.activeKcal} onChange={(x) => setV({ ...v, activeKcal: x })} type="number" />
+        <Field label="CAL. BASALES" value={v.basalKcal} onChange={(x) => setV({ ...v, basalKcal: x })} type="number" />
+        <Field label="DISTANCIA (KM)" value={v.distanceKm} onChange={(x) => setV({ ...v, distanceKm: x })} type="number" />
       </div>
       <Rating label="ENERGÍA" value={v.energy} onChange={(x) => setV({ ...v, energy: x })} />
       <Rating label="HAMBRE" value={v.hunger} onChange={(x) => setV({ ...v, hunger: x })} />
