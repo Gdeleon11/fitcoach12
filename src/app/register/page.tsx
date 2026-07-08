@@ -4,6 +4,8 @@ import AuthCard from "@/components/AuthCard";
 import RegisterForm from "@/components/RegisterForm";
 import GoogleButton from "@/components/GoogleButton";
 
+export const dynamic = "force-dynamic";
+
 export default function RegisterPage() {
   const googleEnabled = Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
   return (
