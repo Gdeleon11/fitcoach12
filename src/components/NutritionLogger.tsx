@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 type Log = {
@@ -32,6 +32,31 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
   const [estimating, setEstimating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  const [image, setImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new globalThis.Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 800;
+        const scaleSize = Math.min(1, MAX_WIDTH / img.width);
+        canvas.width = img.width * scaleSize;
+        canvas.height = img.height * scaleSize;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        setImage(canvas.toDataURL("image/jpeg", 0.7));
+      };
+      if (event.target?.result) {
+        img.src = event.target.result as string;
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const todays = logs.filter((l) => l.date === today());
   const totalKcal = todays.reduce((a, l) => a + (l.totalKcal ?? 0), 0);
@@ -43,16 +68,19 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
   );
 
   async function estimate() {
-    if (desc.trim().length < 3) return;
+    if (!image && desc.trim().length < 3) {
+      setNote("Describe la comida o sube una foto.");
+      return;
+    }
     setEstimating(true);
     setNote(null);
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 30000);
+    const timer = setTimeout(() => controller.abort(), 60000); // 60s for vision models
     try {
       const res = await fetch("/api/nutrition/estimate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description: desc }),
+        body: JSON.stringify({ description: desc || "Estimar macros de esta comida", image }),
         signal: controller.signal,
       });
       const data = await res.json();
@@ -91,7 +119,7 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
     const data = await res.json();
     if (res.ok && data.log) {
       setLogs((p) => [{ ...data.log, date: data.log.date.slice(0, 10) }, ...p]);
-      setMealName(""); setDesc(""); setKcal(""); setProtein(""); setCarbs(""); setFat(""); setAiEstimated(false); setNote(null);
+      setMealName(""); setDesc(""); setKcal(""); setProtein(""); setCarbs(""); setFat(""); setAiEstimated(false); setNote(null); setImage(null);
       router.refresh();
     }
     setSaving(false);
@@ -123,7 +151,7 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
             />
           </label>
           <label className="block">
-            <span className="font-label-caps text-label-caps text-on-surface-variant">DESCRIPCIÓN (para estimación IA)</span>
+            <span className="font-label-caps text-label-caps text-on-surface-variant">DESCRIPCIÓN (Opcional si subes foto)</span>
             <textarea
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
@@ -132,6 +160,22 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
               className="mt-1 w-full bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-2 py-2 rounded"
             />
           </label>
+          <div>
+            <input type="file" accept="image/*" capture="environment" className="hidden" ref={fileInputRef} onChange={handleImage} />
+            <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 text-sm text-primary hover:underline">
+              <span className="material-symbols-outlined">add_a_photo</span>
+              {image ? "CAMBIAR FOTO" : "AÑADIR FOTO DE LA COMIDA"}
+            </button>
+            {image && (
+              <div className="mt-3 relative w-24 h-24 rounded overflow-hidden border border-outline-variant">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={image} alt="Comida" className="object-cover w-full h-full" />
+                <button type="button" onClick={() => setImage(null)} className="absolute top-1 right-1 bg-black/50 text-white rounded-full p-1 leading-none" title="Quitar foto">
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+              </div>
+            )}
+          </div>
           <button
             type="button"
             onClick={estimate}

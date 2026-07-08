@@ -187,8 +187,8 @@ Reglas de análisis visual:
 5. No des consejo médico.
 Responde en español, de forma estructurada en 4-6 frases, sin markdown.`;
 
-// Estimate macros for a free-text meal description. Never throws.
-export async function estimateMeal(description: string): Promise<{
+// Estimate macros for a free-text meal description and optional image. Never throws.
+export async function estimateMeal(description: string, image?: string): Promise<{
   totalKcal: number;
   proteinG: number;
   carbsG: number;
@@ -207,16 +207,20 @@ export async function estimateMeal(description: string): Promise<{
   };
   if (!aiEnabled) return heuristic("Estimación aproximada (sin clave de IA). Ajusta manualmente.");
   try {
+    const content: any[] = [{ type: "text", text: description }];
+    if (image) {
+      content.push({ type: "image_url", image_url: { url: image } });
+    }
     const raw = await runCompletion(
       [
         {
           role: "system",
           content:
-            "Eres un nutricionista. Estima macros de la comida descrita. Responde SOLO JSON válido con las claves: totalKcal, proteinG, carbsG, fatG, note (breve). Números enteros.",
+            "Eres un nutricionista analizando comidas" + (image ? " mediante fotos" : "") + ". Estima macros de la comida descrita. Responde SOLO JSON válido con las claves: totalKcal, proteinG, carbsG, fatG, note (breve, indicando si te basaste en la foto). Números enteros. Si la foto no es comida, estima 0.",
         },
-        { role: "user", content: description },
+        { role: "user", content },
       ],
-      { maxTokens: 200, temperature: 0.2 }
+      { maxTokens: 250, temperature: 0.2, vision: Boolean(image) }
     );
     const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
     const match = cleaned.match(/\{[\s\S]*\}/);
