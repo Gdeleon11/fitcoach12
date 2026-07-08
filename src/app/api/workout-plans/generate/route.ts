@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { buildRoutine, bestWeightByExercise, FOCUS_OPTIONS } from "@/lib/routine";
 
+export const maxDuration = 60;
+
 const schema = z.object({
   focus: z.enum(FOCUS_OPTIONS.map((f) => f.key) as [string, ...string[]]).default("full"),
 });

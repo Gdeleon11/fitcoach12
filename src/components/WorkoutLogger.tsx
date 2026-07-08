@@ -17,6 +17,7 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
   const [sets, setSets] = useState<SetRow[]>([{ ...empty }]);
   const [list, setList] = useState<Recent[]>(recent);
   const [saving, setSaving] = useState(false);
+  const [dateStr, setDateStr] = useState(new Date().toISOString().slice(0, 10));
 
   const volume = sets.reduce((a, s) => a + (Number(s.reps) || 0) * (Number(s.weightKg) || 0), 0);
 
@@ -39,6 +40,7 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
     if (rpe) payload.rpe = Number(rpe);
     if (durationM) payload.durationM = Number(durationM);
     if (cleanSets.length) payload.sets = cleanSets;
+    if (dateStr) payload.date = dateStr; // Send YYYY-MM-DD directly
 
     const res = await fetch("/api/workouts", {
       method: "POST",
@@ -59,6 +61,10 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <form onSubmit={save} className="glass-card p-6 space-y-4">
         <div className="grid grid-cols-2 gap-3">
+          <label className="block col-span-2">
+            <span className="font-label-caps text-label-caps text-on-surface-variant">FECHA (puedes registrar días pasados)</span>
+            <input type="date" value={dateStr} onChange={(e) => setDateStr(e.target.value)} className="mt-1 w-full bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-2 py-2 rounded" />
+          </label>
           <label className="block col-span-2">
             <span className="font-label-caps text-label-caps text-on-surface-variant">NOMBRE SESIÓN</span>
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Empuje A" className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2" />

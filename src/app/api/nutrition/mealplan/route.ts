@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { generateMealPlan } from "@/lib/mealplan";
 
+export const maxDuration = 60;
+
 export async function POST() {
   const userId = await requireUserId();
   if (!userId) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
@@ -26,7 +28,7 @@ export async function POST() {
     return NextResponse.json(
       {
         error:
-          "No se pudo generar el menú: la IA no respondió (límite de uso en todos los proveedores o clave faltante). Verifica que GROQ_API_KEY esté configurada en Vercel, espera ~1 minuto y reintenta.",
+          "No se pudo generar el menú. Si usas Ollama local, asegúrate de que esté encendido y que el túnel esté activo. La generación completa puede demorar hasta 60 segundos.",
       },
       { status: 502 }
     );

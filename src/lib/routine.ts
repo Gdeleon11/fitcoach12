@@ -15,6 +15,8 @@ export const FOCUS_OPTIONS = [
   { key: "legs", label: "Pierna" },
   { key: "upper", label: "Tren superior" },
   { key: "lower", label: "Tren inferior" },
+  { key: "hiit", label: "HIIT (Alta intensidad)" },
+  { key: "cardio", label: "Cardio (Resistencia)" },
 ] as const;
 
 export type FocusKey = (typeof FOCUS_OPTIONS)[number]["key"];
@@ -83,6 +85,24 @@ const TEMPLATES: Record<string, { name: string; exercises: Omit<PlanExercise, "s
       { name: "Remo con barra", sets: 3, reps: "8-10" },
       { name: "Press militar", sets: 3, reps: "10" },
       { name: "Curl de bíceps", sets: 3, reps: "12" },
+    ],
+  },
+  hiit: {
+    name: "HIIT",
+    exercises: [
+      { name: "Burpees", sets: 4, reps: "45 seg" },
+      { name: "Mountain Climbers", sets: 4, reps: "45 seg" },
+      { name: "Jumping Jacks", sets: 4, reps: "45 seg" },
+      { name: "Sentadilla con salto", sets: 4, reps: "45 seg" },
+      { name: "Plancha", sets: 4, reps: "45 seg" },
+    ],
+  },
+  cardio: {
+    name: "Cardio",
+    exercises: [
+      { name: "Trotadora / Correr", sets: 1, reps: "20 min" },
+      { name: "Remo ergómetro", sets: 1, reps: "10 min" },
+      { name: "Bicicleta estática", sets: 1, reps: "15 min" },
     ],
   },
 };
