@@ -8,8 +8,9 @@ import OpenAI from "openai";
 const GEMINI_KEY = process.env.GEMINI_API_KEY;
 const GROQ_KEY = process.env.GROQ_API_KEY;
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
+const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL;
 
-export const aiEnabled = Boolean(GEMINI_KEY || GROQ_KEY || OPENAI_KEY);
+export const aiEnabled = Boolean(GEMINI_KEY || GROQ_KEY || OPENAI_KEY || OLLAMA_BASE_URL);
 
 const REQUEST_TIMEOUT_MS = 25_000;
 
@@ -22,6 +23,15 @@ let cached: Provider[] | null = null;
 function providers(): Provider[] {
   if (cached) return cached;
   const list: Provider[] = [];
+  if (OLLAMA_BASE_URL) {
+    list.push({
+      name: "ollama",
+      client: new OpenAI({ apiKey: "ollama", baseURL: OLLAMA_BASE_URL, maxRetries: 0, timeout: REQUEST_TIMEOUT_MS * 3 }),
+      model: process.env.OLLAMA_MODEL || "llama3.1:latest",
+      visionModel: process.env.OLLAMA_VISION_MODEL || "qwen2.5vl:7b",
+      supportsVision: true,
+    });
+  }
   if (GEMINI_KEY) {
     list.push({
       name: "gemini",
@@ -64,8 +74,8 @@ async function runCompletion(
 ): Promise<string> {
   const all = providers();
   if (all.length === 0) throw new NoProviderError("no ai provider configured");
-  // Text prefers Groq (more generous free tier); vision prefers Gemini (more reliable).
-  const order = opts.vision ? ["gemini", "groq", "openai"] : ["groq", "gemini", "openai"];
+  // Se prioriza ollama si está configurado. Luego fallback a Groq / Gemini dependiendo del caso de uso.
+  const order = opts.vision ? ["ollama", "gemini", "groq", "openai"] : ["ollama", "groq", "gemini", "openai"];
   const provs = order.map((n) => all.find((p) => p.name === n)).filter((p): p is Provider => Boolean(p));
   let lastErr: unknown;
   for (const p of provs) {
@@ -92,7 +102,7 @@ async function runCompletion(
 // Turns an OpenAI/Gemini/Groq SDK error into a clear, user-facing message.
 export function friendlyAiError(err: unknown, prefix: string): string {
   if (err instanceof NoProviderError) {
-    return `${prefix}: no hay ninguna clave de IA configurada (GEMINI_API_KEY o GROQ_API_KEY).`;
+    return `${prefix}: no hay ninguna clave o puente de IA configurado (OLLAMA_BASE_URL, GEMINI_API_KEY o GROQ_API_KEY).`;
   }
   const e = err as { status?: number; message?: string; error?: { message?: string } };
   const status = e?.status;
@@ -118,7 +128,7 @@ export type ChatMsg = { role: "system" | "user" | "assistant"; content: string }
 
 export async function chat(messages: ChatMsg[]): Promise<string> {
   if (!aiEnabled) {
-    return "El AI Coach está en modo demo (no hay clave de IA configurada). Con GEMINI_API_KEY o GROQ_API_KEY verás lecturas honestas basadas en tus últimos 7 días de datos.";
+    return "El AI Coach está en modo demo (no hay clave ni puente de IA configurado). Con OLLAMA_BASE_URL, GEMINI_API_KEY o GROQ_API_KEY verás lecturas honestas basadas en tus últimos 7 días de datos.";
   }
   try {
     return await runCompletion([{ role: "system", content: GUARDIAN }, ...messages], { maxTokens: 500, temperature: 0.6 });
@@ -149,7 +159,7 @@ export async function aiJson<T = unknown>(system: string, user: string, maxToken
 
 // Vision analysis of progress photos (data URLs). Never throws.
 export async function analyzeImages(dataUrls: string[], context: string): Promise<string> {
-  if (!aiEnabled) return "El análisis con IA requiere una clave (GEMINI_API_KEY o GROQ_API_KEY). Sin ella no se puede analizar la imagen.";
+  if (!aiEnabled) return "El análisis con IA requiere una configuración de IA (OLLAMA_BASE_URL, GEMINI_API_KEY o GROQ_API_KEY). Sin ella no se puede analizar la imagen.";
   try {
     const content = [
       { type: "text" as const, text: context },
