@@ -122,10 +122,10 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
 
         <div className="flex justify-between items-center pt-2 border-t border-outline-variant">
           <span className="font-label-caps text-label-caps text-on-surface-variant">
-            {type === "STRENGTH" ? "VOLUMEN" : "DURACIÓN"}
+            RESUMEN
           </span>
           <span className="font-data-point text-data-point text-primary">
-            {type === "STRENGTH" ? `${volume.toLocaleString()} kg` : `${durationM || 0} min`}
+            {type === "STRENGTH" ? `${sets.filter(s => s.exerciseName).length} series` : `${durationM || 0} min`}
           </span>
         </div>
         <button type="submit" disabled={saving} className="w-full py-3 bg-primary-container text-on-primary-container font-label-caps text-label-caps font-bold hover:brightness-110 transition disabled:opacity-50">
@@ -146,13 +146,9 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
                 </p>
               </div>
               <div className="text-right">
-                {w.volumeKg !== null && w.volumeKg > 0 ? (
-                  <p className="font-data-point text-sm text-primary">{`${Math.round(w.volumeKg).toLocaleString('en-US')} kg`}</p>
-                ) : (
-                  <p className="font-data-point text-sm text-primary">
-                    {w.durationM ? `${w.durationM} min` : (w.distanceKm ? `${w.distanceKm} km` : "—")}
-                  </p>
-                )}
+                <p className="font-data-point text-sm text-primary">
+                  {w.durationM ? `${w.durationM} min` : (w.distanceKm ? `${w.distanceKm} km` : "—")}
+                </p>
                 <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">RPE {w.rpe ?? "—"}</p>
               </div>
             </div>

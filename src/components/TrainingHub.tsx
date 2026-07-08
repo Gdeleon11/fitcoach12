@@ -116,13 +116,9 @@ export default function TrainingHub({ activePlan, recent }: { activePlan: Active
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                {w.volumeKg !== null && w.volumeKg > 0 ? (
-                  <p className="font-data-point text-sm text-primary">{`${Math.round(w.volumeKg).toLocaleString('en-US')} kg`}</p>
-                ) : (
-                  <p className="font-data-point text-sm text-primary">
-                    {w.durationM ? `${w.durationM} min` : (w.distanceKm ? `${w.distanceKm} km` : "—")}
-                  </p>
-                )}
+                <p className="font-data-point text-sm text-primary">
+                  {w.durationM ? `${w.durationM} min` : (w.distanceKm ? `${w.distanceKm} km` : "—")}
+                </p>
                 <button onClick={() => deleteWorkout(w.id)} className="material-symbols-outlined text-on-surface-variant hover:text-error text-base" title="Eliminar">delete</button>
               </div>
             </div>
