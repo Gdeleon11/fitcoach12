@@ -35,6 +35,7 @@ export default async function NutritionPage() {
           fatG: l.fatG,
           aiEstimated: l.aiEstimated,
         }))}
+        currentPlan={profile?.currentMealPlan as any}
       />
       <MealPlanGenerator initialPlan={profile?.currentMealPlan as any} />
     </AppShell>

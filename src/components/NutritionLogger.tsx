@@ -18,7 +18,9 @@ type Target = { kcal: number | null; protein: number | null; carbs: number | nul
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-export default function NutritionLogger({ target, initialLogs }: { target: Target; initialLogs: Log[] }) {
+import type { MealPlan } from "@/lib/mealplan";
+
+export default function NutritionLogger({ target, initialLogs, currentPlan }: { target: Target; initialLogs: Log[]; currentPlan?: MealPlan | null }) {
   const router = useRouter();
   const [logs, setLogs] = useState<Log[]>(initialLogs);
   const [mealDate, setMealDate] = useState(today());
@@ -61,6 +63,53 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
   const todays = logs.filter((l) => l.date === today());
   const totalKcal = todays.reduce((a, l) => a + (l.totalKcal ?? 0), 0);
   const totalProtein = todays.reduce((a, l) => a + (l.proteinG ?? 0), 0);
+
+  // Smart Suggestion Logic
+  const suggestedMeal = (() => {
+    if (!currentPlan || !currentPlan.days) return null;
+    if (mealDate !== today()) return null; // Only suggest for today
+    const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const todayName = dayNames[new Date().getDay()];
+    const todayPlan = currentPlan.days.find((d) => d.day === todayName);
+    if (!todayPlan || !todayPlan.meals) return null;
+
+    const hour = new Date().getHours();
+    let expectedKeyword = "desayuno";
+    if (hour >= 11 && hour < 16) expectedKeyword = "almuerzo";
+    else if (hour >= 16 && hour < 19) expectedKeyword = "merienda";
+    else if (hour >= 19) expectedKeyword = "cena";
+
+    const suggested = todayPlan.meals.find((m) => m.name.toLowerCase().includes(expectedKeyword)) || todayPlan.meals[0];
+    if (!suggested) return null;
+
+    const alreadyLogged = todays.some((l) => l.mealName?.toLowerCase().includes(expectedKeyword) || l.mealName === suggested.name);
+    return alreadyLogged ? null : suggested;
+  })();
+
+  const [manualOverride, setManualOverride] = useState(false);
+  const showManualForm = manualOverride || !suggestedMeal;
+
+  async function logSuggested() {
+    if (!suggestedMeal) return;
+    setSaving(true);
+    const res = await fetch("/api/nutrition", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        date: today(), 
+        mealName: suggestedMeal.name, 
+        totalKcal: suggestedMeal.kcal, 
+        proteinG: suggestedMeal.protein,
+        aiEstimated: true
+      }),
+    });
+    const data = await res.json();
+    if (res.ok && data.log) {
+      setLogs((p) => [{ ...data.log, date: data.log.date.slice(0, 10) }, ...p]);
+      router.refresh();
+    }
+    setSaving(false);
+  }
 
   // Group non-today logs by day (desc).
   const historyDays = Array.from(new Set(logs.filter((l) => l.date !== today()).map((l) => l.date))).sort((a, b) =>
@@ -138,8 +187,48 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <form onSubmit={save} className="glass-card p-6 space-y-4">
-          <span className="font-label-caps text-label-caps text-on-surface-variant">AÑADIR COMIDA</span>
+        <div className="space-y-6">
+          {suggestedMeal && !manualOverride && (
+            <div className="glass-card p-6 border-primary/30 relative overflow-hidden">
+              <div className="absolute inset-0 bg-primary/5 pointer-events-none" />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="material-symbols-outlined text-primary">auto_awesome</span>
+                  <span className="font-label-caps text-label-caps text-primary">SUGERENCIA DEL MENÚ PARA AHORA</span>
+                </div>
+                <h3 className="text-lg font-bold text-on-surface mb-1">{suggestedMeal.name}</h3>
+                <p className="font-data-point text-on-surface-variant mb-6">{suggestedMeal.kcal} kcal · {suggestedMeal.protein}g P</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    onClick={logSuggested}
+                    disabled={saving}
+                    className="py-3 bg-primary text-on-primary font-label-caps text-label-caps font-bold hover:brightness-110 transition disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-base">check</span>
+                    {saving ? "REGISTRANDO..." : "SÍ, LO COMÍ"}
+                  </button>
+                  <button
+                    onClick={() => setManualOverride(true)}
+                    className="py-3 border border-outline-variant text-on-surface font-label-caps text-label-caps hover:bg-surface-container transition flex items-center justify-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-base">close</span>
+                    COMÍ OTRA COSA
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showManualForm && (
+            <form onSubmit={save} className="glass-card p-6 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="font-label-caps text-label-caps text-on-surface-variant">AÑADIR COMIDA</span>
+                {suggestedMeal && manualOverride && (
+                  <button type="button" onClick={() => setManualOverride(false)} className="text-xs text-primary hover:underline flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">undo</span> VOLVER A SUGERENCIA
+                  </button>
+                )}
+              </div>
           <label className="block">
             <span className="font-label-caps text-label-caps text-on-surface-variant">FECHA (puedes registrar días pasados)</span>
             <input
@@ -193,14 +282,16 @@ export default function NutritionLogger({ target, initialLogs }: { target: Targe
             <MiniField label="CARB (g)" value={carbs} onChange={setCarbs} type="number" />
             <MiniField label="GRASA (g)" value={fat} onChange={setFat} type="number" />
           </div>
-          <button
-            type="submit"
-            disabled={saving}
-            className="w-full py-3 bg-primary-container text-on-primary-container font-label-caps text-label-caps font-bold hover:brightness-110 transition disabled:opacity-50"
-          >
-            {saving ? "GUARDANDO..." : "REGISTRAR COMIDA"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full py-3 bg-primary-container text-on-primary-container font-label-caps text-label-caps font-bold hover:brightness-110 transition disabled:opacity-50"
+            >
+              {saving ? "GUARDANDO..." : "REGISTRAR COMIDA"}
+            </button>
+          </form>
+          )}
+        </div>
 
         <div className="space-y-6">
           <div className="glass-card p-6">
