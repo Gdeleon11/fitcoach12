@@ -3,6 +3,8 @@ import { z } from "zod";
 import { requireUserId } from "@/lib/session";
 import { estimateMeal } from "@/lib/ai";
 
+export const maxDuration = 60;
+
 const schema = z.object({ description: z.string().min(3).max(1000) });
 
 export async function POST(req: Request) {

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type SetRow = { exerciseName: string; reps: string; weightKg: string; rir: string };
-type Recent = { id: string; name: string | null; date: string; volumeKg: number | null; rpe: number | null; setCount: number };
+type Recent = { id: string; name: string | null; date: string; volumeKg: number | null; rpe: number | null; setCount: number; durationM?: number | null };
 
 const empty: SetRow = { exerciseName: "", reps: "", weightKg: "", rir: "" };
 
@@ -50,7 +50,7 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
     const data = await res.json();
     if (res.ok && data.workout) {
       const w = data.workout;
-      setList((p) => [{ id: w.id, name: w.name, date: new Date(w.date).toISOString().slice(0, 10), volumeKg: w.volumeKg, rpe: w.rpe, setCount: (w.sets ?? []).length }, ...p]);
+      setList((p) => [{ id: w.id, name: w.name, date: new Date(w.date).toISOString().slice(0, 10), volumeKg: w.volumeKg, rpe: w.rpe, setCount: (w.sets ?? []).length, durationM: w.durationM }, ...p]);
       setName(""); setRpe(""); setDurationM(""); setSets([{ ...empty }]);
       router.refresh();
     }
@@ -79,12 +79,17 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
             </select>
           </label>
           <label className="block">
-            <span className="font-label-caps text-label-caps text-on-surface-variant">RPE</span>
+            <span className="font-label-caps text-label-caps text-on-surface-variant">RPE (1-10)</span>
             <input type="number" step="any" value={rpe} onChange={(e) => setRpe(e.target.value)} className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2" />
+          </label>
+          <label className="block">
+            <span className="font-label-caps text-label-caps text-on-surface-variant">DURACIÓN (min)</span>
+            <input type="number" value={durationM} onChange={(e) => setDurationM(e.target.value)} placeholder="Ej. 30" className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2" />
           </label>
         </div>
 
-        <div>
+        {type === "STRENGTH" && (
+          <div>
           <span className="font-label-caps text-label-caps text-on-surface-variant">SERIES</span>
           <div className="mt-2 space-y-2">
             {sets.map((s, i) => (
@@ -101,10 +106,15 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
             + AÑADIR SERIE
           </button>
         </div>
+        )}
 
         <div className="flex justify-between items-center pt-2 border-t border-outline-variant">
-          <span className="font-label-caps text-label-caps text-on-surface-variant">VOLUMEN</span>
-          <span className="font-data-point text-data-point text-primary">{volume.toLocaleString()} kg</span>
+          <span className="font-label-caps text-label-caps text-on-surface-variant">
+            {type === "STRENGTH" ? "VOLUMEN" : "DURACIÓN"}
+          </span>
+          <span className="font-data-point text-data-point text-primary">
+            {type === "STRENGTH" ? `${volume.toLocaleString()} kg` : `${durationM || 0} min`}
+          </span>
         </div>
         <button type="submit" disabled={saving} className="w-full py-3 bg-primary-container text-on-primary-container font-label-caps text-label-caps font-bold hover:brightness-110 transition disabled:opacity-50">
           {saving ? "GUARDANDO..." : "GUARDAR SESIÓN"}
@@ -122,7 +132,11 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
                 <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">{w.date} · {w.setCount} series</p>
               </div>
               <div className="text-right">
-                <p className="font-data-point text-sm text-primary">{w.volumeKg ? `${Math.round(w.volumeKg).toLocaleString()}kg` : "—"}</p>
+                {w.volumeKg !== null && w.volumeKg > 0 ? (
+                  <p className="font-data-point text-sm text-primary">{`${Math.round(w.volumeKg).toLocaleString()}kg`}</p>
+                ) : (
+                  <p className="font-data-point text-sm text-primary">{w.durationM ? `${w.durationM} min` : "—"}</p>
+                )}
                 <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">RPE {w.rpe ?? "—"}</p>
               </div>
             </div>
