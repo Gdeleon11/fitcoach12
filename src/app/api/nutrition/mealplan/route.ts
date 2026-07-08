@@ -5,9 +5,12 @@ import { generateMealPlan } from "@/lib/mealplan";
 
 export const maxDuration = 60;
 
-export async function POST() {
+export async function POST(req: Request) {
   const userId = await requireUserId();
   if (!userId) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+
+  const body = await req.json().catch(() => ({}));
+  const preferences = typeof body.preferences === "string" ? body.preferences.trim() : "";
 
   const profile = await prisma.userProfile.findUnique({ where: { userId } });
   if (!profile?.targetKcal) {
@@ -22,6 +25,7 @@ export async function POST() {
     foodWindowStart: profile.foodWindowStart,
     foodWindowEnd: profile.foodWindowEnd,
     goalBodyFat: profile.goalBodyFat,
+    preferences,
   });
 
   if (!plan) {

@@ -7,6 +7,7 @@ export default function MealPlanGenerator() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [preferences, setPreferences] = useState("");
 
   async function generate() {
     setLoading(true);
@@ -14,7 +15,12 @@ export default function MealPlanGenerator() {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 55000);
     try {
-      const res = await fetch("/api/nutrition/mealplan", { method: "POST", signal: controller.signal });
+      const res = await fetch("/api/nutrition/mealplan", { 
+        method: "POST", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preferences }),
+        signal: controller.signal 
+      });
       const data = await res.json();
       if (!res.ok) setError(data.error ?? "No se pudo generar el menú.");
       else setPlan(data.plan);
@@ -43,11 +49,25 @@ export default function MealPlanGenerator() {
         </button>
       </div>
 
-      {error && <p className="text-sm text-error">{error}</p>}
+      {error && <p className="text-sm text-error mb-4">{error}</p>}
       {!plan && !error && (
-        <p className="text-sm text-on-surface-variant">
-          Genera un menú de 7 días ajustado a tu objetivo calórico y de proteína, con lista de compras consolidada.
+        <p className="text-sm text-on-surface-variant mb-4">
+          Genera un menú ajustado a tu objetivo calórico y de proteína, con lista de compras consolidada.
         </p>
+      )}
+
+      {!plan && (
+        <div className="mb-6">
+          <label className="block">
+            <span className="font-label-caps text-label-caps text-on-surface-variant">GUSTOS, ALERGIAS Y PREFERENCIAS</span>
+            <textarea 
+              value={preferences}
+              onChange={(e) => setPreferences(e.target.value)}
+              placeholder="Ej. Me encanta el pollo, no me gusta el pescado, alergia al maní..."
+              className="mt-1 w-full bg-surface-container-lowest border border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-3 py-2 rounded resize-none h-20"
+            />
+          </label>
+        </div>
       )}
 
       {plan && (
