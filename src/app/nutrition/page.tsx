@@ -36,7 +36,7 @@ export default async function NutritionPage() {
           aiEstimated: l.aiEstimated,
         }))}
       />
-      <MealPlanGenerator />
+      <MealPlanGenerator initialPlan={profile?.currentMealPlan as any} />
     </AppShell>
   );
 }

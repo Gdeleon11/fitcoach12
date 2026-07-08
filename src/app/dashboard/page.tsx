@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import { prisma } from "@/lib/prisma";
@@ -53,6 +54,15 @@ export default async function DashboardPage() {
       </div>
 
       <div className="bento-grid">
+        {/* Hero Image */}
+        <div className="col-span-12 glass-card overflow-hidden relative h-48 md:h-64 border-b-0 rounded-b-none">
+          <Image src="/dashboard_hero.jpg" alt="FitCoach Elite" fill className="object-cover opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/20 to-transparent" />
+          <div className="absolute bottom-4 left-6">
+            <h2 className="font-display-lg text-primary text-2xl md:text-4xl drop-shadow-lg">FITCOACH 12%</h2>
+            <p className="font-label-caps text-on-surface-variant drop-shadow">SISTEMA DE COMPOSICIÓN CORPORAL CIBERNÉTICO</p>
+          </div>
+        </div>
         {/* Weight */}
         <div className="col-span-12 md:col-span-4 lg:col-span-3 glass-card p-6 flex flex-col justify-between">
           <div>

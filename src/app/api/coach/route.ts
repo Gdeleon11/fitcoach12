@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { chat, type ChatMsg } from "@/lib/ai";
 
+export const maxDuration = 60;
+
 export async function GET() {
   const userId = await requireUserId();
   if (!userId) return NextResponse.json({ error: "No autorizado" }, { status: 401 });

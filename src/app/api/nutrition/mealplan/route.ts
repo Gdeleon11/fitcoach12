@@ -38,5 +38,11 @@ export async function POST(req: Request) {
     );
   }
 
+  // Save the plan to the user profile
+  await prisma.userProfile.update({
+    where: { userId },
+    data: { currentMealPlan: plan as any },
+  });
+
   return NextResponse.json({ plan });
 }

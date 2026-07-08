@@ -99,6 +99,7 @@ model UserProfile {
   carbsG          Int?
   fatG            Int?
   onboardingDone  Boolean  @default(false)
+  currentMealPlan Json?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

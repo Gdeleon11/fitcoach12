@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 const NAV = [
   { href: "/dashboard", icon: "dashboard", label: "Panel" },
@@ -28,6 +29,25 @@ const SECONDARY = [
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [theme, setTheme] = useState("dark");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("fitcoach-theme");
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    }
+  }, []);
+
+  const handleThemeChange = (newTheme: string) => {
+    setTheme(newTheme);
+    localStorage.setItem("fitcoach-theme", newTheme);
+    if (newTheme === "dark") {
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", newTheme);
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -38,6 +58,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             FitCoach 12%
           </Link>
           <div className="flex gap-4 items-center">
+            <select
+              value={theme}
+              onChange={(e) => handleThemeChange(e.target.value)}
+              className="bg-surface-container-highest text-on-surface text-xs font-label-caps border border-outline-variant rounded px-2 py-1 outline-none"
+            >
+              <option value="dark">OSCURO</option>
+              <option value="light">CLARO</option>
+              <option value="neon">NEÓN</option>
+            </select>
             <Link href="/coach" className="material-symbols-outlined text-primary cursor-pointer">smart_toy</Link>
             <Link href="/tracking" className="material-symbols-outlined text-primary cursor-pointer">monitor_weight</Link>
             <button

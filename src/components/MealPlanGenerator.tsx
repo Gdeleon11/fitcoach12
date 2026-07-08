@@ -3,11 +3,30 @@
 import { useState } from "react";
 import type { MealPlan } from "@/lib/mealplan";
 
-export default function MealPlanGenerator() {
-  const [plan, setPlan] = useState<MealPlan | null>(null);
+export default function MealPlanGenerator({ initialPlan }: { initialPlan?: MealPlan | null }) {
+  const [plan, setPlan] = useState<MealPlan | null>(initialPlan ?? null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [preferences, setPreferences] = useState("");
+  const [logging, setLogging] = useState<string | null>(null);
+
+  async function logMeal(mealName: string, kcal: number, proteinG: number) {
+    setLogging(mealName);
+    try {
+      await fetch("/api/nutrition", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mealName, totalKcal: kcal, proteinG, aiEstimated: true }),
+      });
+      // A quick success indication could be added, but for now it'll just silently succeed
+      // We force a page refresh to update the logs on top
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLogging(null);
+    }
+  }
 
   async function generate() {
     setLoading(true);
@@ -84,9 +103,19 @@ export default function MealPlanGenerator() {
                   </div>
                   <ul className="space-y-1">
                     {d.meals.map((m, j) => (
-                      <li key={j} className="flex justify-between gap-3 text-sm">
-                        <span className="text-on-surface">{m.name}</span>
+                      <li key={j} className="flex justify-between items-center gap-3 text-sm group">
+                        <span className="text-on-surface flex-1">{m.name}</span>
                         <span className="font-data-point text-on-surface-variant shrink-0">{m.kcal}kcal</span>
+                        <button
+                          onClick={() => logMeal(m.name, m.kcal, m.protein)}
+                          disabled={logging === m.name}
+                          title="Registrar esta comida hoy"
+                          className="w-6 h-6 rounded flex items-center justify-center bg-surface-container-highest hover:bg-primary hover:text-on-primary transition-colors text-on-surface-variant disabled:opacity-50 shrink-0"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">
+                            {logging === m.name ? "hourglass_empty" : "check"}
+                          </span>
+                        </button>
                       </li>
                     ))}
                   </ul>
