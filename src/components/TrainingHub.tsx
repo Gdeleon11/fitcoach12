@@ -14,7 +14,7 @@ type ActivePlan = {
   rationale: string | null;
   exercises: PlanExercise[];
 };
-type Recent = { id: string; name: string | null; date: string; volumeKg: number | null; setCount: number };
+type Recent = { id: string; name: string | null; date: string; volumeKg: number | null; setCount: number; durationM?: number | null; distanceKm?: number | null; type?: string };
 
 type RowState = { sets: string; reps: string; weight: string; rir: string; done: boolean };
 
@@ -111,10 +111,18 @@ export default function TrainingHub({ activePlan, recent }: { activePlan: Active
             <div key={w.id} className="py-3 flex justify-between items-center gap-3">
               <div>
                 <p className="text-sm text-on-surface">{w.name || "Sesión"}</p>
-                <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">{w.date} · {w.setCount} series</p>
+                <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">
+                  {w.date} · {w.setCount > 0 ? `${w.setCount} series` : (w.distanceKm ? `${w.distanceKm} km` : (w.durationM ? `${w.durationM} min` : "0 series"))}
+                </p>
               </div>
               <div className="flex items-center gap-3">
-                <p className="font-data-point text-sm text-primary">{w.volumeKg ? `${Math.round(w.volumeKg).toLocaleString()}kg` : "—"}</p>
+                {w.volumeKg !== null && w.volumeKg > 0 ? (
+                  <p className="font-data-point text-sm text-primary">{`${Math.round(w.volumeKg).toLocaleString('en-US')} kg`}</p>
+                ) : (
+                  <p className="font-data-point text-sm text-primary">
+                    {w.durationM ? `${w.durationM} min` : (w.distanceKm ? `${w.distanceKm} km` : "—")}
+                  </p>
+                )}
                 <button onClick={() => deleteWorkout(w.id)} className="material-symbols-outlined text-on-surface-variant hover:text-error text-base" title="Eliminar">delete</button>
               </div>
             </div>

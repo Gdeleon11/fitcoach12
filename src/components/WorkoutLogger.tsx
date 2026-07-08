@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 type SetRow = { exerciseName: string; reps: string; weightKg: string; rir: string };
-type Recent = { id: string; name: string | null; date: string; volumeKg: number | null; rpe: number | null; setCount: number; durationM?: number | null };
+type Recent = { id: string; name: string | null; date: string; volumeKg: number | null; rpe: number | null; setCount: number; durationM?: number | null; distanceKm?: number | null };
 
 const empty: SetRow = { exerciseName: "", reps: "", weightKg: "", rir: "" };
 
@@ -14,6 +14,7 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
   const [type, setType] = useState("STRENGTH");
   const [rpe, setRpe] = useState("");
   const [durationM, setDurationM] = useState("");
+  const [distanceKm, setDistanceKm] = useState("");
   const [sets, setSets] = useState<SetRow[]>([{ ...empty }]);
   const [list, setList] = useState<Recent[]>(recent);
   const [saving, setSaving] = useState(false);
@@ -39,7 +40,12 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
     const payload: Record<string, unknown> = { name: name || "Sesión", type };
     if (rpe) payload.rpe = Number(rpe);
     if (durationM) payload.durationM = Number(durationM);
-    if (cleanSets.length) payload.sets = cleanSets;
+    if (distanceKm) payload.distanceKm = Number(distanceKm);
+    
+    if (type === "STRENGTH" && cleanSets.length) {
+      payload.sets = cleanSets;
+    }
+    
     if (dateStr) payload.date = dateStr; // Send YYYY-MM-DD directly
 
     const res = await fetch("/api/workouts", {
@@ -50,8 +56,8 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
     const data = await res.json();
     if (res.ok && data.workout) {
       const w = data.workout;
-      setList((p) => [{ id: w.id, name: w.name, date: new Date(w.date).toISOString().slice(0, 10), volumeKg: w.volumeKg, rpe: w.rpe, setCount: (w.sets ?? []).length, durationM: w.durationM }, ...p]);
-      setName(""); setRpe(""); setDurationM(""); setSets([{ ...empty }]);
+      setList((p) => [{ id: w.id, name: w.name, date: new Date(w.date).toISOString().slice(0, 10), volumeKg: w.volumeKg, rpe: w.rpe, setCount: (w.sets ?? []).length, durationM: w.durationM, distanceKm: w.distanceKm }, ...p]);
+      setName(""); setRpe(""); setDurationM(""); setDistanceKm(""); setSets([{ ...empty }]);
       router.refresh();
     }
     setSaving(false);
@@ -86,6 +92,12 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
             <span className="font-label-caps text-label-caps text-on-surface-variant">DURACIÓN (min)</span>
             <input type="number" value={durationM} onChange={(e) => setDurationM(e.target.value)} placeholder="Ej. 30" className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2" />
           </label>
+          {type !== "STRENGTH" && (
+            <label className="block">
+              <span className="font-label-caps text-label-caps text-on-surface-variant">DISTANCIA (km)</span>
+              <input type="number" step="any" value={distanceKm} onChange={(e) => setDistanceKm(e.target.value)} placeholder="Ej. 5" className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2" />
+            </label>
+          )}
         </div>
 
         {type === "STRENGTH" && (
@@ -129,13 +141,17 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
             <div key={w.id} className="py-3 flex justify-between items-center">
               <div>
                 <p className="text-sm text-on-surface">{w.name || "Sesión"}</p>
-                <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">{w.date} · {w.setCount} series</p>
+                <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">
+                  {w.date} · {w.setCount > 0 ? `${w.setCount} series` : (w.distanceKm ? `${w.distanceKm} km` : "0 series")}
+                </p>
               </div>
               <div className="text-right">
                 {w.volumeKg !== null && w.volumeKg > 0 ? (
-                  <p className="font-data-point text-sm text-primary">{`${Math.round(w.volumeKg).toLocaleString()}kg`}</p>
+                  <p className="font-data-point text-sm text-primary">{`${Math.round(w.volumeKg).toLocaleString('en-US')} kg`}</p>
                 ) : (
-                  <p className="font-data-point text-sm text-primary">{w.durationM ? `${w.durationM} min` : "—"}</p>
+                  <p className="font-data-point text-sm text-primary">
+                    {w.durationM ? `${w.durationM} min` : (w.distanceKm ? `${w.distanceKm} km` : "—")}
+                  </p>
                 )}
                 <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">RPE {w.rpe ?? "—"}</p>
               </div>

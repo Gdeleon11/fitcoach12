@@ -163,6 +163,7 @@ model Workout {
   name      String?
   type      WorkoutType @default(STRENGTH)
   durationM Int?
+  distanceKm Float?
   intensity String?
   rpe       Float?
   volumeKg  Float?

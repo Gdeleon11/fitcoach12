@@ -27,6 +27,7 @@ const schema = z.object({
   name: z.string().max(120).optional(),
   type: z.enum(["STRENGTH", "CARDIO", "SPORT", "MOBILITY"]).optional(),
   durationM: z.number().int().min(0).max(600).optional(),
+  distanceKm: z.number().min(0).max(1000).optional(),
   intensity: z.string().max(40).optional(),
   rpe: z.number().min(0).max(10).optional(),
   notes: z.string().max(1000).optional(),

@@ -45,6 +45,9 @@ export default async function TrainingLogPage() {
           date: w.date.toISOString().slice(0, 10),
           volumeKg: w.volumeKg,
           setCount: w.sets.length,
+          durationM: w.durationM,
+          distanceKm: w.distanceKm,
+          type: w.type,
         }))}
       />
     </AppShell>

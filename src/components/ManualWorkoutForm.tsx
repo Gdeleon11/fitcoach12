@@ -13,6 +13,8 @@ export default function ManualWorkoutForm() {
   const [name, setName] = useState("");
   const [type, setType] = useState("STRENGTH");
   const [rpe, setRpe] = useState("");
+  const [distanceKm, setDistanceKm] = useState("");
+  const [durationM, setDurationM] = useState("");
   const [rows, setRows] = useState<Row[]>([{ ...empty }]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,12 +41,20 @@ export default function ManualWorkoutForm() {
         });
       }
     }
-    if (sets.length === 0) {
-      setError("Añade al menos un ejercicio con nombre.");
-      setSaving(false);
-      return;
+    const payload: Record<string, unknown> = { date, name: name || "Sesión", type };
+    
+    if (type === "STRENGTH") {
+      if (sets.length === 0) {
+        setError("Añade al menos un ejercicio con nombre.");
+        setSaving(false);
+        return;
+      }
+      payload.sets = sets;
+    } else {
+      if (distanceKm) payload.distanceKm = Number(distanceKm);
+      if (durationM) payload.durationM = Number(durationM);
     }
-    const payload: Record<string, unknown> = { date, name: name || "Sesión", type, sets };
+    
     if (rpe) payload.rpe = Number(rpe);
     const res = await fetch("/api/workouts", {
       method: "POST",
@@ -57,7 +67,7 @@ export default function ManualWorkoutForm() {
       setSaving(false);
       return;
     }
-    setName(""); setRpe(""); setRows([{ ...empty }]);
+    setName(""); setRpe(""); setDistanceKm(""); setDurationM(""); setRows([{ ...empty }]);
     setSaving(false);
     router.refresh();
   }
@@ -103,10 +113,23 @@ export default function ManualWorkoutForm() {
           <span className="font-label-caps text-label-caps text-on-surface-variant">RPE</span>
           <input type="number" step="any" value={rpe} onChange={(e) => setRpe(e.target.value)} className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2" />
         </label>
+        {type !== "STRENGTH" && (
+          <>
+            <label className="block">
+              <span className="font-label-caps text-label-caps text-on-surface-variant">DURACIÓN (MIN)</span>
+              <input type="number" value={durationM} onChange={(e) => setDurationM(e.target.value)} className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2" />
+            </label>
+            <label className="block">
+              <span className="font-label-caps text-label-caps text-on-surface-variant">DISTANCIA (KM)</span>
+              <input type="number" step="any" value={distanceKm} onChange={(e) => setDistanceKm(e.target.value)} className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2" />
+            </label>
+          </>
+        )}
       </div>
 
-      <div>
-        <span className="font-label-caps text-label-caps text-on-surface-variant">EJERCICIOS</span>
+      {type === "STRENGTH" && (
+        <div>
+          <span className="font-label-caps text-label-caps text-on-surface-variant">EJERCICIOS</span>
         <div className="mt-2 space-y-2">
           {rows.map((r, i) => (
             <div key={i} className="grid grid-cols-12 gap-2 items-center">
@@ -122,7 +145,8 @@ export default function ManualWorkoutForm() {
         <button type="button" onClick={() => setRows((p) => [...p, { ...empty }])} className="mt-2 font-label-caps text-label-caps text-primary hover:underline">
           + AÑADIR EJERCICIO
         </button>
-      </div>
+        </div>
+      )}
 
       <button type="submit" disabled={saving} className="w-full py-3 bg-primary-container text-on-primary-container font-label-caps text-label-caps font-bold hover:brightness-110 transition disabled:opacity-50">
         {saving ? "GUARDANDO..." : "GUARDAR SESIÓN"}
