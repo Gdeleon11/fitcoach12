@@ -32,7 +32,9 @@ export default async function TrackingPage() {
             weightKg: c.weightKg,
             steps: c.steps,
             activeKcal: c.activeKcal,
+            basalKcal: c.basalKcal,
             distanceKm: c.distanceKm,
+            aiAnalysis: c.aiAnalysis,
           }))}
         />
       </div>

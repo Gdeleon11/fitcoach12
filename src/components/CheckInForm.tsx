@@ -78,21 +78,34 @@ export default function CheckInForm() {
           className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2"
         />
       </label>
-      <div className="grid grid-cols-2 gap-4">
-        <Field label="PESO (KG)" value={v.weightKg} onChange={(x) => setV({ ...v, weightKg: x })} type="number" />
-        <Field label="CINTURA (CM)" value={v.waistCm} onChange={(x) => setV({ ...v, waistCm: x })} type="number" />
-        <Field label="SUEÑO (H)" value={v.sleepH} onChange={(x) => setV({ ...v, sleepH: x })} type="number" />
-        <Field label="PASOS" value={v.steps} onChange={(x) => setV({ ...v, steps: x })} type="number" />
-        <Field label="CAL. ACTIVAS" value={v.activeKcal} onChange={(x) => setV({ ...v, activeKcal: x })} type="number" />
-        <Field label="CAL. BASALES" value={v.basalKcal} onChange={(x) => setV({ ...v, basalKcal: x })} type="number" />
-        <Field label="DISTANCIA (KM)" value={v.distanceKm} onChange={(x) => setV({ ...v, distanceKm: x })} type="number" />
+
+      <div className="pt-2">
+        <h3 className="font-label-caps text-label-caps text-primary mb-3">ESTA MAÑANA (Biométricos y Sensaciones)</h3>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <Field label="PESO (KG)" value={v.weightKg} onChange={(x) => setV({ ...v, weightKg: x })} type="number" />
+          <Field label="CINTURA (CM)" value={v.waistCm} onChange={(x) => setV({ ...v, waistCm: x })} type="number" />
+          <Field label="SUEÑO (H) (Anoche)" value={v.sleepH} onChange={(x) => setV({ ...v, sleepH: x })} type="number" />
+        </div>
+        <div className="space-y-4">
+          <Rating label="ENERGÍA" value={v.energy} onChange={(x) => setV({ ...v, energy: x })} />
+          <Rating label="HAMBRE" value={v.hunger} onChange={(x) => setV({ ...v, hunger: x })} />
+          <Rating label="FATIGA" value={v.fatigue} onChange={(x) => setV({ ...v, fatigue: x })} />
+          <Rating label="DIGESTIÓN" value={v.digestion} onChange={(x) => setV({ ...v, digestion: x })} />
+          <Rating label="ESTRÉS" value={v.stress} onChange={(x) => setV({ ...v, stress: x })} />
+        </div>
       </div>
-      <Rating label="ENERGÍA" value={v.energy} onChange={(x) => setV({ ...v, energy: x })} />
-      <Rating label="HAMBRE" value={v.hunger} onChange={(x) => setV({ ...v, hunger: x })} />
-      <Rating label="FATIGA" value={v.fatigue} onChange={(x) => setV({ ...v, fatigue: x })} />
-      <Rating label="DIGESTIÓN" value={v.digestion} onChange={(x) => setV({ ...v, digestion: x })} />
-      <Rating label="ESTRÉS" value={v.stress} onChange={(x) => setV({ ...v, stress: x })} />
-      <label className="block">
+
+      <div className="pt-4 border-t border-outline-variant">
+        <h3 className="font-label-caps text-label-caps text-primary mb-3">DÍA ANTERIOR (Actividad)</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <Field label="PASOS" value={v.steps} onChange={(x) => setV({ ...v, steps: x })} type="number" />
+          <Field label="DISTANCIA (KM)" value={v.distanceKm} onChange={(x) => setV({ ...v, distanceKm: x })} type="number" />
+          <Field label="CAL. ACTIVAS" value={v.activeKcal} onChange={(x) => setV({ ...v, activeKcal: x })} type="number" />
+          <Field label="CAL. BASALES (Opcional)" value={v.basalKcal} onChange={(x) => setV({ ...v, basalKcal: x })} type="number" placeholder="Calcula IA si vacío" />
+        </div>
+      </div>
+
+      <label className="block pt-2">
         <span className="font-label-caps text-label-caps text-on-surface-variant">NOTAS</span>
         <textarea
           value={v.notes}
@@ -112,7 +125,7 @@ export default function CheckInForm() {
   );
 }
 
-function Field({ label, value, onChange, type }: { label: string; value: string; onChange: (v: string) => void; type: string }) {
+function Field({ label, value, onChange, type, placeholder }: { label: string; value: string; onChange: (v: string) => void; type: string; placeholder?: string }) {
   return (
     <label className="block">
       <span className="font-label-caps text-label-caps text-on-surface-variant">{label}</span>
@@ -120,6 +133,7 @@ function Field({ label, value, onChange, type }: { label: string; value: string;
         type={type}
         step="any"
         value={value}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className="mt-1 w-full bg-surface-container-lowest border-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface px-1 py-2"
       />

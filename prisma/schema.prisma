@@ -123,6 +123,7 @@ model DailyCheckIn {
   basalKcal  Int? // basal/resting energy (BMR)
   distanceKm Float? // distance covered
   notes     String?
+  aiAnalysis String?  @db.Text
   createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

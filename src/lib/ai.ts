@@ -243,3 +243,31 @@ export async function estimateMeal(description: string, image?: string, context?
     return heuristic("No se pudo estimar con IA (límite o clave). Estimación aproximada — ajusta los valores.");
   }
 }
+
+export async function analyzeCheckIn(checkIn: Record<string, unknown>, contextStr?: string): Promise<string> {
+  if (!aiEnabled) return "Análisis no disponible (sin IA configurada).";
+  try {
+    const raw = await runCompletion(
+      [
+        {
+          role: "system",
+          content:
+            "Eres el Coach IA de FitCoach 12%. Analiza el check-in diario del usuario." +
+            (contextStr ? `\nContexto actual:\n${contextStr}\n` : "") +
+            "Reglas:\n" +
+            "1. Sé conciso y directo (2-3 oraciones).\n" +
+            "2. Conecta los puntos (ej. si durmió poco y tiene fatiga, y los pasos bajaron, recomienda descanso activo).\n" +
+            "3. Evalúa el peso y la energía frente a los objetivos.\n" +
+            "4. No uses lenguaje robótico, sé un coach humano y técnico.\n" +
+            "Responde únicamente con el análisis, sin markdown adicional."
+        },
+        { role: "user", content: JSON.stringify(checkIn) },
+      ],
+      { maxTokens: 200, temperature: 0.5 }
+    );
+    return raw.trim();
+  } catch (err) {
+    console.error("AI analyzeCheckIn error", err);
+    return "No se pudo generar el análisis del coach en este momento.";
+  }
+}
