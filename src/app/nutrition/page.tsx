@@ -33,6 +33,8 @@ export default async function NutritionPage() {
           proteinG: l.proteinG,
           carbsG: l.carbsG,
           fatG: l.fatG,
+          sodiumMg: l.sodiumMg,
+          aiAnalysis: l.aiAnalysis,
           aiEstimated: l.aiEstimated,
         }))}
         currentPlan={profile?.currentMealPlan as any}

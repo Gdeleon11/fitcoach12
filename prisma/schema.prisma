@@ -140,8 +140,10 @@ model NutritionLog {
   proteinG    Int?
   carbsG      Int?
   fatG        Int?
+  sodiumMg    Float?
   waterLiters Float?
   aiEstimated Boolean  @default(false)
+  aiAnalysis  String?  @db.Text
   createdAt   DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

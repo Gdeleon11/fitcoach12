@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUserId } from "@/lib/session";
 import { estimateMeal } from "@/lib/ai";
+import { buildUserContext } from "@/lib/context";
 
 export const maxDuration = 60;
 
@@ -17,6 +18,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Describe la comida" }, { status: 400 });
   }
-  const estimate = await estimateMeal(parsed.data.description, parsed.data.image);
+  const context = await buildUserContext(userId);
+  const estimate = await estimateMeal(parsed.data.description, parsed.data.image, context);
   return NextResponse.json({ estimate });
 }

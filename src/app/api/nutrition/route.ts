@@ -24,6 +24,8 @@ const schema = z.object({
   fatG: z.number().int().min(0).max(1000).optional(),
   waterLiters: z.number().min(0).max(20).optional(),
   aiEstimated: z.boolean().optional(),
+  sodiumMg: z.number().min(0).max(20000).optional(),
+  aiAnalysis: z.string().max(5000).optional(),
 });
 
 export async function POST(req: Request) {

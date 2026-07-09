@@ -188,11 +188,12 @@ Reglas de análisis visual:
 Responde en español, de forma estructurada en 4-6 frases, sin markdown.`;
 
 // Estimate macros for a free-text meal description and optional image. Never throws.
-export async function estimateMeal(description: string, image?: string): Promise<{
+export async function estimateMeal(description: string, image?: string, context?: string): Promise<{
   totalKcal: number;
   proteinG: number;
   carbsG: number;
   fatG: number;
+  sodiumMg: number | null;
   note: string;
 }> {
   const heuristic = (note: string) => {
@@ -202,6 +203,7 @@ export async function estimateMeal(description: string, image?: string): Promise
       proteinG: Math.round((kcal * 0.3) / 4),
       carbsG: Math.round((kcal * 0.4) / 4),
       fatG: Math.round((kcal * 0.3) / 9),
+      sodiumMg: null,
       note,
     };
   };
@@ -216,11 +218,14 @@ export async function estimateMeal(description: string, image?: string): Promise
         {
           role: "system",
           content:
-            "Eres un nutricionista analizando comidas" + (image ? " mediante fotos" : "") + ". Estima macros de la comida descrita. Responde SOLO JSON válido con las claves: totalKcal, proteinG, carbsG, fatG, note (breve, indicando si te basaste en la foto). Números enteros. Si la foto no es comida, estima 0.",
+            "Eres un nutricionista de élite analizando comidas" + (image ? " mediante fotos" : "") + ".\n" +
+            (context ? context + "\n" : "") +
+            "Analiza la comida descrita. Evalúa si ayuda o perjudica a su objetivo actual, considerando lo que ya ha comido hoy. Haz comentarios críticos sobre la calidad de los ingredientes y la estimación de sodio. " +
+            "Responde SOLO JSON válido con las claves: totalKcal, proteinG, carbsG, fatG, sodiumMg (estimado numérico), y note (tu análisis crítico en 1-2 párrafos cortos). Números enteros. Si la foto no es comida, estima 0.",
         },
         { role: "user", content },
       ],
-      { maxTokens: 250, temperature: 0.2, vision: Boolean(image) }
+      { maxTokens: 400, temperature: 0.3, vision: Boolean(image) }
     );
     const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
     const match = cleaned.match(/\{[\s\S]*\}/);
@@ -230,6 +235,7 @@ export async function estimateMeal(description: string, image?: string): Promise
       proteinG: Math.round(parsed.proteinG ?? 0),
       carbsG: Math.round(parsed.carbsG ?? 0),
       fatG: Math.round(parsed.fatG ?? 0),
+      sodiumMg: typeof parsed.sodiumMg === "number" ? Math.round(parsed.sodiumMg) : null,
       note: String(parsed.note ?? ""),
     };
   } catch (err) {

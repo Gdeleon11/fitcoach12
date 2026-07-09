@@ -11,6 +11,8 @@ type Log = {
   proteinG: number | null;
   carbsG: number | null;
   fatG: number | null;
+  sodiumMg: number | null;
+  aiAnalysis: string | null;
   aiEstimated: boolean;
 };
 
@@ -30,6 +32,8 @@ export default function NutritionLogger({ target, initialLogs, currentPlan }: { 
   const [protein, setProtein] = useState("");
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
+  const [sodiumMg, setSodiumMg] = useState<number | null>(null);
+  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [aiEstimated, setAiEstimated] = useState(false);
   const [estimating, setEstimating] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -138,8 +142,10 @@ export default function NutritionLogger({ target, initialLogs, currentPlan }: { 
         setProtein(String(data.estimate.proteinG));
         setCarbs(String(data.estimate.carbsG));
         setFat(String(data.estimate.fatG));
+        setSodiumMg(data.estimate.sodiumMg ?? null);
+        setAiAnalysis(data.estimate.note || null);
         setAiEstimated(true);
-        setNote(data.estimate.note || null);
+        setNote(null);
         if (!mealName) setMealName(desc.slice(0, 40));
       } else {
         setNote(data.error || "No se pudo estimar. Ingresa los valores manualmente.");
@@ -160,6 +166,8 @@ export default function NutritionLogger({ target, initialLogs, currentPlan }: { 
     if (protein) payload.proteinG = Number(protein);
     if (carbs) payload.carbsG = Number(carbs);
     if (fat) payload.fatG = Number(fat);
+    if (sodiumMg !== null) payload.sodiumMg = sodiumMg;
+    if (aiAnalysis !== null) payload.aiAnalysis = aiAnalysis;
     const res = await fetch("/api/nutrition", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -168,7 +176,7 @@ export default function NutritionLogger({ target, initialLogs, currentPlan }: { 
     const data = await res.json();
     if (res.ok && data.log) {
       setLogs((p) => [{ ...data.log, date: data.log.date.slice(0, 10) }, ...p]);
-      setMealName(""); setDesc(""); setKcal(""); setProtein(""); setCarbs(""); setFat(""); setAiEstimated(false); setNote(null); setImage(null);
+      setMealName(""); setDesc(""); setKcal(""); setProtein(""); setCarbs(""); setFat(""); setSodiumMg(null); setAiAnalysis(null); setAiEstimated(false); setNote(null); setImage(null);
       router.refresh();
     }
     setSaving(false);
@@ -275,6 +283,16 @@ export default function NutritionLogger({ target, initialLogs, currentPlan }: { 
             {estimating ? "ESTIMANDO..." : "ESTIMAR MACROS CON IA"}
           </button>
           {note && <p className="text-xs text-on-surface-variant">{note}</p>}
+          {aiAnalysis && (
+            <div className="mt-4 mb-4 bg-primary/10 border border-primary/20 rounded-lg p-4 relative">
+              <span className="absolute top-2 right-2 material-symbols-outlined text-primary opacity-50">smart_toy</span>
+              <h4 className="font-label-caps text-label-caps text-primary mb-2">ANÁLISIS DEL COACH</h4>
+              <p className="text-sm text-on-surface leading-relaxed whitespace-pre-wrap">{aiAnalysis}</p>
+              {sodiumMg !== null && (
+                <p className="text-xs font-data-point mt-3 text-on-surface-variant">SODIO ESTIMADO: {sodiumMg} mg</p>
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <MiniField label="NOMBRE" value={mealName} onChange={setMealName} type="text" />
             <MiniField label="KCAL" value={kcal} onChange={setKcal} type="number" />

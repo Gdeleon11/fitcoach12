@@ -148,8 +148,9 @@ export async function buildRoutine(params: {
   phase?: string | null;
   goalBodyFat?: number | null;
   best: Map<string, number>;
+  contextStr?: string;
 }): Promise<BuiltRoutine> {
-  const { focus, best } = params;
+  const { focus, best, contextStr } = params;
   const label = focusLabel(focus);
 
   const knownLifts = [...best.entries()]
@@ -158,11 +159,12 @@ export async function buildRoutine(params: {
     .join(", ");
 
   const ai = await aiJson<{ name?: string; rationale?: string; exercises?: PlanExercise[] }>(
-    "Eres un entrenador de fuerza. Diseña UNA sesión de entrenamiento para el foco indicado.",
+    "Eres un entrenador de élite. Diseña UNA sesión de entrenamiento para el foco indicado considerando el historial y fatiga del usuario.",
     `Foco: ${label}. Objetivo grasa corporal: ${params.goalBodyFat ?? 12}%. Fase: ${params.phase ?? "hipertrofia"}.
+${contextStr ? `\n${contextStr}\n\nSi viene de días de alta fatiga o entrenamientos pesados del mismo grupo muscular, ajusta el volumen/intensidad. Si viene descansado, exige más.` : ""}
 Pesos previos del usuario (para sugerir cargas realistas): ${knownLifts || "sin historial"}.
 Devuelve JSON con esta forma exacta:
-{"name": string, "rationale": string breve, "exercises": [{"name": string, "sets": number, "reps": string (ej "6-8"), "suggestedWeightKg": number|null, "note": string opcional}]}
+{"name": string, "rationale": "string breve explicando por qué este entrenamiento (menciona su contexto si aplica)", "exercises": [{"name": string, "sets": number, "reps": string (ej "6-8"), "suggestedWeightKg": number|null, "note": string opcional}]}
 Entre 4 y 6 ejercicios. Usa nombres de ejercicios en español.`
   );
 
