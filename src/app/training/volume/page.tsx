@@ -73,14 +73,14 @@ export default async function VolumePage() {
             <div className="glass-card p-6 lg:col-span-2">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-headline-md text-lg">Volumen semanal</h3>
-                <span className="font-label-caps text-label-caps text-on-surface-variant opacity-60">ÚLTIMAS 6 SEMANAS · KG</span>
+                <span className="font-label-caps text-label-caps text-on-surface-variant opacity-60">ÚLTIMAS 6 SEMANAS · SERIES</span>
               </div>
               <div className="flex items-end gap-3 h-48">
                 {weekly.map((w, i) => {
                   const isLast = i === weekly.length - 1;
                   return (
                     <div key={w.week} className="flex-1 flex flex-col justify-end items-center gap-2">
-                      <span className="font-label-caps text-[10px] text-on-surface-variant">{w.volume > 0 ? w.volume.toLocaleString() : ""}</span>
+                      <span className="font-label-caps text-[10px] text-on-surface-variant">{w.volume > 0 ? w.volume : ""}</span>
                       <div
                         className="w-full rounded-t"
                         style={{
@@ -88,7 +88,7 @@ export default async function VolumePage() {
                           minHeight: w.volume > 0 ? 4 : 0,
                           backgroundColor: isLast ? "#00f0ff" : "#3b494b",
                         }}
-                        title={`Semana del ${w.week}: ${w.volume.toLocaleString()} kg · ${w.sessions} sesiones`}
+                        title={`Semana del ${w.week}: ${w.volume} series · ${w.sessions} sesiones`}
                       />
                       <span className="text-[10px] font-label-caps opacity-40">{w.week.slice(5)}</span>
                     </div>
@@ -100,7 +100,7 @@ export default async function VolumePage() {
             <div className="space-y-4">
               <div className="glass-card p-6">
                 <p className="font-label-caps text-label-caps text-on-surface-variant mb-1">SEMANA ACTUAL</p>
-                <p className="font-data-point text-data-point text-primary">{trend.current.toLocaleString()} <span className="text-sm text-on-surface-variant">kg</span></p>
+                <p className="font-data-point text-data-point text-primary">{trend.current} <span className="text-sm text-on-surface-variant">series</span></p>
                 <p className={"font-label-caps text-label-caps mt-1 " + (trend.direction === "up" ? "text-primary-fixed-dim" : trend.direction === "down" ? "text-error" : "text-on-surface-variant")}>
                   {trend.changePct != null ? `${trend.changePct > 0 ? "+" : ""}${trend.changePct}% vs previa` : "—"}
                 </p>
@@ -123,12 +123,12 @@ export default async function VolumePage() {
                     <div>
                       <p className="text-on-surface font-bold">{s.name}</p>
                       <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">
-                        {s.totalSets} SERIES · TOP {s.topWeight ?? "—"}KG · 1RM EST. {s.best1RM ?? "—"}KG
+                        {s.totalSets} SERIES{s.topWeight ? ` · TOP ${s.topWeight}KG` : ""}{s.best1RM ? ` · 1RM EST. ${s.best1RM}KG` : ""}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
                       <p className="font-data-point text-sm text-primary">
-                        {s.lastWeight ?? "—"}kg × {s.lastReps ?? "—"} {s.lastRir != null ? `@RIR${s.lastRir}` : ""}
+                        {s.lastWeight ? `${s.lastWeight}kg × ` : ""}{s.lastReps ?? "—"} {s.lastWeight ? "" : "reps/min "} {s.lastRir != null ? `@RIR${s.lastRir}` : ""}
                       </p>
                       <p className="font-label-caps text-label-caps text-on-surface-variant opacity-60">ÚLT. {s.lastDate}</p>
                     </div>

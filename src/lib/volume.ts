@@ -41,11 +41,12 @@ export function weeklyVolume(workouts: WorkoutLite[], weeks = 6): WeekVolume[] {
     const key = weekStart(w.date);
     if (!map.has(key)) continue;
     const cur = map.get(key)!;
-    const vol = w.volumeKg ?? w.sets.reduce((a, s) => a + (s.reps ?? 0) * (s.weightKg ?? 0), 0);
+    // Count effective sets instead of kg
+    const vol = w.sets.length;
     cur.volume += vol;
     cur.sessions += 1;
   }
-  return buckets.map((w) => ({ week: w, volume: Math.round(map.get(w)!.volume), sessions: map.get(w)!.sessions }));
+  return buckets.map((w) => ({ week: w, volume: map.get(w)!.volume, sessions: map.get(w)!.sessions }));
 }
 
 export type VolumeTrend = {
@@ -101,10 +102,10 @@ export function exerciseStats(workouts: WorkoutLite[]): ExerciseStat[] {
 
   const stats: ExerciseStat[] = [];
   for (const [name, sets] of byName) {
-    const weights = sets.map((s) => s.weight).filter((x): x is number => typeof x === "number");
+    const weights = sets.map((s) => s.weight).filter((x): x is number => typeof x === "number" && x > 0);
     const topWeight = weights.length ? Math.max(...weights) : null;
     const best1RM = sets.reduce<number | null>((best, s) => {
-      if (typeof s.weight === "number" && typeof s.reps === "number" && s.reps > 0) {
+      if (typeof s.weight === "number" && s.weight > 0 && typeof s.reps === "number" && s.reps > 0) {
         const e = epley(s.weight, s.reps);
         return best == null || e > best ? e : best;
       }
@@ -129,14 +130,26 @@ export function exerciseStats(workouts: WorkoutLite[]): ExerciseStat[] {
       lastWeight: topLast?.weight ?? null,
       lastReps: topLast?.reps ?? null,
       lastRir: topLast?.rir ?? null,
-      suggestion: progressionSuggestion(topLast?.rir ?? null, topLast?.weight ?? null),
+      suggestion: progressionSuggestion(topLast?.rir ?? null, topLast?.weight ?? null, name),
     });
   }
   // Most-trained first.
   return stats.sort((a, b) => b.totalSets - a.totalSets);
 }
 
-function progressionSuggestion(rir: number | null, weight: number | null): string {
+function isCardioOrBW(name: string): boolean {
+  return /carrera|sombra|cardio|bici|eliptica|correr|nadar|isometric|plancha|saco/i.test(name);
+}
+
+function progressionSuggestion(rir: number | null, weight: number | null, name: string): string {
+  if (isCardioOrBW(name) || (weight === 0 || weight === null)) {
+    if (rir == null) return "Registra el RIR para recibir progresión automática.";
+    if (rir >= 3) return `Te sobran ${rir} reps/tiempo: aumenta el tiempo bajo tensión o suma repeticiones.`;
+    if (rir === 2) return "Cerca del objetivo: añade un poco más de tiempo/reps o repite afinando técnica.";
+    if (rir === 1) return "Casi al fallo: mantén el esfuerzo y consolida antes de subir intensidad.";
+    return "Al fallo (RIR 0): mantén o baja intensidad; vigila la fatiga acumulada.";
+  }
+
   if (rir == null) return "Registra el RIR de tu top set para recibir progresión automática.";
   if (rir >= 3) {
     const up = weight ? ` (~${Math.round(weight * 1.03 * 10) / 10}–${Math.round(weight * 1.05 * 10) / 10} kg)` : "";
@@ -152,6 +165,9 @@ export type VolumeRecommendation = { tone: "up" | "hold" | "deload" | "start"; t
 export function volumeRecommendation(trend: VolumeTrend, avgRpe: number | null, sessions: number): VolumeRecommendation {
   if (sessions === 0) {
     return { tone: "start", title: "Empieza a registrar", message: "Registra tus sesiones con series, reps, peso y RIR para activar el análisis de volumen y la progresión automática." };
+  }
+  if (trend.changePct == null) {
+    return { tone: "hold", title: "Semana base registrada", message: "Primeros registros de volumen analizados. Sigue entrenando para ver tu tendencia de sobrecarga la próxima semana." };
   }
   if (avgRpe != null && avgRpe >= 9 && trend.direction === "up") {
     return { tone: "deload", title: "Considera un deload", message: `Volumen al alza (${trend.changePct}%) con RPE promedio ${avgRpe}. Reduce ~40% el volumen una semana para recuperar y luego rebota.` };
