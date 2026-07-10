@@ -158,34 +158,52 @@ export async function aiJson<T = unknown>(system: string, user: string, maxToken
 }
 
 // Vision analysis of progress photos (data URLs). Never throws.
-export async function analyzeImages(dataUrls: string[], context: string): Promise<string> {
-  if (!aiEnabled) return "El análisis con IA requiere una configuración de IA (OLLAMA_BASE_URL, GEMINI_API_KEY o GROQ_API_KEY). Sin ella no se puede analizar la imagen.";
+export async function analyzeImages(dataUrls: string[], context: string): Promise<{ estimatedBodyFatPct: number | null; analysisText: string }> {
+  if (!aiEnabled) return { estimatedBodyFatPct: null, analysisText: "El análisis con IA requiere una configuración de IA. Sin ella no se puede analizar la imagen." };
   try {
     const content = [
       { type: "text" as const, text: context },
       ...dataUrls.slice(0, 3).map((url) => ({ type: "image_url" as const, image_url: { url } })),
     ];
-    return await runCompletion(
+    const raw = await runCompletion(
       [
         { role: "system", content: VISION_GUARD },
         { role: "user", content },
       ],
-      { vision: true, maxTokens: 500, temperature: 0.5 }
+      { vision: true, maxTokens: 800, temperature: 0.3 }
     );
+    const cleaned = raw.replace(/```json\s*|\s*```/g, "").trim();
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(match ? match[0] : cleaned);
+    return {
+      estimatedBodyFatPct: typeof parsed.estimatedBodyFatPct === "number" ? parsed.estimatedBodyFatPct : null,
+      analysisText: String(parsed.analysisText ?? raw),
+    };
   } catch (err) {
-    return friendlyAiError(err, "No se pudieron analizar las fotos");
+    return { estimatedBodyFatPct: null, analysisText: friendlyAiError(err, "No se pudieron analizar las fotos") };
   }
 }
 
 const VISION_GUARD = `Eres un coach de composición corporal Élite analizando fotos de progreso de un usuario.
 Tu análisis debe ser extremadamente fino, clínico y detallado. Tono: objetivo, técnico, directo y constructivo. NUNCA hagas comentarios despectivos.
+
+REGLA ANTI-ALUCINACIÓN INQUEBRANTABLE:
+- Está estrictamente prohibido mencionar, evaluar o deducir información sobre grupos musculares o partes del cuerpo que NO son visibles en los píxeles de la fotografía.
+- Si las piernas no se ven, NO hables de cuádriceps, glúteos ni isquiosurales. Si la foto es solo del torso frontal, NO hables de la espalda.
+- Limítate a analizar EXCLUSIVAMENTE lo que puedes ver claramente.
+
 Reglas de análisis visual:
-1. Da un rango estimado de grasa corporal (ej. "aprox. 14-16%") advirtiendo que es estimación visual.
-2. Analiza grupos musculares específicos visibles: vascularización, estriaciones (hombros, pecho, cuádriceps), inserciones y simetría.
-3. Evalúa la distribución de grasa (abdominal, flancos, lumbar, pecho).
-4. Da 2-3 acciones hiper-específicas de entrenamiento o nutrición (ej. "aumentar volumen en deltoide lateral", "ligero superávit", etc) alineadas al objetivo de 12% de grasa.
+1. Recibirás un contexto con datos biométricos y una fórmula RFM matemática de grasa corporal. Tu trabajo es validar si ese número tiene sentido basado en la masa muscular visible, y devolver un "estimatedBodyFatPct" final coherente.
+2. Analiza grupos musculares ESPECÍFICAMENTE VISIBLES: vascularización, estriaciones, inserciones y simetría.
+3. Evalúa la distribución de grasa VISIBLE (ej. abdominal, flancos, pectoral).
+4. Da 2-3 acciones hiper-específicas de entrenamiento o nutrición alineadas al objetivo de 12% de grasa.
 5. No des consejo médico.
-Responde en español, de forma estructurada en 4-6 frases, sin markdown.`;
+
+DEBES responder SOLO con un objeto JSON válido, sin texto adicional, con la siguiente estructura:
+{
+  "estimatedBodyFatPct": 15.5, // Tu estimación final (un solo número, no un rango).
+  "analysisText": "Tu análisis de texto detallado de 4 a 6 oraciones..."
+}`;
 
 // Estimate macros for a free-text meal description and optional image. Never throws.
 export async function estimateMeal(description: string, image?: string, context?: string): Promise<{

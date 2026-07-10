@@ -24,9 +24,10 @@ export default async function DashboardPage() {
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
 
-  const [checkins, todayNutrition] = await Promise.all([
+  const [checkins, todayNutrition, recentPhotos] = await Promise.all([
     prisma.dailyCheckIn.findMany({ where: { userId }, orderBy: { date: "desc" }, take: 7 }),
     prisma.nutritionLog.findMany({ where: { userId, date: { gte: startOfDay } } }),
+    prisma.progressPhoto.findMany({ where: { userId }, orderBy: { date: "desc" }, take: 10 }),
   ]);
 
   const latest = checkins[0];
@@ -35,7 +36,12 @@ export default async function DashboardPage() {
   const weights = checkins.filter((c) => c.weightKg != null).map((c) => c.weightKg as number);
   const avg7 = weights.length ? weights.reduce((a, b) => a + b, 0) / weights.length : null;
 
-  const estBf = estimateBodyFatRFM(profile.heightCm ?? null, latestWaist, profile.gender ?? null);
+  const rfmBf = estimateBodyFatRFM(profile.heightCm ?? null, latestWaist, profile.gender ?? null);
+  
+  // Find the latest AI visual body fat estimation, if any
+  const latestAiAnalysis = recentPhotos.map(p => p.aiAnalysis as any).find(a => a && typeof a.estimatedBodyFatPct === "number");
+  const estBf = latestAiAnalysis ? latestAiAnalysis.estimatedBodyFatPct : rfmBf;
+  
   const bfStatus = bodyFatStatus(estBf, profile.goalBodyFat ?? null);
 
   const kcalToday = todayNutrition.reduce((a, n) => a + (n.totalKcal ?? 0), 0);

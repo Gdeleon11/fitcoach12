@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
 import { analyzeImages } from "@/lib/ai";
 import { trend } from "@/lib/reports";
+import { estimateBodyFatRFM } from "@/lib/bodyfat";
+
+export const maxDuration = 45; // Extend duration for AI image analysis
 
 export async function POST() {
   const userId = await requireUserId();
@@ -38,19 +41,27 @@ export async function POST() {
   const latest = checkins[0];
   const w = trend([...checkins].reverse().map((c) => ({ date: c.date, weightKg: c.weightKg, waistCm: c.waistCm, steps: null, sleepH: null, energy: null })), "weightKg");
   const waist = trend([...checkins].reverse().map((c) => ({ date: c.date, weightKg: c.weightKg, waistCm: c.waistCm, steps: null, sleepH: null, energy: null })), "waistCm");
+  const rfm = estimateBodyFatRFM(profile?.heightCm ?? null, latest?.waistCm ?? null, profile?.gender ?? null);
 
   const context = `Analiza estas fotos de progreso (en orden cronológico: ${photoDesc}). Si hay varias fechas, compara la más antigua (base) con la más reciente y describe los cambios. Contexto del usuario:
 - Objetivo de grasa corporal: ${profile?.goalBodyFat ?? 12}%
 - Peso actual: ${latest?.weightKg ?? profile?.weightKg ?? "?"} kg (cambio 30d: ${w.delta ?? "?"} kg)
 - Cintura: ${latest?.waistCm ?? "?"} cm (cambio 30d: ${waist.delta ?? "?"} cm)
 - Altura: ${profile?.heightCm ?? "?"} cm · Sexo: ${profile?.gender ?? "?"}
-Da una lectura honesta y accionable alineada al objetivo.`;
+- Grasa estimada por fórmula RFM: ${rfm !== null ? rfm + "%" : "Desconocido"}
+Revisa visualmente si el RFM tiene sentido. Si la masa muscular altera el RFM, anúlalo y usa tu propia estimación visual.`;
 
-  const analysis = await analyzeImages(chosen, context);
+  const { estimatedBodyFatPct, analysisText } = await analyzeImages(chosen, context);
 
-  await prisma.aIRecommendation.create({
-    data: { userId, type: "Composition", reasoning: analysis, actionStep: null },
-  });
+  await prisma.$transaction([
+    prisma.aIRecommendation.create({
+      data: { userId, type: "Composition", reasoning: analysisText, actionStep: null },
+    }),
+    prisma.progressPhoto.update({
+      where: { id: photos[0].id },
+      data: { aiAnalysis: { estimatedBodyFatPct, text: analysisText } },
+    }),
+  ]);
 
-  return NextResponse.json({ analysis });
+  return NextResponse.json({ analysis: analysisText, estimatedBodyFatPct });
 }
