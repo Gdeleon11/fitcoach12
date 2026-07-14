@@ -8,6 +8,12 @@ type Recent = { id: string; name: string | null; date: string; volumeKg: number 
 
 const empty: SetRow = { exerciseName: "", reps: "", weightKg: "", rir: "" };
 
+const parseVal = (val: string) => {
+  if (!val || !val.trim()) return undefined;
+  const num = Number(val.trim().replace(",", "."));
+  return isNaN(num) ? undefined : num;
+};
+
 export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -20,7 +26,7 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
   const [saving, setSaving] = useState(false);
   const [dateStr, setDateStr] = useState(new Date().toISOString().slice(0, 10));
 
-  const volume = sets.reduce((a, s) => a + (Number(s.reps) || 0) * (Number(s.weightKg) || 0), 0);
+  const volume = sets.reduce((a, s) => a + (parseVal(s.reps) || 0) * (parseVal(s.weightKg) || 0), 0);
 
   function updateSet(i: number, k: keyof SetRow, val: string) {
     setSets((p) => p.map((s, idx) => (idx === i ? { ...s, [k]: val } : s)));
@@ -33,14 +39,19 @@ export default function WorkoutLogger({ recent }: { recent: Recent[] }) {
       .filter((s) => s.exerciseName.trim())
       .map((s) => ({
         exerciseName: s.exerciseName,
-        reps: s.reps ? Number(s.reps) : undefined,
-        weightKg: s.weightKg ? Number(s.weightKg) : undefined,
-        rir: s.rir ? Number(s.rir) : undefined,
+        reps: parseVal(s.reps),
+        weightKg: parseVal(s.weightKg),
+        rir: parseVal(s.rir),
       }));
     const payload: Record<string, unknown> = { name: name || "Sesión", type };
-    if (rpe) payload.rpe = Number(rpe);
-    if (durationM) payload.durationM = Number(durationM);
-    if (distanceKm) payload.distanceKm = Number(distanceKm);
+    
+    const rpeNum = parseVal(rpe);
+    const durationNum = parseVal(durationM);
+    const distanceNum = parseVal(distanceKm);
+    
+    if (rpeNum !== undefined) payload.rpe = rpeNum;
+    if (durationNum !== undefined) payload.durationM = durationNum;
+    if (distanceNum !== undefined) payload.distanceKm = distanceNum;
     
     if (type === "STRENGTH" && cleanSets.length) {
       payload.sets = cleanSets;

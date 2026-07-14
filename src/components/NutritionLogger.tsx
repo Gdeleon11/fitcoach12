@@ -20,6 +20,12 @@ type Target = { kcal: number | null; protein: number | null; carbs: number | nul
 
 const today = () => new Date().toISOString().slice(0, 10);
 
+const parseValInt = (val: string) => {
+  if (!val || !val.trim()) return undefined;
+  const num = Number(val.trim().replace(",", "."));
+  return isNaN(num) ? undefined : Math.round(num);
+};
+
 import type { MealPlan } from "@/lib/mealplan";
 
 export default function NutritionLogger({ target, initialLogs, currentPlan }: { target: Target; initialLogs: Log[]; currentPlan?: MealPlan | null }) {
@@ -161,11 +167,17 @@ export default function NutritionLogger({ target, initialLogs, currentPlan }: { 
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
+    setNote(null);
     const payload: Record<string, unknown> = { date: mealDate, mealName: mealName || desc.slice(0, 40), description: desc, aiEstimated };
-    if (kcal) payload.totalKcal = Number(kcal);
-    if (protein) payload.proteinG = Number(protein);
-    if (carbs) payload.carbsG = Number(carbs);
-    if (fat) payload.fatG = Number(fat);
+    const totalKcal = parseValInt(kcal);
+    const proteinG = parseValInt(protein);
+    const carbsG = parseValInt(carbs);
+    const fatG = parseValInt(fat);
+
+    if (totalKcal !== undefined) payload.totalKcal = totalKcal;
+    if (proteinG !== undefined) payload.proteinG = proteinG;
+    if (carbsG !== undefined) payload.carbsG = carbsG;
+    if (fatG !== undefined) payload.fatG = fatG;
     if (sodiumMg !== null) payload.sodiumMg = sodiumMg;
     if (aiAnalysis !== null) payload.aiAnalysis = aiAnalysis;
     const res = await fetch("/api/nutrition", {
@@ -178,6 +190,8 @@ export default function NutritionLogger({ target, initialLogs, currentPlan }: { 
       setLogs((p) => [{ ...data.log, date: data.log.date.slice(0, 10) }, ...p]);
       setMealName(""); setDesc(""); setKcal(""); setProtein(""); setCarbs(""); setFat(""); setSodiumMg(null); setAiAnalysis(null); setAiEstimated(false); setNote(null); setImage(null);
       router.refresh();
+    } else {
+      setNote(data.error || "No se pudo guardar la comida.");
     }
     setSaving(false);
   }

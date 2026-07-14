@@ -26,7 +26,7 @@ export default function CoachChat({ initial }: { initial: Msg[] }) {
     setMessages((p) => [...p, { role: "user", content: text }]);
     setLoading(true);
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 35000);
+    const timer = setTimeout(() => controller.abort(), 55000);
     try {
       const res = await fetch("/api/coach", {
         method: "POST",

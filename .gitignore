@@ -37,3 +37,4 @@ node_modules_old/
 .verify/
 tsconfig.check.json
 node_modules_broken2/
+.env*

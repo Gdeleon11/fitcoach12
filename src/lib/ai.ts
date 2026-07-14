@@ -131,7 +131,7 @@ export async function chat(messages: ChatMsg[]): Promise<string> {
     return "El AI Coach está en modo demo (no hay clave ni puente de IA configurado). Con OLLAMA_BASE_URL, GEMINI_API_KEY o GROQ_API_KEY verás lecturas honestas basadas en tus últimos 7 días de datos.";
   }
   try {
-    return await runCompletion([{ role: "system", content: GUARDIAN }, ...messages], { maxTokens: 500, temperature: 0.6 });
+    return await runCompletion([{ role: "system", content: GUARDIAN }, ...messages], { maxTokens: 2000, temperature: 0.6 });
   } catch (err) {
     return friendlyAiError(err, "No pude responder ahora");
   }
@@ -287,5 +287,46 @@ export async function analyzeCheckIn(checkIn: Record<string, unknown>, contextSt
   } catch (err) {
     console.error("AI analyzeCheckIn error", err);
     return "No se pudo generar el análisis del coach en este momento.";
+  }
+}
+
+export async function analyzeWeeklyProgress(data: {
+  profile: any;
+  weight: any;
+  waist: any;
+  nut: any;
+  training: any;
+  av: any;
+}): Promise<string> {
+  if (!aiEnabled) return "";
+  try {
+    const system = `Eres el Coach de Rendimiento Élite de FitCoach 12%. Analiza el reporte semanal del usuario y da una lectura estratégica profunda, objetiva y accionable.
+Tono: profesional, directo, técnico y alentador.
+Escribe 2-3 párrafos concisos y bien estructurados en español.
+Enfócate en conectar los puntos:
+- Si el peso subió/bajó en relación con la adherencia de calorías y proteína.
+- El impacto del sueño, fatiga, pasos y RPE promedio.
+- Da 2 recomendaciones específicas para la próxima semana (ej. ajustar NEAT/pasos, mejorar consistencia en registros, modular intensidad, etc.).
+No uses lenguaje robótico ni repitas los números de forma literal sin interpretarlos.`;
+
+    const user = `Datos semanales:
+Perfil Objetivo: ${JSON.stringify({ targetKcal: data.profile?.targetKcal, proteinG: data.profile?.proteinG, goalBodyFat: data.profile?.goalBodyFat })}
+Tendencia Peso: delta 7d: ${data.weight.delta}kg, promedio: ${data.weight.average}kg, último: ${data.weight.last}kg
+Tendencia Cintura: delta 7d: ${data.waist.delta}cm, promedio: ${data.waist.average}cm, último: ${data.waist.last}cm
+Nutrición Promedio: promedio kcal: ${data.nut.avgKcal} kcal, promedio proteína: ${data.nut.avgProtein}g, días registrados: ${data.nut.daysLogged}/7
+Entrenamiento: ${data.training.sessions} sesiones, volumen total: ${data.training.totalVolume}kg, RPE promedio: ${data.training.avgRpe}
+Averages Checkin: pasos promedio: ${data.av.avgSteps}, sueño promedio: ${data.av.avgSleep}h, fatiga promedio: ${data.av.avgFatigue}/5, estrés: ${data.av.avgStress}/5`;
+
+    const raw = await runCompletion(
+      [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+      { maxTokens: 800, temperature: 0.5 }
+    );
+    return raw.trim();
+  } catch (err) {
+    console.error("AI analyzeWeeklyProgress error", err);
+    return "";
   }
 }

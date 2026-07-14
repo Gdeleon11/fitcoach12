@@ -6,6 +6,12 @@ import { useRouter } from "next/navigation";
 type Row = { name: string; sets: string; reps: string; weight: string; rir: string };
 const empty: Row = { name: "", sets: "3", reps: "", weight: "", rir: "" };
 
+const parseVal = (val: string) => {
+  if (!val || !val.trim()) return undefined;
+  const num = Number(val.trim().replace(",", "."));
+  return isNaN(num) ? undefined : num;
+};
+
 export default function ManualWorkoutForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -31,13 +37,13 @@ export default function ManualWorkoutForm() {
     const sets: { exerciseName: string; reps?: number; weightKg?: number; rir?: number }[] = [];
     for (const r of rows) {
       if (!r.name.trim()) continue;
-      const n = Math.max(1, Math.round(Number(r.sets) || 1));
+      const n = Math.max(1, Math.round(Number(r.sets.replace(",", ".")) || 1));
       for (let i = 0; i < n; i++) {
         sets.push({
           exerciseName: r.name.trim(),
-          reps: r.reps ? Number(r.reps) : undefined,
-          weightKg: r.weight ? Number(r.weight) : undefined,
-          rir: r.rir ? Number(r.rir) : undefined,
+          reps: parseVal(r.reps),
+          weightKg: parseVal(r.weight),
+          rir: parseVal(r.rir),
         });
       }
     }
@@ -51,11 +57,14 @@ export default function ManualWorkoutForm() {
       }
       payload.sets = sets;
     } else {
-      if (distanceKm) payload.distanceKm = Number(distanceKm);
-      if (durationM) payload.durationM = Number(durationM);
+      const dist = parseVal(distanceKm);
+      const dur = parseVal(durationM);
+      if (dist !== undefined) payload.distanceKm = dist;
+      if (dur !== undefined) payload.durationM = dur;
     }
     
-    if (rpe) payload.rpe = Number(rpe);
+    const rpeNum = parseVal(rpe);
+    if (rpeNum !== undefined) payload.rpe = rpeNum;
     const res = await fetch("/api/workouts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

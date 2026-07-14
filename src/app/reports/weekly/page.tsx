@@ -10,6 +10,7 @@ import {
   trainingSummary,
   checkinAverages,
 } from "@/lib/reports";
+import { analyzeWeeklyProgress } from "@/lib/ai";
 
 export const metadata = { title: "FitCoach 12% — Reporte Semanal Estratégico" };
 export const dynamic = "force-dynamic";
@@ -44,6 +45,11 @@ export default async function WeeklyReportPage() {
   const av = checkinAverages(checkins);
 
   const hasData = checkins.length > 0 || nutrition.length > 0 || workouts.length > 0;
+  
+  let aiStrategicRead = "";
+  if (hasData) {
+    aiStrategicRead = await analyzeWeeklyProgress({ profile, weight, waist, nut, training, av });
+  }
   const weightTone = weight.delta == null ? "flat" : weight.delta < 0 ? "up" : weight.delta > 0 ? "down" : "flat";
   const waistTone = waist.delta == null ? "flat" : waist.delta < 0 ? "up" : waist.delta > 0 ? "down" : "flat";
 
@@ -144,13 +150,15 @@ export default async function WeeklyReportPage() {
             </div>
           </div>
 
-          {/* Strategic read (rule-based) */}
+          {/* Strategic read (AI-powered with fallback) */}
           <div className="glass-card p-6 border-l-4 border-primary bg-surface-container-high">
             <div className="flex items-center gap-2 mb-3">
               <span className="material-symbols-outlined text-primary-fixed-dim">smart_toy</span>
-              <span className="font-label-caps text-label-caps text-primary-fixed-dim">LECTURA ESTRATÉGICA</span>
+              <span className="font-label-caps text-label-caps text-primary-fixed-dim">LECTURA ESTRATÉGICA IA</span>
             </div>
-            <p className="text-on-surface leading-relaxed">{strategicRead({ weight, nut, training, av })}</p>
+            <p className="text-on-surface leading-relaxed whitespace-pre-wrap">
+              {aiStrategicRead || strategicRead({ weight, nut, training, av })}
+            </p>
             <Link href="/coach" className="inline-block mt-4 px-4 py-2 bg-surface-container-highest text-primary font-label-caps text-label-caps border border-outline-variant hover:border-primary transition">
               PROFUNDIZAR CON EL COACH
             </Link>

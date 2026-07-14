@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
+import { dateSchema } from "@/lib/date";
 
 export async function GET() {
   const userId = await requireUserId();
@@ -18,7 +19,7 @@ const schema = z.object({
   // data URL (image compressed client-side). Cap ~2MB to protect the DB.
   url: z.string().startsWith("data:image/").max(2_800_000),
   angle: z.enum(["FRONT", "SIDE", "BACK"]).optional(),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), // backdate to any day
+  date: dateSchema.optional(), // backdate to any day
 });
 
 export async function POST(req: Request) {

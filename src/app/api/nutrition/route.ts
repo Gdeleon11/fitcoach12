@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
+import { dateSchema } from "@/lib/date";
 
 export async function GET() {
   const userId = await requireUserId();
@@ -15,7 +16,7 @@ export async function GET() {
 }
 
 const schema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), // backdate to any day
+  date: dateSchema.optional(), // backdate to any day
   mealName: z.string().max(120).optional(),
   description: z.string().max(1000).optional(),
   totalKcal: z.number().int().min(0).max(10000).optional(),

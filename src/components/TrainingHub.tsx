@@ -18,6 +18,12 @@ type Recent = { id: string; name: string | null; date: string; volumeKg: number 
 
 type RowState = { sets: string; reps: string; weight: string; rir: string; done: boolean };
 
+const parseValNull = (val: string) => {
+  if (!val || !val.trim()) return null;
+  const num = Number(val.trim().replace(",", "."));
+  return isNaN(num) ? null : num;
+};
+
 export default function TrainingHub({ activePlan, recent }: { activePlan: ActivePlan | null; recent: Recent[] }) {
   const router = useRouter();
   const [focus, setFocus] = useState<string>("full");
@@ -157,10 +163,10 @@ function RoutineRunner({ plan }: { plan: ActivePlan }) {
     setError(null);
     const results = plan.exercises.map((e, i) => ({
       name: e.name,
-      sets: rows[i].sets ? Math.max(1, Math.round(Number(rows[i].sets))) : e.sets,
-      reps: rows[i].reps !== "" ? Math.round(Number(rows[i].reps)) : null,
-      weightKg: rows[i].weight !== "" ? Number(rows[i].weight) : null,
-      rir: rows[i].rir !== "" ? Math.round(Number(rows[i].rir)) : null,
+      sets: rows[i].sets ? Math.max(1, Math.round(Number(rows[i].sets.replace(",", ".")) || 1)) : e.sets,
+      reps: parseValNull(rows[i].reps),
+      weightKg: parseValNull(rows[i].weight),
+      rir: parseValNull(rows[i].rir),
       done: rows[i].done,
     }));
     const res = await fetch("/api/workout-plans/complete", {

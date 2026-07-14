@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/session";
+import { dateSchema } from "@/lib/date";
 
 export async function GET() {
   const userId = await requireUserId();
@@ -17,20 +18,20 @@ export async function GET() {
 
 const setSchema = z.object({
   exerciseName: z.string().min(1).max(120),
-  reps: z.number().int().min(0).max(1000).optional(),
-  weightKg: z.number().min(0).max(1000).optional(),
-  rir: z.number().int().min(0).max(10).optional(),
+  reps: z.number().int().min(0).max(1000).nullable().optional(),
+  weightKg: z.number().min(0).max(1000).nullable().optional(),
+  rir: z.number().int().min(0).max(10).nullable().optional(),
 });
 
 const schema = z.object({
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), // backdate to any day
-  name: z.string().max(120).optional(),
+  date: dateSchema.optional(), // backdate to any day
+  name: z.string().max(120).nullable().optional(),
   type: z.enum(["STRENGTH", "CARDIO", "SPORT", "MOBILITY"]).optional(),
-  durationM: z.number().int().min(0).max(600).optional(),
-  distanceKm: z.number().min(0).max(1000).optional(),
-  intensity: z.string().max(40).optional(),
-  rpe: z.number().min(0).max(10).optional(),
-  notes: z.string().max(1000).optional(),
+  durationM: z.number().int().min(0).max(600).nullable().optional(),
+  distanceKm: z.number().min(0).max(1000).nullable().optional(),
+  intensity: z.string().max(40).nullable().optional(),
+  rpe: z.number().min(0).max(10).nullable().optional(),
+  notes: z.string().max(1000).nullable().optional(),
   sets: z.array(setSchema).max(50).optional(),
 });
 
